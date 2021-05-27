@@ -1,8 +1,9 @@
 //import { clear } from "node:console";
 import React, { useState, useEffect } from "react";
 import Login from "./components/Login";
-import Calender from "./components/Calendar";
+import Calendar from "./components/Calendar";
 import fire from "./fire";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 //import logo from "./logo.svg";
 //import "./App.css";
@@ -83,22 +84,27 @@ const App = () => {
 
   return (
     <div>
-      {user ? (
-        <Calender handleLogout={handleLogout} />
-      ) : (
-        <Login
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          handleLogin={handleLogin}
-          handleSignUp={handleSignUp}
-          hasAccount={hasAccount}
-          setHasAccount={setHasAccount}
-          emailError={emailError}
-          passwordError={passwordError}
-        />
-      )}
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Login
+              email={email}
+              setEmail={setEmail}
+              password={password}
+              setPassword={setPassword}
+              handleLogin={handleLogin}
+              handleSignUp={handleSignUp}
+              hasAccount={hasAccount}
+              setHasAccount={setHasAccount}
+              emailError={emailError}
+              passwordError={passwordError}
+            />
+          </Route>
+          <Route exact path="/calendar">
+            <Calendar handleLogout={handleLogout} />
+          </Route>
+        </Switch>
+      </Router>
     </div>
   );
 };

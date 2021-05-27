@@ -1,62 +1,47 @@
-import React from "react";
+import React, { useCallback, useContext } from "react";
+import { withRouter, Redirect } from "react-router";
+import fire from "../fire";
+import { AuthContext } from "../Auth";
 
-const Login = (props) => {
-  const {
-    email,
-    setEmail,
-    password,
-    setPassword,
-    handleLogin,
-    handleSignUp,
-    hasAccount,
-    setHasAccount,
-    emailError,
-    passwordError,
-  } = props;
+const Login = ({ history }) => {
+  const handleLogin = useCallback(
+    async (event) => {
+      event.preventDefault();
+      const { email, password } = event.target.elements;
+      try {
+        await fire
+          .auth()
+          .signInWithEmailAndPassword(email.value, password.value);
+        history.push("/calendar");
+      } catch (error) {
+        alert(error);
+      }
+    },
+    [history]
+  );
+
+  const { currentUser } = useContext(AuthContext);
+
+  if (currentUser) {
+    return <Redirect to="/calendar" />;
+  }
 
   return (
-    <section className="login">
-      <div className="loginContainer">
-        <label>Username</label>
-        <input
-          type="text"
-          autoFocus
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <p className="errorMsg">{emailError}</p>
-        <label>Password</label>
-        <input
-          type="password"
-          autoFocus
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <p className="errorMsg">{passwordError}</p>
-        <div className="btnContainer">
-          {hasAccount ? (
-            <>
-              <button onClick={handleLogin}>Sign in</button>
-              <p>
-                Don't have an account?{" "}
-                <span onClick={() => setHasAccount(!hasAccount)}>Sign up</span>
-              </p>
-            </>
-          ) : (
-            <>
-              <button onClick={handleSignUp}>Sign Up</button>
-              <p>
-                Have an account?{" "}
-                <span onClick={() => setHasAccount(!hasAccount)}>Sign in</span>
-              </p>
-            </>
-          )}
-        </div>
-      </div>
-    </section>
+    <div>
+      <h1>Log in</h1>
+      <form onSubmit={handleLogin}>
+        <label>
+          Email
+          <input name="email" type="email" placeholder="Email" />
+        </label>
+        <label>
+          Password
+          <input name="password" type="password" placeholder="Password" />
+        </label>
+        <button type="submit">Log in</button>
+      </form>
+    </div>
   );
 };
 
-export default Login;
+export default withRouter(Login);

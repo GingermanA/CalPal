@@ -1,13 +1,12 @@
 import React from "react";
+import fire from "../fire";
 
-const Calendar = ({ handleLogout }) => {
+const Calendar = () => {
   return (
-    <section>
-      <nav>
-        <h2>Welcome :D</h2>
-        <button onClick={handleLogout}>Logout</button>
-      </nav>
-    </section>
+    <>
+      <h1>Home</h1>
+      <button onClick={() => fire.auth().signOut()}>Sign out</button>
+    </>
   );
 };
 

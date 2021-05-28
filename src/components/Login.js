@@ -40,6 +40,16 @@ const Login = ({ history }) => {
         </label>
         <button type="submit">Log in</button>
       </form>
+      <p>
+        Don't have an account?{" "}
+        <span
+          onClick={() => {
+            history.push("/signup");
+          }}
+        >
+          Sign Up
+        </span>
+      </p>
     </div>
   );
 };

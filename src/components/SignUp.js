@@ -11,7 +11,7 @@ const SignUp = ({ history }) => {
         await fire
           .auth()
           .createUserWithEmailAndPassword(email.value, password.value);
-        history.push("/");
+        history.push("/calendar");
       } catch (error) {
         alert(error);
       }
@@ -33,6 +33,16 @@ const SignUp = ({ history }) => {
         </label>
         <button type="submit">Sign Up</button>
       </form>
+      <p>
+        Have an account?{" "}
+        <span
+          onClick={() => {
+            history.push("/login");
+          }}
+        >
+          Login
+        </span>
+      </p>
     </div>
   );
 };

@@ -1,17 +1,16 @@
-import React, { useCallback, useContext } from "react";
-import { withRouter, Redirect } from "react-router";
+import React, { useCallback } from "react";
+import { withRouter } from "react-router";
 import fire from "../fire";
-import { AuthContext } from "../Auth";
 
-const Login = ({ history }) => {
-  const handleLogin = useCallback(
+const SignUp = ({ history }) => {
+  const handleSignUp = useCallback(
     async (event) => {
       event.preventDefault();
       const { email, password } = event.target.elements;
       try {
         await fire
           .auth()
-          .signInWithEmailAndPassword(email.value, password.value);
+          .createUserWithEmailAndPassword(email.value, password.value);
         history.push("/calendar");
       } catch (error) {
         alert(error);
@@ -20,16 +19,10 @@ const Login = ({ history }) => {
     [history]
   );
 
-  const { currentUser } = useContext(AuthContext);
-
-  if (currentUser) {
-    return <Redirect to="/calendar" />;
-  }
-
   return (
     <div>
-      <h1>Log in</h1>
-      <form onSubmit={handleLogin}>
+      <h1>Sign up</h1>
+      <form onSubmit={handleSignUp}>
         <label>
           Email
           <input name="email" type="email" placeholder="Email" />
@@ -38,20 +31,20 @@ const Login = ({ history }) => {
           Password
           <input name="password" type="password" placeholder="Password" />
         </label>
-        <button type="submit">Log in</button>
+        <button type="submit">Sign Up</button>
       </form>
       <p>
-        Don't have an account?{" "}
+        Have an account?{" "}
         <span
           onClick={() => {
-            history.push("/signup");
+            history.push("/login");
           }}
         >
-          Sign Up
+          Login
         </span>
       </p>
     </div>
   );
 };
 
-export default withRouter(Login);
+export default withRouter(SignUp);

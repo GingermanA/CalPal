@@ -12,7 +12,8 @@ const Login = ({ history }) => {
         await fire
           .auth()
           .signInWithEmailAndPassword(email.value, password.value);
-        history.push("/calendar");
+        history.push("/scheduler");
+        //history.push("/calendar");
       } catch (error) {
         alert(error);
       }
@@ -23,12 +24,13 @@ const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext);
 
   if (currentUser) {
-    return <Redirect to="/calendar" />;
+    return <Redirect to="/scheduler" />;
+    //return <Redirect to="/calendar" />;
   }
 
   return (
     <div>
-      <h1>Log in</h1>
+      <h1>CalPal Log in</h1>
       <form onSubmit={handleLogin}>
         <label>
           Email

@@ -44,7 +44,11 @@ export default class Scheduler extends SampleBase {
           this.test[i].StartTime = new Date(parseInt(srtTime));
           this.test[i].EndTime = new Date(parseInt(endTime));
         }
-        //this.scheduleObj.eventSettings.dataSource = this.test;
+        try {
+          this.scheduleObj.eventSettings.dataSource = this.test;
+        } catch (err) {
+          console.log(this.test);
+        }
       });
   }
   GuidFun() {
@@ -102,7 +106,7 @@ export default class Scheduler extends SampleBase {
               ref={(schedule) => (this.scheduleObj = schedule)}
               currentView="Month"
               actionBegin={this.onActionBegin.bind(this)}
-              eventSettings={{ dataSource: this.test }}
+              //eventSettings={{ dataSource: this.test }}
               //selectedDate={new Date(2019, 8, 27)}
             >
               <ViewsDirective>

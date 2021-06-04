@@ -64,24 +64,53 @@ export default class Scheduler extends SampleBase {
   }
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
-      this.data
-        .doc(args.changedRecords[0].DocumentId)
-        .update({ Subject: args.changedRecords[0].Subject });
-      this.data
-        .doc(args.changedRecords[0].DocumentId)
-        .update({ EndTime: args.changedRecords[0].EndTime });
-      this.data
-        .doc(args.changedRecords[0].DocumentId)
-        .update({ StartTime: args.changedRecords[0].StartTime });
-      this.data
-        .doc(args.changedRecords[0].DocumentId)
-        .update({ Location: args.changedRecords[0].Location });
-      this.data
-        .doc(args.changedRecords[0].DocumentId)
-        .update({ IsAllDay: args.changedRecords[0].IsAllDay });
-      this.data
-        .doc(args.changedRecords[0].DocumentId)
-        .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
+      console.log(args);
+      console.log(args.changedRecords);
+      console.log(args.changedRecords[0]);
+      console.log(args.changedRecords[0].Description);
+      try {
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ Subject: args.changedRecords[0].Subject });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ EndTime: args.changedRecords[0].EndTime });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ StartTime: args.changedRecords[0].StartTime });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ Location: args.changedRecords[0].Location });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ Description: args.changedRecords[0].Description });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ IsAllDay: args.changedRecords[0].IsAllDay });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
+      } catch (err) {
+        if (
+          args.changedRecords[0].Description == null &&
+          args.changedRecords[0].Location == null
+        ) {
+          this.data
+            .doc(args.changedRecords[0].DocumentId)
+            .update({ Description: "" });
+          this.data
+            .doc(args.changedRecords[0].DocumentId)
+            .update({ Location: "" });
+        } else if (args.changedRecords[0].Description == null) {
+          this.data
+            .doc(args.changedRecords[0].DocumentId)
+            .update({ Description: "" });
+        } else {
+          this.data
+            .doc(args.changedRecords[0].DocumentId)
+            .update({ Location: "" });
+        }
+      }
     } else if (args.requestType === "eventCreate") {
       let guid = (
         this.GuidFun() +
@@ -98,6 +127,15 @@ export default class Scheduler extends SampleBase {
         this.GuidFun()
       ).toLowerCase();
       args.data[0].DocumentId = guid.toString();
+      const argsData = args.data[0];
+      if (argsData.Description == null && argsData.Location == null) {
+        argsData.Description = "";
+        argsData.Location = "";
+      } else if (argsData.Location == null) {
+        argsData.Location = "";
+      } else if (argsData.Description == null) {
+        argsData.Description = "";
+      }
       this.data.doc(guid).set(args.data[0]);
     } else if (args.requestType === "eventRemove") {
       this.data.doc(args.deletedRecords[0].DocumentId).delete();

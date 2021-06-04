@@ -22,7 +22,7 @@ import { SampleBase } from "./sample-base";
 //import * as dataSource from "./datasource.json";
 //import { db } from "./config.js";
 import fire from "../fire";
-import { firebase } from "@firebase/app";
+//import { firebase } from "@firebase/app";
 
 /**
  * Schedule Default sample
@@ -30,7 +30,7 @@ import { firebase } from "@firebase/app";
 export default class Scheduler extends SampleBase {
   constructor() {
     super(...arguments);
-    const uid = firebase.auth().currentUser?.uid;
+    const uid = fire.auth().currentUser?.uid;
     fire
       .firestore()
       .collection("Users")

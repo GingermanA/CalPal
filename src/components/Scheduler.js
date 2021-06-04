@@ -22,6 +22,7 @@ import { SampleBase } from "./sample-base";
 //import * as dataSource from "./datasource.json";
 //import { db } from "./config.js";
 import fire from "../fire";
+import { firebase } from "@firebase/app";
 
 /**
  * Schedule Default sample
@@ -29,14 +30,21 @@ import fire from "../fire";
 export default class Scheduler extends SampleBase {
   constructor() {
     super(...arguments);
+    const uid = firebase.auth().currentUser?.uid;
     fire
       .firestore()
-      .collection("Events of Users")
+      .collection("Users")
+      .doc(uid)
+      .collection("Events")
       .get()
       .then((querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => doc.data());
         this.test = data;
-        this.data = fire.firestore().collection("Events of Users");
+        this.data = fire
+          .firestore()
+          .collection("Users")
+          .doc(uid)
+          .collection("Events");
         let length = this.test.length;
         for (let i = 0; i < length; i++) {
           let endTime = this.test[i].EndTime.seconds.toString() + "000";

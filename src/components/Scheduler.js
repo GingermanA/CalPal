@@ -51,11 +51,15 @@ export default class Scheduler extends SampleBase {
           .doc(uid)
           .collection("Events");
         let length = this.test.length;
-        for (let i = 0; i < length; i++) {
-          let endTime = this.test[i].EndTime.seconds.toString() + "000";
-          let srtTime = this.test[i].StartTime.seconds.toString() + "000";
-          this.test[i].StartTime = new Date(parseInt(srtTime));
-          this.test[i].EndTime = new Date(parseInt(endTime));
+        try {
+          for (let i = 0; i < length; i++) {
+            let endTime = this.test[i].EndTime.seconds.toString() + "000";
+            let srtTime = this.test[i].StartTime.seconds.toString() + "000";
+            this.test[i].StartTime = new Date(parseInt(srtTime));
+            this.test[i].EndTime = new Date(parseInt(endTime));
+          }
+        } catch (err) {
+          console.log(err);
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
@@ -67,49 +71,58 @@ export default class Scheduler extends SampleBase {
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
+  // this.data
+  //   .doc(args.changedRecords[0].DocumentId)
+  //   .update({ Description: args.changedRecords[0].Description });
+  // this.data
+  //   .doc(args.changedRecords[0].DocumentId)
+  //   .update({ IsAllDay: args.changedRecords[0].IsAllDay });
+  // this.data
+  //   .doc(args.changedRecords[0].DocumentId)
+  //   .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
+
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
       console.log(args);
       console.log(args.changedRecords);
       console.log(args.changedRecords[0]);
-      console.log(args.changedRecords[0].Description);
       try {
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Subject: args.changedRecords[0].Subject });
+        //.update({ Subject: args.changedRecords[0].Subject });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ Module: args.changedRecords[0].Module });
+        //.update({ EndTime: args.changedRecords[0].EndTime });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ Type: args.changedRecords[0].Type });
+        //.update({ StartTime: args.changedRecords[0].StartTime });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ Location: args.changedRecords[0].Location });
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ EndTime: args.changedRecords[0].EndTime });
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ StartTime: args.changedRecords[0].StartTime });
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ Location: args.changedRecords[0].Location });
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ Description: args.changedRecords[0].Description });
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ IsAllDay: args.changedRecords[0].IsAllDay });
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
       } catch (err) {
         if (
-          args.changedRecords[0].Description == null &&
+          // args.changedRecords[0].Description == null &&
           args.changedRecords[0].Location == null
         ) {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ Description: "" });
+          // this.data
+          //   .doc(args.changedRecords[0].DocumentId)
+          //   .update({ Description: "" });
           this.data
             .doc(args.changedRecords[0].DocumentId)
             .update({ Location: "" });
-        } else if (args.changedRecords[0].Description == null) {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ Description: "" });
+          // } else if (args.changedRecords[0].Description == null) {
+          //   this.data
+          //     .doc(args.changedRecords[0].DocumentId)
+          //     .update({ Description: "" });
         } else {
           this.data
             .doc(args.changedRecords[0].DocumentId)
@@ -117,6 +130,9 @@ export default class Scheduler extends SampleBase {
         }
       }
     } else if (args.requestType === "eventCreate") {
+      console.log(args);
+      console.log(args.data);
+      console.log(args.data[0]);
       let guid = (
         this.GuidFun() +
         this.GuidFun() +
@@ -132,16 +148,27 @@ export default class Scheduler extends SampleBase {
         this.GuidFun()
       ).toLowerCase();
       args.data[0].DocumentId = guid.toString();
+
       const argsData = args.data[0];
-      if (argsData.Description == null && argsData.Location == null) {
-        argsData.Description = "";
+      if (argsData.Location == null) {
         argsData.Location = "";
-      } else if (argsData.Location == null) {
-        argsData.Location = "";
-      } else if (argsData.Description == null) {
-        argsData.Description = "";
       }
-      this.data.doc(guid).set(args.data[0]);
+      if (argsData.Module == null) {
+        argsData.Module = "";
+      }
+      if (argsData.Type == null) {
+        argsData.Type = "";
+      }
+      console.log(argsData);
+      this.data.doc(guid).set({
+        Subject: argsData.Subject,
+        DocumentId: argsData.DocumentId,
+        EndTime: argsData.EndTime,
+        Location: argsData.Location,
+        Module: argsData.Module,
+        StartTime: argsData.StartTime,
+        Type: argsData.Type,
+      });
     } else if (args.requestType === "eventRemove") {
       this.data.doc(args.deletedRecords[0].DocumentId).delete();
     }
@@ -154,7 +181,12 @@ export default class Scheduler extends SampleBase {
           <tr>
             <td className="e-textlabel">Title</td>
             <td>
-              <input id="Title" name="Subject" type="text" />
+              <input
+                id="Subject"
+                className="e-field e-input"
+                name="Subject"
+                type="text"
+              />
             </td>
           </tr>
           <tr>
@@ -162,6 +194,7 @@ export default class Scheduler extends SampleBase {
             <td>
               <DropDownListComponent
                 id="Module"
+                className="e-field"
                 dataSource={["CS1010", "IEM", "MA1521"]}
                 placeholder="Select module"
                 data-name="Module"
@@ -174,6 +207,7 @@ export default class Scheduler extends SampleBase {
             <td>
               <DropDownListComponent
                 id="Type"
+                className="e-field"
                 dataSource={["Lecture", "Tutorial", "Study Session"]}
                 placeholder="Select type"
                 data-name="Type"
@@ -184,7 +218,12 @@ export default class Scheduler extends SampleBase {
           <tr>
             <td className="e-textlabel">Location</td>
             <td>
-              <input id="Location" name="Subject" type="text" />
+              <input
+                id="Location"
+                className="e-field e-input"
+                name="Location"
+                type="text"
+              />
             </td>
           </tr>
           <tr>
@@ -192,6 +231,7 @@ export default class Scheduler extends SampleBase {
             <td>
               <DateTimePickerComponent
                 id="StartTime"
+                className="e-field"
                 date-name="StartTime"
                 value={new Date(props.startTime || props.StartTime)}
                 format="dd/MM/yy hh:mm a"
@@ -206,6 +246,7 @@ export default class Scheduler extends SampleBase {
                 date-name="EndTime"
                 value={new Date(props.endTime || props.EndTime)}
                 format="dd/MM/yy hh:mm a"
+                className="e-field"
               ></DateTimePickerComponent>
             </td>
           </tr>

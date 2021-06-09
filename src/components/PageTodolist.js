@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 //import Header from "../components/Header";
 import TaskManager from "./TaskManager";
+import { Link } from "react-router-dom";
 
 function PageTodolist() {
   // Task state has to be lifted to be at the App level
@@ -26,6 +27,7 @@ function PageTodolist() {
 
   return (
     <main>
+      <Link to="/scheduler">Scheduler</Link>
       <TaskManager tasks={tasks} setTasks={setTasks} />
     </main>
   );

@@ -24,9 +24,12 @@ import { SampleBase } from "./sample-base";
 import fire from "../fire";
 import { firebase } from "@firebase/app";
 
+import PageTodolist from "./PageTodolist";
+
 /**
  * Schedule Default sample
  */
+
 export default class Scheduler extends SampleBase {
   constructor() {
     super(...arguments);
@@ -174,6 +177,8 @@ export default class Scheduler extends SampleBase {
                 ]}
               />
             </ScheduleComponent>
+
+            <PageTodolist />
           </div>
         </div>
       </div>

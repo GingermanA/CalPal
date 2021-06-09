@@ -16,7 +16,8 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 
 //import { extend } from "@syncfusion/ej2-base";
-//import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
+import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
+import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { SampleBase } from "./sample-base";
 //import { PropertyPane } from "./property-pane";
 //import * as dataSource from "./datasource.json";
@@ -24,7 +25,8 @@ import { SampleBase } from "./sample-base";
 import fire from "../fire";
 import { firebase } from "@firebase/app";
 
-import PageTodolist from "./PageTodolist";
+//import PageTodolist from "./PageTodolist";
+import { Link } from "react-router-dom";
 
 /**
  * Schedule Default sample
@@ -144,12 +146,81 @@ export default class Scheduler extends SampleBase {
       this.data.doc(args.deletedRecords[0].DocumentId).delete();
     }
   }
+
+  editorWindowTemplate(props: any): JSX.Element {
+    return (
+      <table className="custom-event-editor">
+        <tbody>
+          <tr>
+            <td className="e-textlabel">Title</td>
+            <td>
+              <input id="Title" name="Subject" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td className="e-textlabel">Module</td>
+            <td>
+              <DropDownListComponent
+                id="Module"
+                dataSource={["CS1010", "IEM", "MA1521"]}
+                placeholder="Select module"
+                data-name="Module"
+                value={props.Module || null}
+              ></DropDownListComponent>
+            </td>
+          </tr>
+          <tr>
+            <td className="e-textlabel">Type</td>
+            <td>
+              <DropDownListComponent
+                id="Type"
+                dataSource={["Lecture", "Tutorial", "Study Session"]}
+                placeholder="Select type"
+                data-name="Type"
+                value={props.Type || null}
+              ></DropDownListComponent>
+            </td>
+          </tr>
+          <tr>
+            <td className="e-textlabel">Location</td>
+            <td>
+              <input id="Location" name="Subject" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td className="e-textlabel">Start Time</td>
+            <td>
+              <DateTimePickerComponent
+                id="StartTime"
+                date-name="StartTime"
+                value={new Date(props.startTime || props.StartTime)}
+                format="dd/MM/yy hh:mm a"
+              ></DateTimePickerComponent>
+            </td>
+          </tr>
+          <tr>
+            <td className="e-textlabel">End Time</td>
+            <td>
+              <DateTimePickerComponent
+                id="EndTime"
+                date-name="EndTime"
+                value={new Date(props.endTime || props.EndTime)}
+                format="dd/MM/yy hh:mm a"
+              ></DateTimePickerComponent>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    );
+  }
+
   render() {
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
           <div className="control-wrapper">
             <button onClick={() => fire.auth().signOut()}>Sign out</button>
+            <Link to="/tasks">Tasks</Link>
             <ScheduleComponent
               height="650px"
               ref={(schedule) => (this.scheduleObj = schedule)}
@@ -157,6 +228,7 @@ export default class Scheduler extends SampleBase {
               actionBegin={this.onActionBegin.bind(this)}
               //eventSettings={{ dataSource: this.test }}
               //selectedDate={new Date(2019, 8, 27)}
+              editorTemplate={this.editorWindowTemplate.bind(this)}
             >
               <ViewsDirective>
                 <ViewDirective option="Day" />
@@ -165,6 +237,7 @@ export default class Scheduler extends SampleBase {
                 <ViewDirective option="Month" />
                 <ViewDirective option="Agenda" />
               </ViewsDirective>
+
               <Inject
                 services={[
                   Day,
@@ -177,8 +250,6 @@ export default class Scheduler extends SampleBase {
                 ]}
               />
             </ScheduleComponent>
-
-            <PageTodolist />
           </div>
         </div>
       </div>

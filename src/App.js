@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Cal from "./components/Calendar";
 import Scheduler from "./components/Scheduler";
 import PageTodolist from "./components/PageTodolist";
 import Login from "./components/Login";
@@ -13,7 +12,6 @@ const App = () => {
     <AuthProvider>
       <Router>
         <div>
-          <PrivateRoute exact path="/calendar" component={Cal} />
           <PrivateRoute exact path="/scheduler" component={Scheduler} />
           <PrivateRoute exact path="/tasks" component={PageTodolist} />
           <Route exact path="/login" component={Login} />

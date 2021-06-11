@@ -58,15 +58,11 @@ export default class Scheduler extends SampleBase {
           .doc(uid)
           .collection("Events");
         let length = this.test.length;
-        try {
-          for (let i = 0; i < length; i++) {
-            let endTime = this.test[i].EndTime.seconds.toString() + "000";
-            let srtTime = this.test[i].StartTime.seconds.toString() + "000";
-            this.test[i].StartTime = new Date(parseInt(srtTime));
-            this.test[i].EndTime = new Date(parseInt(endTime));
-          }
-        } catch (err) {
-          console.log(err);
+        for (let i = 0; i < length; i++) {
+          let endTime = this.test[i].EndTime.seconds.toString() + "000";
+          let srtTime = this.test[i].StartTime.seconds.toString() + "000";
+          this.test[i].StartTime = new Date(parseInt(srtTime));
+          this.test[i].EndTime = new Date(parseInt(endTime));
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;

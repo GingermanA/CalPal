@@ -32,6 +32,13 @@ import { Link } from "react-router-dom";
  * Schedule Default sample
  */
 
+function onEventRendered(args) {
+  console.log(args.data);
+  if (args.data.Module === "CS1010") {
+    args.element.style.backgroundColor = "red";
+  }
+}
+
 export default class Scheduler extends SampleBase {
   constructor() {
     super(...arguments);
@@ -51,15 +58,11 @@ export default class Scheduler extends SampleBase {
           .doc(uid)
           .collection("Events");
         let length = this.test.length;
-        try {
-          for (let i = 0; i < length; i++) {
-            let endTime = this.test[i].EndTime.seconds.toString() + "000";
-            let srtTime = this.test[i].StartTime.seconds.toString() + "000";
-            this.test[i].StartTime = new Date(parseInt(srtTime));
-            this.test[i].EndTime = new Date(parseInt(endTime));
-          }
-        } catch (err) {
-          console.log(err);
+        for (let i = 0; i < length; i++) {
+          let endTime = this.test[i].EndTime.seconds.toString() + "000";
+          let srtTime = this.test[i].StartTime.seconds.toString() + "000";
+          this.test[i].StartTime = new Date(parseInt(srtTime));
+          this.test[i].EndTime = new Date(parseInt(endTime));
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
@@ -83,9 +86,9 @@ export default class Scheduler extends SampleBase {
 
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
-      console.log(args);
-      console.log(args.changedRecords);
-      console.log(args.changedRecords[0]);
+      //console.log(args);
+      //console.log(args.changedRecords);
+      //console.log(args.changedRecords[0]);
       try {
         this.data
           .doc(args.changedRecords[0].DocumentId)
@@ -130,9 +133,9 @@ export default class Scheduler extends SampleBase {
         }
       }
     } else if (args.requestType === "eventCreate") {
-      console.log(args);
-      console.log(args.data);
-      console.log(args.data[0]);
+      //console.log(args);
+      //console.log(args.data);
+      //console.log(args.data[0]);
       let guid = (
         this.GuidFun() +
         this.GuidFun() +
@@ -159,7 +162,7 @@ export default class Scheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      console.log(argsData);
+      //console.log(argsData);
       this.data.doc(guid).set({
         Subject: argsData.Subject,
         DocumentId: argsData.DocumentId,
@@ -270,6 +273,7 @@ export default class Scheduler extends SampleBase {
               //eventSettings={{ dataSource: this.test }}
               //selectedDate={new Date(2019, 8, 27)}
               editorTemplate={this.editorWindowTemplate.bind(this)}
+              eventRendered={onEventRendered}
             >
               <ViewsDirective>
                 <ViewDirective option="Day" />

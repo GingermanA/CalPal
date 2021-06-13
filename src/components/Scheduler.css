@@ -1,0 +1,24 @@
+.scheduler-title-container {
+  width: 80%;
+  display: inline-block;
+  text-align: center;
+  font-weight: 500;
+}
+
+.treeview-title-container {
+  display: inline-block;
+  width: 20%;
+  padding-left: 20px;
+  text-align: left;
+  font-weight: 500;
+}
+
+.scheduler-component {
+  float: left;
+  width: 80%;
+}
+
+.treeview-component {
+  float: right;
+  width: 20%;
+}

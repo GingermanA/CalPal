@@ -13,6 +13,7 @@ import {
   Inject,
   Resize,
   DragAndDrop,
+  CellClickEventArgs,
 } from "@syncfusion/ej2-react-schedule";
 
 //import { extend } from "@syncfusion/ej2-base";
@@ -28,6 +29,13 @@ import { firebase } from "@firebase/app";
 //import PageTodolist from "./PageTodolist";
 import { Link } from "react-router-dom";
 
+//To help with the dragging and dropping of modules into the scheduler, and the appropriate css for the scheduler
+import {
+  TreeViewComponent,
+  DragAndDropEventArgs,
+} from "@syncfusion/ej2-react-navigations";
+import "./Scheduler.css";
+
 /**
  * Schedule Default sample
  */
@@ -40,6 +48,25 @@ function onEventRendered(args) {
 }
 
 export default class Scheduler extends SampleBase {
+  treeViewData: { [key: string]: Object }[] = [
+    { Id: 1, Name: "CS1010S" },
+    { Id: 2, Name: "MA1521" },
+  ];
+  field: Object = { dataSource: this.treeViewData, id: "Id", text: "Name" };
+
+  onTreeDragStop(args: DragAndDropEventArgs): void {
+    let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
+      args.target
+    );
+    let eventData: { [key: string]: Object } = {
+      Subject: args.draggedNodeData.text,
+      StartTime: cellData.startTime,
+      EndTime: cellData.endTime,
+      IsAllDay: cellData.isAllDay,
+    };
+    this.scheduleObj.openEditor(eventData, "Add", true);
+  }
+
   constructor() {
     super(...arguments);
     const uid = firebase.auth().currentUser?.uid;
@@ -71,6 +98,7 @@ export default class Scheduler extends SampleBase {
         }
       });
   }
+
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
@@ -296,6 +324,14 @@ export default class Scheduler extends SampleBase {
               />
             </ScheduleComponent>
           </div>
+        </div>
+        <div className="treeview-title-container">Modules</div>
+        <div className="treeview-component">
+          <TreeViewComponent
+            fields={this.field}
+            allowDragAndDrop={true}
+            nodeDragStop={this.onTreeDragStop.bind(this)}
+          />
         </div>
       </div>
     );

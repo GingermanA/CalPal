@@ -40,19 +40,13 @@ import "./Scheduler.css";
  * Schedule Default sample
  */
 
-function onEventRendered(args) {
-  console.log(args.data);
-  if (args.data.Module === "CS1010") {
-    args.element.style.backgroundColor = "red";
-  }
-}
-
 export default class Scheduler extends SampleBase {
   treeViewData: { [key: string]: Object }[] = [
-    { Id: 1, Name: "CS1010S" },
-    { Id: 2, Name: "MA1521" },
+    { Color: "red", Name: "CS1010S" },
+    { Color: "blue", Name: "MA1521" },
+    { Color: "black", Name: "IEM" },
   ];
-  field: Object = { dataSource: this.treeViewData, id: "Id", text: "Name" };
+  field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
@@ -205,6 +199,18 @@ export default class Scheduler extends SampleBase {
     }
   }
 
+  onEventRendered(args) {
+    //console.log(args.data);
+    console.log(this.treeViewData);
+    //console.log(this.test);
+
+    for (let i = 0; i < this.treeViewData.length; i++) {
+      if (args.data.Module === this.treeViewData[i].Name) {
+        args.element.style.backgroundColor = this.treeViewData[i].Color;
+      }
+    }
+  }
+
   editorWindowTemplate(props: any): JSX.Element {
     return (
       <table className="custom-event-editor">
@@ -226,7 +232,9 @@ export default class Scheduler extends SampleBase {
               <DropDownListComponent
                 id="Module"
                 className="e-field"
-                dataSource={["CS1010", "IEM", "MA1521"]}
+                //dataSource={["CS1010", "IEM", "MA1521"]}
+                dataSource={this.treeViewData}
+                fields={this.field}
                 placeholder="Select module"
                 data-name="Module"
                 value={props.Module || null}
@@ -301,7 +309,7 @@ export default class Scheduler extends SampleBase {
               //eventSettings={{ dataSource: this.test }}
               //selectedDate={new Date(2019, 8, 27)}
               editorTemplate={this.editorWindowTemplate.bind(this)}
-              eventRendered={onEventRendered}
+              eventRendered={this.onEventRendered.bind(this)}
             >
               <ViewsDirective>
                 <ViewDirective option="Day" />

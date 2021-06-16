@@ -63,6 +63,7 @@ export default class Scheduler extends SampleBase {
 
   constructor() {
     super(...arguments);
+    this.state = { module: "" };
     const uid = fire.auth().currentUser?.uid;
     fire
       .firestore()
@@ -294,6 +295,15 @@ export default class Scheduler extends SampleBase {
     );
   }
 
+  mySubmitHandler = (e) => {
+    e.preventDefault();
+    alert("You are submitting " + this.state.module);
+  };
+
+  myChangeHandler = (e) => {
+    this.setState({ module: e.target.value });
+  };
+
   render() {
     return (
       <div className="schedule-control-section">
@@ -334,6 +344,13 @@ export default class Scheduler extends SampleBase {
           </div>
         </div>
         <div className="treeview-title-container">Modules</div>
+        <div className="treeview-form">
+          <form onSubmit={this.mySubmitHandler}>
+            <p>Enter module</p>
+            <input type="text" onChange={this.myChangeHandler} />
+            <input type="submit" />
+          </form>
+        </div>
         <div className="treeview-component">
           <TreeViewComponent
             fields={this.field}

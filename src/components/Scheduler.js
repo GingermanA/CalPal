@@ -36,6 +36,8 @@ import {
 } from "@syncfusion/ej2-react-navigations";
 import "./Scheduler.css";
 
+import ModuleManager from "./ModuleManager";
+
 /**
  * Schedule Default sample
  */
@@ -345,12 +347,14 @@ export default class Scheduler extends SampleBase {
         </div>
         <div className="treeview-title-container">Modules</div>
         <div className="treeview-form">
-          <form onSubmit={this.mySubmitHandler}>
+          <ModuleManager />
+          {/* <form onSubmit={this.mySubmitHandler}>
             <p>Enter module</p>
             <input type="text" onChange={this.myChangeHandler} />
             <input type="submit" />
-          </form>
+          </form> */}
         </div>
+
         <div className="treeview-component">
           <TreeViewComponent
             fields={this.field}

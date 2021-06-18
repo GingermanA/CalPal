@@ -15,18 +15,13 @@ import {
   DragAndDrop,
   CellClickEventArgs,
 } from "@syncfusion/ej2-react-schedule";
-//Hello!
+
 //import { extend } from "@syncfusion/ej2-base";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { SampleBase } from "./sample-base";
-//import { PropertyPane } from "./property-pane";
-//import * as dataSource from "./datasource.json";
-//import { db } from "./config.js";
 import fire from "../fire";
-//import { firebase } from "@firebase/app";
 
-//import PageTodolist from "./PageTodolist";
 import { Link } from "react-router-dom";
 
 //To help with the dragging and dropping of modules into the scheduler, and the appropriate css for the scheduler
@@ -38,18 +33,27 @@ import "./Scheduler.css";
 
 import ModuleManager from "./ModuleManager";
 
-/**
- * Schedule Default sample
- */
-
 export default class Scheduler extends SampleBase {
+  color: Array[] = [
+    "red",
+    "blue",
+    "black",
+    "green",
+    "yellow",
+    "orange",
+    "purple",
+    "pink",
+    "grey",
+    "brown",
+    "cyan",
+  ];
+
   treeViewData: { [key: string]: Object }[] = [
     { Color: "red", Name: "CS1010S" },
     { Color: "blue", Name: "MA1521" },
     { Color: "black", Name: "IEM" },
   ];
   field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
-  modules: Array[] = [];
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
@@ -66,7 +70,6 @@ export default class Scheduler extends SampleBase {
 
   constructor() {
     super(...arguments);
-    this.state = { module: "" };
     const uid = fire.auth().currentUser?.uid;
     fire
       .firestore()
@@ -102,9 +105,6 @@ export default class Scheduler extends SampleBase {
   }
   // this.data
   //   .doc(args.changedRecords[0].DocumentId)
-  //   .update({ Description: args.changedRecords[0].Description });
-  // this.data
-  //   .doc(args.changedRecords[0].DocumentId)
   //   .update({ IsAllDay: args.changedRecords[0].IsAllDay });
   // this.data
   //   .doc(args.changedRecords[0].DocumentId)
@@ -112,22 +112,16 @@ export default class Scheduler extends SampleBase {
 
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
-      //console.log(args);
-      //console.log(args.changedRecords);
-      //console.log(args.changedRecords[0]);
       try {
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Subject: args.changedRecords[0].Subject });
-        //.update({ Subject: args.changedRecords[0].Subject });
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Module: args.changedRecords[0].Module });
-        //.update({ EndTime: args.changedRecords[0].EndTime });
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Type: args.changedRecords[0].Type });
-        //.update({ StartTime: args.changedRecords[0].StartTime });
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Location: args.changedRecords[0].Location });
@@ -138,20 +132,10 @@ export default class Scheduler extends SampleBase {
           .doc(args.changedRecords[0].DocumentId)
           .update({ StartTime: args.changedRecords[0].StartTime });
       } catch (err) {
-        if (
-          // args.changedRecords[0].Description == null &&
-          args.changedRecords[0].Location == null
-        ) {
-          // this.data
-          //   .doc(args.changedRecords[0].DocumentId)
-          //   .update({ Description: "" });
+        if (args.changedRecords[0].Location == null) {
           this.data
             .doc(args.changedRecords[0].DocumentId)
             .update({ Location: "" });
-          // } else if (args.changedRecords[0].Description == null) {
-          //   this.data
-          //     .doc(args.changedRecords[0].DocumentId)
-          //     .update({ Description: "" });
         } else {
           this.data
             .doc(args.changedRecords[0].DocumentId)
@@ -159,9 +143,6 @@ export default class Scheduler extends SampleBase {
         }
       }
     } else if (args.requestType === "eventCreate") {
-      //console.log(args);
-      //console.log(args.data);
-      //console.log(args.data[0]);
       let guid = (
         this.GuidFun() +
         this.GuidFun() +
@@ -188,7 +169,6 @@ export default class Scheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      //console.log(argsData);
       this.data.doc(guid).set({
         Subject: argsData.Subject,
         DocumentId: argsData.DocumentId,
@@ -204,10 +184,7 @@ export default class Scheduler extends SampleBase {
   }
 
   onEventRendered(args) {
-    //console.log(args.data);
     console.log(this.treeViewData);
-    //console.log(this.test);
-
     for (let i = 0; i < this.treeViewData.length; i++) {
       if (args.data.Module === this.treeViewData[i].Name) {
         args.element.style.backgroundColor = this.treeViewData[i].Color;
@@ -298,15 +275,6 @@ export default class Scheduler extends SampleBase {
     );
   }
 
-  mySubmitHandler = (e) => {
-    e.preventDefault();
-    alert("You are submitting " + this.state.module);
-  };
-
-  myChangeHandler = (e) => {
-    this.setState({ module: e.target.value });
-  };
-
   render() {
     return (
       <div className="schedule-control-section">
@@ -349,13 +317,7 @@ export default class Scheduler extends SampleBase {
         <div className="treeview-title-container">Modules</div>
         <div className="treeview-form">
           <ModuleManager />
-          {/* <form onSubmit={this.mySubmitHandler}>
-            <p>Enter module</p>
-            <input type="text" onChange={this.myChangeHandler} />
-            <input type="submit" />
-          </form> */}
         </div>
-
         <div className="treeview-component">
           <TreeViewComponent
             fields={this.field}

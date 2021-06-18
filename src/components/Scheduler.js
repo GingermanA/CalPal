@@ -15,7 +15,7 @@ import {
   DragAndDrop,
   CellClickEventArgs,
 } from "@syncfusion/ej2-react-schedule";
-
+//Hello!
 //import { extend } from "@syncfusion/ej2-base";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
@@ -50,6 +50,7 @@ export default class Scheduler extends SampleBase {
   ];
 
   field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
+  modules: Array[] = [];
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(

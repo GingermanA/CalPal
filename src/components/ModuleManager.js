@@ -16,17 +16,24 @@ export default class ModuleManager extends Component {
       modCode: [],
       newMod: "",
     };
-  }
 
-  componentWillMount() {
-    this.ref.get().then((doc) => {
-      if (doc.exists) {
-        this.setState({ modCode: doc.data() });
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-      }
-    });
+    this.ref
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          console.log("if case is happening");
+          const mods = doc.data().modCode;
+          this.state.modCode = mods;
+        } else {
+          console.log("else case is happening");
+          const mods = [];
+          this.state.modCode = mods;
+        }
+      })
+      .catch((error) => {
+        console.log("error is caught");
+      });
+    console.log(this.state);
   }
 
   setModules() {

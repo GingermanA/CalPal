@@ -48,6 +48,7 @@ export default class Scheduler extends SampleBase {
     { Color: "blue", Name: "MA1521" },
     { Color: "black", Name: "IEM" },
   ];
+
   field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
@@ -65,7 +66,7 @@ export default class Scheduler extends SampleBase {
 
   constructor() {
     super(...arguments);
-    this.state = { module: "" };
+    //this.state = { module: "" };
     const uid = fire.auth().currentUser?.uid;
     fire
       .firestore()

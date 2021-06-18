@@ -11,10 +11,22 @@ export default class ModuleManager extends Component {
       .doc(uid)
       .collection("Modules")
       .doc("My Modules");
+
     this.state = {
       modCode: [],
       newMod: "",
     };
+  }
+
+  componentWillMount() {
+    this.ref.get().then((doc) => {
+      if (doc.exists) {
+        this.setState({ modCode: doc.data() });
+      } else {
+        // doc.data() will be undefined in this case
+        console.log("No such document!");
+      }
+    });
   }
 
   setModules() {
@@ -27,7 +39,7 @@ export default class ModuleManager extends Component {
       <div className="form-group sign-in">
         <div className="input-group">
           <textarea
-            value={this.state.todotitle}
+            //value={this.state.todotitle}
             className="form-control"
             onChange={(event) => this.setState({ newMod: event.target.value })}
           />

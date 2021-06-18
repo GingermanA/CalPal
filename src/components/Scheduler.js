@@ -49,6 +49,7 @@ export default class Scheduler extends SampleBase {
     { Color: "black", Name: "IEM" },
   ];
   field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
+  modules: Array[] = [];
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(

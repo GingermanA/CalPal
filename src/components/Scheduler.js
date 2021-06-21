@@ -37,20 +37,23 @@ import {
 import "./Scheduler.css";
 
 import ModuleManager from "./ModuleManager";
+import ModuleList from "./ModuleList";
 
 /**
  * Schedule Default sample
  */
 
 export default class Scheduler extends SampleBase {
-  treeViewData: { [key: string]: Object }[] = [
-    { Color: "red", Name: "CS1010S" },
-    { Color: "blue", Name: "MA1521" },
-    { Color: "black", Name: "IEM" },
-  ];
+  // treeViewData: { [key: string]: Object }[] = [
+  //   { Color: "red", Name: "CS1010S" },
+  //   { Color: "blue", Name: "MA1521" },
+  //   { Color: "black", Name: "IEM" },
+  // ];
 
-  field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
-  modules: Array[] = [];
+  treeViewData: { [key: string]: Object }[] = [];
+  field: Object = {};
+  //field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name", };
+  //modules: Array[] = [];
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
@@ -67,6 +70,10 @@ export default class Scheduler extends SampleBase {
 
   constructor() {
     super(...arguments);
+    this.state = {
+      modCode: [],
+      newMod: "",
+    };
     //this.state = { module: "" };
     const uid = fire.auth().currentUser?.uid;
     fire
@@ -96,7 +103,70 @@ export default class Scheduler extends SampleBase {
           console.log(this.test);
         }
       });
+
+    this.modsRef = fire
+      .firestore()
+      .collection("Users")
+      .doc(uid)
+      .collection("Modules")
+      .doc("My Modules");
+
+    this.modsRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          console.log("if case is happening");
+          //console.log(doc.data().modCode);
+          this.setState({ modCode: doc.data().modCode }, () => {
+            this.addModule();
+          });
+          console.log(this.state.modCode);
+          //this.state.modCode = mods;
+        } else {
+          console.log("else case is happening");
+          // const mods = [];
+          // this.state.modCode = mods;
+        }
+      })
+      .catch((error) => {
+        console.log("error is caught");
+      });
+
+    //console.log(this.state.modCode);
   }
+
+  // onTreeDragStop(args: DragAndDropEventArgs): void {
+  //   let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
+  //     args.target
+  //   );
+  //   let eventData: { [key: string]: Object } = {
+  //     Subject: args.draggedNodeData.text,
+  //     StartTime: cellData.startTime,
+  //     EndTime: cellData.endTime,
+  //     IsAllDay: cellData.isAllDay,
+  //   };
+  //   this.scheduleObj.openEditor(eventData, "Add", true);
+  // }
+
+  addModule = (text) => {
+    this.setState({ newMod: text });
+  };
+
+  setModules = () => {
+    if (this.state.newMod !== "") {
+      this.setState(
+        { modCode: [...this.state.modCode, this.state.newMod] },
+        () => {
+          this.updateFire();
+        }
+      );
+    }
+  };
+
+  updateFire = () => {
+    //this.setModules();
+    this.modsRef.set({ modCode: this.state.modCode });
+  };
 
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -238,7 +308,7 @@ export default class Scheduler extends SampleBase {
                 id="Module"
                 className="e-field"
                 //dataSource={["CS1010", "IEM", "MA1521"]}
-                dataSource={this.treeViewData}
+                dataSource={this.state.modCode}
                 fields={this.field}
                 placeholder="Select module"
                 data-name="Module"
@@ -299,16 +369,19 @@ export default class Scheduler extends SampleBase {
     );
   }
 
-  mySubmitHandler = (e) => {
-    e.preventDefault();
-    alert("You are submitting " + this.state.module);
-  };
-
-  myChangeHandler = (e) => {
-    this.setState({ module: e.target.value });
-  };
-
   render() {
+    console.log(this.treeViewData);
+    console.log(this.state.modCode);
+    this.treeViewData = this.state.modCode.reduce(function (s, a) {
+      s.push({ Name: a });
+      return s;
+    }, []);
+    console.log(this.treeViewData);
+    this.field = {
+      dataSource: this.treeViewData,
+      //id: "Color",
+      text: "Name",
+    };
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
@@ -348,13 +421,23 @@ export default class Scheduler extends SampleBase {
           </div>
         </div>
         <div className="treeview-title-container">Modules</div>
-        <div className="treeview-form">
+        {/* <div className="treeview-form">
           <ModuleManager />
-          {/* <form onSubmit={this.mySubmitHandler}>
-            <p>Enter module</p>
-            <input type="text" onChange={this.myChangeHandler} />
-            <input type="submit" />
-          </form> */}
+        </div> */}
+        <div className="treeview-form">
+          <textarea
+            // value="Enter your module here!"
+            className="form-control"
+            //onChange={(event) => this.setState({ newMod: event.target.value })}
+            onChange={(e) => this.addModule(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="btn btn-md btn-primary sign-in-button"
+            onClick={this.setModules}
+          >
+            Post
+          </button>
         </div>
 
         <div className="treeview-component">

@@ -35,18 +35,12 @@ import ModuleManager from "./ModuleManager";
 import ModuleList from "./ModuleList";
 
 export default class Scheduler extends SampleBase {
-<<<<<<< HEAD
   // treeViewData: { [key: string]: Object }[] = [
   //   { Color: "red", Name: "CS1010S" },
   //   { Color: "blue", Name: "MA1521" },
   //   { Color: "black", Name: "IEM" },
   // ];
 
-  treeViewData: { [key: string]: Object }[] = [];
-  field: Object = {};
-  //field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name", };
-  //modules: Array[] = [];
-=======
   color: Array[] = [
     "red",
     "blue",
@@ -61,13 +55,10 @@ export default class Scheduler extends SampleBase {
     "cyan",
   ];
 
-  treeViewData: { [key: string]: Object }[] = [
-    { Color: "red", Name: "CS1010S" },
-    { Color: "blue", Name: "MA1521" },
-    { Color: "black", Name: "IEM" },
-  ];
-  field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name" };
->>>>>>> 6c9ce6da54adcc404aec1903bbed8f60192c65f3
+  treeViewData: { [key: string]: Object }[] = [];
+  field: Object = {};
+  //field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name", };
+  //modules: Array[] = [];
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
@@ -84,14 +75,11 @@ export default class Scheduler extends SampleBase {
 
   constructor() {
     super(...arguments);
-<<<<<<< HEAD
     this.state = {
       modCode: [],
       newMod: "",
     };
     //this.state = { module: "" };
-=======
->>>>>>> 6c9ce6da54adcc404aec1903bbed8f60192c65f3
     const uid = fire.auth().currentUser?.uid;
     fire
       .firestore()
@@ -363,10 +351,12 @@ export default class Scheduler extends SampleBase {
   render() {
     console.log(this.treeViewData);
     console.log(this.state.modCode);
-    this.treeViewData = this.state.modCode.reduce(function (s, a) {
-      s.push({ Name: a });
-      return s;
-    }, []);
+    this.treeViewData = this.state.modCode.map((name, index) => {
+      return {
+        Name: name,
+        Color: this.color[index],
+      };
+    });
     console.log(this.treeViewData);
     this.field = {
       dataSource: this.treeViewData,
@@ -414,7 +404,6 @@ export default class Scheduler extends SampleBase {
         <div className="treeview-title-container">Modules</div>
         {/* <div className="treeview-form">
           <ModuleManager />
-<<<<<<< HEAD
         </div> */}
         <div className="treeview-form">
           <textarea
@@ -430,8 +419,6 @@ export default class Scheduler extends SampleBase {
           >
             Post
           </button>
-=======
->>>>>>> 6c9ce6da54adcc404aec1903bbed8f60192c65f3
         </div>
         <div className="treeview-component">
           <TreeViewComponent

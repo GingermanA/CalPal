@@ -24,7 +24,6 @@ export default class ModuleManager extends Component {
       .get()
       .then((doc) => {
         if (doc.exists) {
-<<<<<<< HEAD
           console.log("if case is happening");
           //console.log(doc.data().modCode);
           this.setState({ modCode: doc.data().modCode }, () => {
@@ -37,23 +36,13 @@ export default class ModuleManager extends Component {
           console.log("else case is happening");
           // const mods = [];
           // this.state.modCode = mods;
-=======
-          const mods = doc.data().modCode;
-          this.state.modCode = mods;
-        } else {
-          const mods = [];
-          this.state.modCode = mods;
->>>>>>> 6c9ce6da54adcc404aec1903bbed8f60192c65f3
         }
       })
       .catch((error) => {
         console.log("error is caught");
       });
-<<<<<<< HEAD
     //console.log(this.state);
     //console.log(this.state.modCode);
-=======
->>>>>>> 6c9ce6da54adcc404aec1903bbed8f60192c65f3
   }
 
   addModule = (text) => {

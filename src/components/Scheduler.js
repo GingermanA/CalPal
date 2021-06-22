@@ -284,16 +284,18 @@ export default class Scheduler extends SampleBase {
   }
 
   edit(args) {
-    //var mods = this.state.modCode
-    for (let i = 0; i < this.state.modCode.length; i++) {
-      if (this.state.modCode[i] === args.oldText) {
-        this.state.modCode[i] = args.newText;
+    const newModCode = this.state.modCode.slice();
+    for (let i = 0; i < newModCode.length; i++) {
+      if (newModCode[i] === args.oldText) {
+        newModCode[i] = args.newText;
       }
     }
-    this.updateFire();
+    this.setState({ modCode: newModCode }, () => {
+      this.updateFire();
+    });
+
     console.log(args.oldText);
     console.log(args.newText);
-    this.render();
   }
 
   editorWindowTemplate(props: any): JSX.Element {

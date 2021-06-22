@@ -171,25 +171,8 @@ export default class Scheduler extends SampleBase {
   updateFire = () => {
     //this.setModules();
     this.modsRef.set({ modCode: this.state.modCode });
+    this.forceUpdate();
   };
-
-  componentDidUpdate(prevState) {
-    if (prevState.modCode !== this.state.modCode) {
-      console.log(this.state.modCode);
-      this.treeViewData = this.state.modCode.map((name, index) => {
-        return {
-          Name: name,
-          Color: this.color[index],
-          Id: index,
-        };
-      });
-      this.field = {
-        dataSource: this.treeViewData,
-        id: "Id",
-        text: "Name",
-      };
-    }
-  }
 
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -298,6 +281,52 @@ export default class Scheduler extends SampleBase {
     console.log(args.newText);
   }
 
+  deleteModules = (index) => {
+    const newModCode = this.state.modCode.slice();
+    const removed = newModCode.splice(index, 1);
+    this.setState({ modCode: newModCode }, () => {
+      this.updateFire();
+    });
+  };
+
+  nodeTemplate = (data) => {
+    return (
+      <div>
+        <div className="treeviewdiv">
+          <div className="textcontent">
+            <span className="treeName">{data.Name}</span>
+          </div>
+          <div className="countcontainer">
+            <button
+              className="e-icons e-delete"
+              onClick={(data) => this.deleteModules(data.Id)}
+            >
+              delete
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  componentDidUpdate(prevState) {
+    if (prevState.modCode !== this.state.modCode) {
+      console.log(this.state.modCode);
+      this.treeViewData = this.state.modCode.map((name, index) => {
+        return {
+          Name: name,
+          Color: this.color[index],
+          Id: index,
+        };
+      });
+      this.field = {
+        dataSource: this.treeViewData,
+        id: "Id",
+        text: "Name",
+      };
+    }
+  }
+
   editorWindowTemplate(props: any): JSX.Element {
     return (
       <table className="custom-event-editor">
@@ -383,7 +412,7 @@ export default class Scheduler extends SampleBase {
 
   render() {
     console.log(this.state.modCode);
-    console.log(this.treeViewData[0]);
+    console.log(this.treeViewData);
     // this.treeViewData = this.state.modCode.map((name, index) => {
     //   return {
     //     Name: name,
@@ -459,8 +488,8 @@ export default class Scheduler extends SampleBase {
             allowDragAndDrop={true}
             allowEditing={true}
             nodeDragStop={this.onTreeDragStop.bind(this)}
-            //nodeEditing={this.setText.bind(this)}
             nodeEdited={this.edit.bind(this)}
+            nodeTemplate={this.nodeTemplate}
             //nodeSelected={this.onNodeSelected.bind(this)}
             //dataBound={this.dataBound}
           />

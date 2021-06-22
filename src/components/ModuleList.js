@@ -7,20 +7,32 @@ import { TreeViewComponent } from "@syncfusion/ej2-react-navigations";
 export default class ModuleList extends React.Component {
   constructor(props) {
     super(props);
-    this.modules = this.props.modules.reduce(function (s, a) {
-      s.push({ Name: a });
-      return s;
-    }, []);
-
-    this.field = {
-      dataSource: this.modules,
-      //id: "Color",
-      text: "Name",
-    };
+    // this.modules = this.props.modules.reduce(function (s, a) {
+    //   s.push({ Name: a });
+    //   return s;
+    // }, []);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    console.log(prevProps);
+    console.log(prevState);
+  }
+
+  modules = this.props.modules.map((name) => {
+    return {
+      Name: name,
+      //Color: this.color[index],
+    };
+  });
+
+  field = {
+    dataSource: this.modules,
+    //id: "Color",
+    text: "Name",
+  };
+
   onTreeDragStop(args: DragAndDropEventArgs): void {
-    let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
+    let cellData: CellClickEventArgs = this.props.scheduleObj.getCellDetails(
       args.target
     );
     let eventData: { [key: string]: Object } = {
@@ -29,7 +41,7 @@ export default class ModuleList extends React.Component {
       EndTime: cellData.endTime,
       IsAllDay: cellData.isAllDay,
     };
-    this.scheduleObj.openEditor(eventData, "Add", true);
+    this.props.scheduleObj.openEditor(eventData, "Add", true);
   }
 
   render() {

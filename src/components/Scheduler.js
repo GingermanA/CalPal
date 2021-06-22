@@ -31,8 +31,8 @@ import {
 } from "@syncfusion/ej2-react-navigations";
 import "./Scheduler.css";
 
-import ModuleManager from "./ModuleManager";
-import ModuleList from "./ModuleList";
+//import ModuleManager from "./ModuleManager";
+//import ModuleList from "./ModuleList";
 
 export default class Scheduler extends SampleBase {
   // treeViewData: { [key: string]: Object }[] = [
@@ -57,15 +57,13 @@ export default class Scheduler extends SampleBase {
 
   treeViewData: { [key: string]: Object }[] = [];
   field: Object = {};
-  //field: Object = { dataSource: this.treeViewData, id: "Color", text: "Name", };
-  //modules: Array[] = [];
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
       args.target
     );
     let eventData: { [key: string]: Object } = {
-      Subject: args.draggedNodeData.text,
+      Module: args.draggedNodeData.text,
       StartTime: cellData.startTime,
       EndTime: cellData.endTime,
       IsAllDay: cellData.isAllDay,
@@ -77,7 +75,9 @@ export default class Scheduler extends SampleBase {
     super(...arguments);
     this.state = {
       modCode: [],
+      //treeViewData: [],
       newMod: "",
+      text: "",
     };
     //this.state = { module: "" };
     const uid = fire.auth().currentUser?.uid;
@@ -173,6 +173,24 @@ export default class Scheduler extends SampleBase {
     this.modsRef.set({ modCode: this.state.modCode });
   };
 
+  componentDidUpdate(prevState) {
+    if (prevState.modCode !== this.state.modCode) {
+      console.log(this.state.modCode);
+      this.treeViewData = this.state.modCode.map((name, index) => {
+        return {
+          Name: name,
+          Color: this.color[index],
+          Id: index,
+        };
+      });
+      this.field = {
+        dataSource: this.treeViewData,
+        id: "Id",
+        text: "Name",
+      };
+    }
+  }
+
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
@@ -257,12 +275,25 @@ export default class Scheduler extends SampleBase {
   }
 
   onEventRendered(args) {
-    console.log(this.treeViewData);
+    //console.log(this.treeViewData);
     for (let i = 0; i < this.treeViewData.length; i++) {
       if (args.data.Module === this.treeViewData[i].Name) {
         args.element.style.backgroundColor = this.treeViewData[i].Color;
       }
     }
+  }
+
+  edit(args) {
+    //var mods = this.state.modCode
+    for (let i = 0; i < this.state.modCode.length; i++) {
+      if (this.state.modCode[i] === args.oldText) {
+        this.state.modCode[i] = args.newText;
+      }
+    }
+    this.updateFire();
+    console.log(args.oldText);
+    console.log(args.newText);
+    this.render();
   }
 
   editorWindowTemplate(props: any): JSX.Element {
@@ -349,20 +380,20 @@ export default class Scheduler extends SampleBase {
   }
 
   render() {
-    console.log(this.treeViewData);
     console.log(this.state.modCode);
-    this.treeViewData = this.state.modCode.map((name, index) => {
-      return {
-        Name: name,
-        Color: this.color[index],
-      };
-    });
-    console.log(this.treeViewData);
-    this.field = {
-      dataSource: this.treeViewData,
-      //id: "Color",
-      text: "Name",
-    };
+    console.log(this.treeViewData[0]);
+    // this.treeViewData = this.state.modCode.map((name, index) => {
+    //   return {
+    //     Name: name,
+    //     Color: this.color[index],
+    //   };
+    // });
+    // console.log(this.treeViewData);
+    // this.field = {
+    //   dataSource: this.treeViewData,
+    //   //id: "Color",
+    //   text: "Name",
+    // };
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
@@ -424,7 +455,12 @@ export default class Scheduler extends SampleBase {
           <TreeViewComponent
             fields={this.field}
             allowDragAndDrop={true}
+            allowEditing={true}
             nodeDragStop={this.onTreeDragStop.bind(this)}
+            //nodeEditing={this.setText.bind(this)}
+            nodeEdited={this.edit.bind(this)}
+            //nodeSelected={this.onNodeSelected.bind(this)}
+            //dataBound={this.dataBound}
           />
         </div>
       </div>

@@ -105,7 +105,7 @@ export default class Scheduler extends SampleBase {
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
         } catch (err) {
-          console.log(this.test);
+          // console.log(this.test);
         }
       });
 
@@ -120,38 +120,16 @@ export default class Scheduler extends SampleBase {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          console.log("if case is happening");
-          //console.log(doc.data().modCode);
           this.setState({ modCode: doc.data().modCode }, () => {
             this.addModule();
           });
-          console.log(this.state.modCode);
-          //this.state.modCode = mods;
         } else {
-          console.log("else case is happening");
-          // const mods = [];
-          // this.state.modCode = mods;
         }
       })
       .catch((error) => {
         console.log("error is caught");
       });
-
-    //console.log(this.state.modCode);
   }
-
-  // onTreeDragStop(args: DragAndDropEventArgs): void {
-  //   let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
-  //     args.target
-  //   );
-  //   let eventData: { [key: string]: Object } = {
-  //     Subject: args.draggedNodeData.text,
-  //     StartTime: cellData.startTime,
-  //     EndTime: cellData.endTime,
-  //     IsAllDay: cellData.isAllDay,
-  //   };
-  //   this.scheduleObj.openEditor(eventData, "Add", true);
-  // }
 
   addModule = (text) => {
     this.setState({ newMod: text });
@@ -174,6 +152,37 @@ export default class Scheduler extends SampleBase {
     this.forceUpdate();
   };
 
+  loadEdits() {
+    const uid = fire.auth().currentUser?.uid;
+    fire
+      .firestore()
+      .collection("Users")
+      .doc(uid)
+      .collection("Events")
+      .get()
+      .then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => doc.data());
+        this.test = data;
+        this.data = fire
+          .firestore()
+          .collection("Users")
+          .doc(uid)
+          .collection("Events");
+        let length = this.test.length;
+        for (let i = 0; i < length; i++) {
+          let endTime = this.test[i].EndTime.seconds.toString() + "000";
+          let srtTime = this.test[i].StartTime.seconds.toString() + "000";
+          this.test[i].StartTime = new Date(parseInt(srtTime));
+          this.test[i].EndTime = new Date(parseInt(endTime));
+        }
+        try {
+          this.scheduleObj.eventSettings.dataSource = this.test;
+        } catch (err) {
+          // console.log(this.test);
+        }
+      });
+  }
+
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
@@ -189,31 +198,39 @@ export default class Scheduler extends SampleBase {
       try {
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Subject: args.changedRecords[0].Subject });
+          .update({ Subject: args.changedRecords[0].Subject })
+          .then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Module: args.changedRecords[0].Module });
+          .update({ Module: args.changedRecords[0].Module })
+          .then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Type: args.changedRecords[0].Type });
+          .update({ Type: args.changedRecords[0].Type })
+          .then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Location: args.changedRecords[0].Location });
+          .update({ Location: args.changedRecords[0].Location })
+          .then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ EndTime: args.changedRecords[0].EndTime });
+          .update({ EndTime: args.changedRecords[0].EndTime })
+          .then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ StartTime: args.changedRecords[0].StartTime });
+          .update({ StartTime: args.changedRecords[0].StartTime })
+          .then(() => this.loadEdits());
       } catch (err) {
         if (args.changedRecords[0].Location == null) {
           this.data
             .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" });
+            .update({ Location: "" })
+            .then(() => this.loadEdits());
         } else {
           this.data
             .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" });
+            .update({ Location: "" })
+            .then(() => this.loadEdits());
         }
       }
     } else if (args.requestType === "eventCreate") {
@@ -232,7 +249,6 @@ export default class Scheduler extends SampleBase {
         this.GuidFun()
       ).toLowerCase();
       args.data[0].DocumentId = guid.toString();
-
       const argsData = args.data[0];
       if (argsData.Location == null) {
         argsData.Location = "";
@@ -243,17 +259,23 @@ export default class Scheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      this.data.doc(guid).set({
-        Subject: argsData.Subject,
-        DocumentId: argsData.DocumentId,
-        EndTime: argsData.EndTime,
-        Location: argsData.Location,
-        Module: argsData.Module,
-        StartTime: argsData.StartTime,
-        Type: argsData.Type,
-      });
+      this.data
+        .doc(guid)
+        .set({
+          Subject: argsData.Subject,
+          DocumentId: argsData.DocumentId,
+          EndTime: argsData.EndTime,
+          Location: argsData.Location,
+          Module: argsData.Module,
+          StartTime: argsData.StartTime,
+          Type: argsData.Type,
+        })
+        .then(() => this.loadEdits());
     } else if (args.requestType === "eventRemove") {
-      this.data.doc(args.deletedRecords[0].DocumentId).delete();
+      this.data
+        .doc(args.deletedRecords[0].DocumentId)
+        .delete()
+        .then(() => this.loadEdits());
     }
   }
 
@@ -411,8 +433,8 @@ export default class Scheduler extends SampleBase {
   }
 
   render() {
-    console.log(this.state.modCode);
-    console.log(this.treeViewData);
+    // console.log(this.state.modCode);
+    // console.log(this.treeViewData);
     // this.treeViewData = this.state.modCode.map((name, index) => {
     //   return {
     //     Name: name,
@@ -479,7 +501,7 @@ export default class Scheduler extends SampleBase {
             className="btn btn-md btn-primary sign-in-button"
             onClick={this.setModules}
           >
-            Post
+            Add Module
           </button>
         </div>
         <div className="treeview-component">

@@ -25,7 +25,6 @@ const Login = ({ history }) => {
 
   if (currentUser) {
     return <Redirect to="/scheduler" />;
-    //return <Redirect to="/calendar" />;
   }
 
   return (

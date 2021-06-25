@@ -11,7 +11,7 @@ const SignUp = ({ history }) => {
         await fire
           .auth()
           .createUserWithEmailAndPassword(email.value, password.value);
-        history.push("/calendar");
+        history.push("/scheduler");
       } catch (error) {
         alert(error);
       }

@@ -151,36 +151,68 @@ export default class Scheduler extends SampleBase {
   //   .doc(args.changedRecords[0].DocumentId)
   //   .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
 
+  loadEdits() {
+    const uid = fire.auth().currentUser?.uid;
+    fire
+      .firestore()
+      .collection("Users")
+      .doc(uid)
+      .collection("Events")
+      .get()
+      .then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => doc.data());
+        this.test = data;
+        this.data = fire
+          .firestore()
+          .collection("Users")
+          .doc(uid)
+          .collection("Events");
+        let length = this.test.length;
+        for (let i = 0; i < length; i++) {
+          let endTime = this.test[i].EndTime.seconds.toString() + "000";
+          let srtTime = this.test[i].StartTime.seconds.toString() + "000";
+          this.test[i].StartTime = new Date(parseInt(srtTime));
+          this.test[i].EndTime = new Date(parseInt(endTime));
+        }
+        try {
+          this.scheduleObj.eventSettings.dataSource = this.test;
+        } catch (err) {
+          // console.log(this.test);
+        }
+      });
+  }
+
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
       try {
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Subject: args.changedRecords[0].Subject });
+          .update({ Subject: args.changedRecords[0].Subject })
+          .then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Module: args.changedRecords[0].Module });
+          .update({ Module: args.changedRecords[0].Module }).then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Type: args.changedRecords[0].Type });
+          .update({ Type: args.changedRecords[0].Type }).then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Location: args.changedRecords[0].Location });
+          .update({ Location: args.changedRecords[0].Location }).then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ EndTime: args.changedRecords[0].EndTime });
+          .update({ EndTime: args.changedRecords[0].EndTime }).then(() => this.loadEdits());
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ StartTime: args.changedRecords[0].StartTime });
+          .update({ StartTime: args.changedRecords[0].StartTime }).then(() => this.loadEdits());
       } catch (err) {
         if (args.changedRecords[0].Location == null) {
           this.data
             .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" });
+            .update({ Location: "" }).then(() => this.loadEdits());
         } else {
           this.data
             .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" });
+            .update({ Location: "" }).then(() => this.loadEdits());
         }
       }
     } else if (args.requestType === "eventCreate") {
@@ -220,7 +252,7 @@ export default class Scheduler extends SampleBase {
         Type: argsData.Type,
       });
     } else if (args.requestType === "eventRemove") {
-      this.data.doc(args.deletedRecords[0].DocumentId).delete();
+      this.data.doc(args.deletedRecords[0].DocumentId).delete().then(() => this.loadEdits());
     }
   }
 

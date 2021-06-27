@@ -99,17 +99,11 @@ export default class Scheduler extends SampleBase {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          console.log("if case is happening");
           //console.log(doc.data().modCode);
           this.setState({ modCode: doc.data().modCode }, () => {
             this.addModule();
           });
-          console.log(this.state.modCode);
-          //this.state.modCode = mods;
         } else {
-          console.log("else case is happening");
-          // const mods = [];
-          // this.state.modCode = mods;
         }
       })
       .catch((error) => {
@@ -185,35 +179,41 @@ export default class Scheduler extends SampleBase {
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
       try {
+        console.log(args.changedRecords[0]);
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Subject: args.changedRecords[0].Subject })
-          .then(() => this.loadEdits());
+          .update({ Subject: args.changedRecords[0].Subject });
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Module: args.changedRecords[0].Module }).then(() => this.loadEdits());
+          .update({ Module: args.changedRecords[0].Module });
         this.data
           .doc(args.changedRecords[0].DocumentId)
-          .update({ Type: args.changedRecords[0].Type }).then(() => this.loadEdits());
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ Location: args.changedRecords[0].Location }).then(() => this.loadEdits());
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ EndTime: args.changedRecords[0].EndTime }).then(() => this.loadEdits());
-        this.data
-          .doc(args.changedRecords[0].DocumentId)
-          .update({ StartTime: args.changedRecords[0].StartTime }).then(() => this.loadEdits());
-      } catch (err) {
-        if (args.changedRecords[0].Location == null) {
+          .update({ Type: args.changedRecords[0].Type });
+        if (args.changedRecords[0].Location != null) {
           this.data
             .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" }).then(() => this.loadEdits());
-        } else {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" }).then(() => this.loadEdits());
+            .update({ Location: args.changedRecords[0].Location });
         }
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ EndTime: args.changedRecords[0].EndTime });
+        this.data
+          .doc(args.changedRecords[0].DocumentId)
+          .update({ StartTime: args.changedRecords[0].StartTime });
+        console.log(args.changedRecords[0]);
+        this.loadEdits();
+      } catch (err) {
+        // if (args.changedRecords[0].Location == null) {
+        //   this.data
+        //     .doc(args.changedRecords[0].DocumentId)
+        //     .update({ Location: "" })
+        //     .then(() => this.loadEdits());
+        // } else {
+        //   this.data
+        //     .doc(args.changedRecords[0].DocumentId)
+        //     .update({ Location: "" })
+        //     .then(() => this.loadEdits());
+        // }
       }
     } else if (args.requestType === "eventCreate") {
       let guid = (
@@ -252,7 +252,10 @@ export default class Scheduler extends SampleBase {
         Type: argsData.Type,
       });
     } else if (args.requestType === "eventRemove") {
-      this.data.doc(args.deletedRecords[0].DocumentId).delete().then(() => this.loadEdits());
+      this.data
+        .doc(args.deletedRecords[0].DocumentId)
+        .delete()
+        .then(() => this.loadEdits());
     }
   }
 
@@ -309,10 +312,9 @@ export default class Scheduler extends SampleBase {
             <span className="treeName">{data.Name}</span>
           </div>
           <div className="countcontainer">
-            <button
-              className="e-icons e-delete"
-              onClick={(data) => this.deleteModules(data.Id)}
-            ></button>
+            <button onClick={(data) => this.deleteModules(data.Id)}>
+              Remove
+            </button>
           </div>
         </div>
       </div>

@@ -29,8 +29,8 @@ function TaskManager(props) {
       ...tasks,
       {
         description: description,
-        isComplete: false
-      }
+        isComplete: false,
+      },
     ];
     setTasks(newTasks);
     console.log(newTasks);
@@ -38,29 +38,25 @@ function TaskManager(props) {
 
   return (
     <>
-      
-        <h2>Add Tasks</h2>
-        <form className={styles.addTaskForm} onSubmit={handleAddTask}>
-          <TextField
-            className={styles.descTextField}
-            label="Description"
-            value={newTaskText}
-            onChange={(event) => setNewTaskText(event.target.value)}
-          />
-          <Button type="submit" variant="contained" color="primary">
-            Add
-          </Button>
-        </form>
-      
+      <h2>Add Tasks</h2>
+      <form className={styles.addTaskForm} onSubmit={handleAddTask}>
+        <TextField
+          className={styles.descTextField}
+          label="Description"
+          value={newTaskText}
+          onChange={(event) => setNewTaskText(event.target.value)}
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Add
+        </Button>
+      </form>
 
-      
-        <h2>Task List</h2>
-        {tasks.length > 0 ? (
-          <TaskList tasks={tasks} setTasks={setTasks} />
-        ) : (
-          <p>No tasks yet! Add one above!</p>
-        )}
-      
+      <h2>Task List</h2>
+      {tasks.length > 0 ? (
+        <TaskList tasks={tasks} setTasks={setTasks} />
+      ) : (
+        <p>No tasks yet! Add one above!</p>
+      )}
     </>
   );
 }
@@ -74,9 +70,9 @@ function TaskList(props) {
       ...tasks.slice(0, toToggleTaskIndex),
       {
         description: toToggleTask.description,
-        isComplete: !toToggleTask.isComplete
+        isComplete: !toToggleTask.isComplete,
       },
-      ...tasks.slice(toToggleTaskIndex + 1)
+      ...tasks.slice(toToggleTaskIndex + 1),
     ];
     // We set new tasks in such a complex way so that we maintain immutability
     // Read this article to find out more:
@@ -108,7 +104,7 @@ function TaskList(props) {
                 checked={task.isComplete}
                 onChange={() => handleTaskCompletionToggled(task, index)}
                 inputProps={{
-                  "aria-label": `checkbox that determines if task ${index} is done`
+                  "aria-label": `checkbox that determines if task ${index} is done`,
                 }}
               />
             </td>

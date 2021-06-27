@@ -22,37 +22,34 @@
   float: right;
   width: 20%;
 }
-    .tree-control-wrapper {
-        max-width: 320px;
-        margin: auto;
-        border: 1px solid #dddddd;
-        border-radius: 3px;
-    }
-    .template-tree.e-treeview .e-list-text {
-        width: 100%;
-    }
-    .template-tree.e-treeview .textcontent {
-        float: left;
-    }
-    .template-tree.e-treeview.e-rtl .textcontent {
-        float: right;
-    }
-    .template-tree.e-treeview .countcontainer {
-        float: right;
-        margin-right: 5px
-    }
-    .template-tree.e-treeview.e-rtl .countcontainer {
-        float: left;
-        margin-left: 5px
-    }
-    .material .treeCount.e-badge {
-        vertical-align: middle;
-    }
-    .e-delete:before{
-        content: '\e932';
-    }
+.tree-control-wrapper {
+  max-width: 320px;
+  margin: auto;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+}
+.template-tree.e-treeview .e-list-text {
+  width: 100%;
+}
+.template-tree.e-treeview .textcontent {
+  float: left;
+}
+.template-tree.e-treeview.e-rtl .textcontent {
+  float: right;
+}
+.template-tree.e-treeview .countcontainer {
+  float: right;
+  margin-right: 5px;
+}
+.template-tree.e-treeview.e-rtl .countcontainer {
+  float: left;
+  margin-left: 5px;
+}
+.material .treeCount.e-badge {
+  vertical-align: middle;
+}
 
-    /* If you want perform any operation using icons. set the pointer events as auto. It triggers the click event for icon.*/
-    .e-treeview.e-fullrow-wrap .e-text-content {
-      pointer-events: auto;
-    }
+/* If you want perform any operation using icons. set the pointer events as auto. It triggers the click event for icon.*/
+.e-treeview.e-fullrow-wrap .e-text-content {
+  pointer-events: auto;
+}

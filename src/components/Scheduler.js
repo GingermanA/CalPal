@@ -308,6 +308,7 @@ export default class Scheduler extends SampleBase {
     this.setState({ modCode: newModCode }, () => {
       this.updateFire();
     });
+    this.loadEdits();
   }
 
   deleteModules = (index) => {
@@ -317,6 +318,7 @@ export default class Scheduler extends SampleBase {
     this.setState({ modCode: newModCode }, () => {
       this.updateFire();
     });
+    this.loadEdits();
   };
 
   nodeTemplate = (data) => {

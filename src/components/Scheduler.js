@@ -111,6 +111,7 @@ export default class Scheduler extends SampleBase {
             id: "Id",
             text: "Name",
           };
+
           this.setState({ modCode: doc.data().modCode }, () => {
             this.addModule();
           });
@@ -203,10 +204,6 @@ export default class Scheduler extends SampleBase {
           this.data
             .doc(args.changedRecords[0].DocumentId)
             .update({ Location: args.changedRecords[0].Location });
-        } else {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: "" });
         }
         this.data
           .doc(args.changedRecords[0].DocumentId)
@@ -330,7 +327,9 @@ export default class Scheduler extends SampleBase {
             <span className="treeName">{data.Name}</span>
           </div>
           <div className="countcontainer">
-            <button onClick={this.deleteModules.bind(this, data.Id)}></button>
+            <button onClick={this.deleteModules.bind(this, data.Id)}>
+              Remove
+            </button>
           </div>
         </div>
       </div>

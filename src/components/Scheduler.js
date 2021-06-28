@@ -99,7 +99,18 @@ export default class Scheduler extends SampleBase {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          //console.log(doc.data().modCode);
+          this.treeViewData = doc.data().modCode.map((name, index) => {
+            return {
+              Name: name,
+              Color: this.color[index],
+              Id: index,
+            };
+          });
+          this.field = {
+            dataSource: this.treeViewData,
+            id: "Id",
+            text: "Name",
+          };
           this.setState({ modCode: doc.data().modCode }, () => {
             this.addModule();
           });
@@ -152,8 +163,7 @@ export default class Scheduler extends SampleBase {
       .collection("Users")
       .doc(uid)
       .collection("Events")
-      .get()
-      .then((querySnapshot) => {
+      .onSnapshot((querySnapshot) => {
         const data = querySnapshot.docs.map((doc) => doc.data());
         this.test = data;
         this.data = fire
@@ -297,6 +307,7 @@ export default class Scheduler extends SampleBase {
   }
 
   deleteModules = (index) => {
+    console.log(index);
     const newModCode = this.state.modCode.slice();
     const removed = newModCode.splice(index, 1);
     this.setState({ modCode: newModCode }, () => {
@@ -305,6 +316,7 @@ export default class Scheduler extends SampleBase {
   };
 
   nodeTemplate = (data) => {
+    console.log(data);
     return (
       <div>
         <div className="treeviewdiv">
@@ -312,7 +324,7 @@ export default class Scheduler extends SampleBase {
             <span className="treeName">{data.Name}</span>
           </div>
           <div className="countcontainer">
-            <button onClick={(data) => this.deleteModules(data.Id)}>
+            <button onClick={this.deleteModules.bind(this, data.Id)}>
               Remove
             </button>
           </div>
@@ -424,7 +436,7 @@ export default class Scheduler extends SampleBase {
 
   render() {
     //console.log(this.state.modCode);
-    //console.log(this.treeViewData);
+    console.log(this.treeViewData[0]);
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">

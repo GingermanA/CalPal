@@ -440,7 +440,7 @@ export default class Scheduler extends SampleBase {
                 id="Module"
                 className="e-field"
                 //dataSource={["CS1010", "IEM", "MA1521"]}
-                dataSource={this.state.modCode}
+                dataSource={this.treeViewData}
                 fields={this.field}
                 placeholder="Select module"
                 data-name="Module"

@@ -99,13 +99,16 @@ export default class Scheduler extends SampleBase {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          this.treeViewData = doc.data().modCode.map((name, index) => {
-            return {
-              Name: name,
-              Color: this.color[index],
-              Id: index,
-            };
-          });
+          this.treeViewData = doc
+            .data()
+            .modCode.map((name, index) => {
+              return {
+                Name: name,
+                Color: this.color[index],
+                Id: index,
+              };
+            })
+            .filter((mod) => mod.Name !== "");
           this.field = {
             dataSource: this.treeViewData,
             id: "Id",
@@ -130,12 +133,28 @@ export default class Scheduler extends SampleBase {
 
   setModules = () => {
     if (this.state.newMod !== "") {
-      this.setState(
-        { modCode: [...this.state.modCode, this.state.newMod] },
-        () => {
-          this.updateFire();
+      const newModCode = this.state.modCode.slice();
+      var replaced = false;
+      for (var i = 0; i < newModCode.length; i++) {
+        if (newModCode[i] === "") {
+          newModCode.splice(i, 1, this.state.newMod);
+          replaced = true;
+          break;
         }
-      );
+      }
+
+      if (replaced) {
+        this.setState({ modCode: newModCode }, () => {
+          this.updateFire();
+        });
+      } else {
+        this.setState(
+          { modCode: [...this.state.modCode, this.state.newMod] },
+          () => {
+            this.updateFire();
+          }
+        );
+      }
     }
   };
 
@@ -273,6 +292,8 @@ export default class Scheduler extends SampleBase {
   //Color coding of Events based on Modules
 
   onEventRendered(args) {
+    console.log(this.state.modCode);
+    console.log(this.treeViewData);
     for (let i = 0; i < this.treeViewData.length; i++) {
       if (args.data.Module === this.treeViewData[i].Name) {
         args.element.style.backgroundColor = this.treeViewData[i].Color;
@@ -309,12 +330,26 @@ export default class Scheduler extends SampleBase {
   }
 
   deleteModules = (index) => {
-    console.log(index);
+    //console.log(index);
     const newModCode = this.state.modCode.slice();
-    const removed = newModCode.splice(index, 1);
+    newModCode.splice(index, 1, "");
     this.setState({ modCode: newModCode }, () => {
       this.updateFire();
     });
+    this.treeViewData = newModCode
+      .map((name, index) => {
+        return {
+          Name: name,
+          Color: this.color[index],
+          Id: index,
+        };
+      })
+      .filter((mod) => mod.Name !== "");
+    this.field = {
+      dataSource: this.treeViewData,
+      id: "Id",
+      text: "Name",
+    };
     this.loadEdits();
   };
 
@@ -337,13 +372,23 @@ export default class Scheduler extends SampleBase {
   componentDidUpdate(prevState) {
     if (prevState.modCode !== this.state.modCode) {
       console.log(this.state.modCode);
-      this.treeViewData = this.state.modCode.map((name, index) => {
-        return {
-          Name: name,
-          Color: this.color[index],
-          Id: index,
-        };
-      });
+      // const newModCode = this.state.modCode.slice();
+      // for (var i = 0; i < newModCode.length; i++) {
+      //   if (newModCode[i] === "") {
+      //     newModCode.splice(i, 1);
+      //     i--;
+      //   }
+      // }
+      this.treeViewData = this.state.modCode
+        .map((name, index) => {
+          return {
+            Name: name,
+            Color: this.color[index],
+            Id: index,
+          };
+        })
+        .filter((mod) => mod.Name !== "");
+      console.log(this.treeViewData);
       this.field = {
         dataSource: this.treeViewData,
         id: "Id",
@@ -437,7 +482,7 @@ export default class Scheduler extends SampleBase {
 
   render() {
     //console.log(this.state.modCode);
-    console.log(this.treeViewData[0]);
+    //console.log(this.treeViewData);
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">

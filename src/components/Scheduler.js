@@ -14,7 +14,11 @@ import {
   Resize,
   DragAndDrop,
   CellClickEventArgs,
+  RecurrenceEditorComponent,
 } from "@syncfusion/ej2-react-schedule";
+
+import DeleteIcon from "@material-ui/icons/Delete";
+import Button from "@material-ui/core/Button";
 
 //import { extend } from "@syncfusion/ej2-base";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
@@ -36,10 +40,10 @@ import "./Scheduler.css";
 
 export default class Scheduler extends SampleBase {
   color: Array[] = [
-    "red",
-    "blue",
-    "black",
-    "green",
+    "#E83B3B",
+    "#2D53DE",
+    "#6F18D1",
+    "#119925",
     "yellow",
     "orange",
     "purple",
@@ -132,6 +136,7 @@ export default class Scheduler extends SampleBase {
   };
 
   setModules = () => {
+    console.log(this.state);
     if (this.state.newMod !== "") {
       const newModCode = this.state.modCode.slice();
       var replaced = false;
@@ -224,6 +229,11 @@ export default class Scheduler extends SampleBase {
             .doc(args.changedRecords[0].DocumentId)
             .update({ Location: args.changedRecords[0].Location });
         }
+        if (args.changedRecords[0].RecurrenceRule != null) {
+          this.data
+            .doc(args.changedRecords[0].DocumentId)
+            .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
+        }
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ EndTime: args.changedRecords[0].EndTime });
@@ -231,7 +241,6 @@ export default class Scheduler extends SampleBase {
           .doc(args.changedRecords[0].DocumentId)
           .update({ StartTime: args.changedRecords[0].StartTime });
         console.log(args.changedRecords[0]);
-        this.loadEdits();
       } catch (err) {
         // if (args.changedRecords[0].Location == null) {
         //   this.data
@@ -272,6 +281,9 @@ export default class Scheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
+      if (argsData.RecurrenceRule == null) {
+        argsData.RecurrenceRule = null;
+      }
       this.data.doc(guid).set({
         Subject: argsData.Subject,
         DocumentId: argsData.DocumentId,
@@ -280,13 +292,16 @@ export default class Scheduler extends SampleBase {
         Module: argsData.Module,
         StartTime: argsData.StartTime,
         Type: argsData.Type,
+        RecurrenceRule: argsData.RecurrenceRule,
       });
     } else if (args.requestType === "eventRemove") {
-      this.data
-        .doc(args.deletedRecords[0].DocumentId)
-        .delete()
-        .then(() => this.loadEdits());
+      if (args.changedRecords === []) {
+        this.data.doc(args.changedRecords[0].DocumentId).delete();
+      } else {
+        this.data.doc(args.deletedRecords[0].DocumentId).delete();
+      }
     }
+    this.loadEdits();
   }
 
   //Color coding of Events based on Modules
@@ -304,16 +319,20 @@ export default class Scheduler extends SampleBase {
   //Other functionalities
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
-    let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
-      args.target
-    );
-    let eventData: { [key: string]: Object } = {
-      Module: args.draggedNodeData.text,
-      StartTime: cellData.startTime,
-      EndTime: cellData.endTime,
-      IsAllDay: cellData.isAllDay,
-    };
-    this.scheduleObj.openEditor(eventData, "Add", true);
+    try {
+      let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
+        args.target
+      );
+      let eventData: { [key: string]: Object } = {
+        Module: args.draggedNodeData.text,
+        StartTime: cellData.startTime,
+        EndTime: cellData.endTime,
+        IsAllDay: cellData.isAllDay,
+      };
+      this.scheduleObj.openEditor(eventData, "Add", true);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   editModules(args) {
@@ -354,15 +373,17 @@ export default class Scheduler extends SampleBase {
   };
 
   nodeTemplate = (data) => {
-    console.log(data);
+    //console.log(data);
     return (
       <div>
         <div className="treeviewdiv">
           <div className="textcontent">
             <span className="treeName">{data.Name}</span>
-          </div>
-          <div className="countcontainer">
-            <button onClick={this.deleteModules.bind(this, data.Id)}></button>
+            <Button
+              onClick={this.deleteModules.bind(this, data.Id)}
+              startIcon={<DeleteIcon />}
+              color="secondary"
+            ></Button>
           </div>
         </div>
       </div>
@@ -475,6 +496,15 @@ export default class Scheduler extends SampleBase {
               ></DateTimePickerComponent>
             </td>
           </tr>
+          <tr>
+            <td className="e-textlabel">Recurrence</td>
+            <td>
+              <RecurrenceEditorComponent
+                id="RecurrenceEditor"
+                ref={(recurrObject) => (this.recurrObject = recurrObject)}
+              ></RecurrenceEditorComponent>
+            </td>
+          </tr>
         </tbody>
       </table>
     );
@@ -504,7 +534,6 @@ export default class Scheduler extends SampleBase {
                 <ViewDirective option="Week" />
                 <ViewDirective option="WorkWeek" />
                 <ViewDirective option="Month" />
-                <ViewDirective option="Agenda" />
               </ViewsDirective>
 
               <Inject
@@ -521,7 +550,7 @@ export default class Scheduler extends SampleBase {
             </ScheduleComponent>
           </div>
         </div>
-        <div className="treeview-title-container">Modules</div>
+        <div>Add modules here</div>
         {/* <div className="treeview-form">
           <ModuleManager />
         </div> */}
@@ -532,12 +561,14 @@ export default class Scheduler extends SampleBase {
             //onChange={(event) => this.setState({ newMod: event.target.value })}
             onChange={(e) => this.addModule(e.target.value)}
           />
+        </div>
+        <div>
           <button
             type="submit"
             className="btn btn-md btn-primary sign-in-button"
             onClick={this.setModules}
           >
-            Post
+            Add
           </button>
         </div>
         <div className="treeview-component">

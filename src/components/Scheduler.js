@@ -327,9 +327,7 @@ export default class Scheduler extends SampleBase {
             <span className="treeName">{data.Name}</span>
           </div>
           <div className="countcontainer">
-            <button onClick={this.deleteModules.bind(this, data.Id)}>
-              Remove
-            </button>
+            <button onClick={this.deleteModules.bind(this, data.Id)}></button>
           </div>
         </div>
       </div>

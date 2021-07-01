@@ -499,7 +499,7 @@ export default class Scheduler extends SampleBase {
 
   render() {
     //console.log(this.state.modCode);
-    //console.log(this.treeViewData);
+    console.log(this.treeViewData);
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">

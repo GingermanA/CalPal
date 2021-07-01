@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import TaskManager from "./TaskManager";
 import { Link } from "react-router-dom";
 
+import fire from "../fire";
+
 function PageTodolist() {
   // Task state has to be lifted to be at the App level
   // because Header also needs to know the task state to display
@@ -13,17 +15,23 @@ function PageTodolist() {
 
   function setTasks(newTasks) {
     setTasksState(newTasks);
-    // localStorage can only store strings, so for us to store objects
-    // we must first stringify the object into a JSON string
-    window.localStorage.setItem("tasks", JSON.stringify(newTasks));
   }
 
   useEffect(() => {
-    // localStorage can only store strings, so we store our array of tasks
-    // as a JSON string, and decode the JSON string into an array when we read it
-    const savedTasks = JSON.parse(window.localStorage.getItem("tasks"));
-    setTasksState(savedTasks ?? []);
-  }, []);
+    const uid = fire.auth().currentUser?.uid;
+    const db = fire.firestore();
+    const docRef = db
+    .collection("Users")
+    .doc(uid)
+    .collection("Tasks");
+    
+    docRef
+    .get()
+    .then((querySnapshot) => {
+        const data = querySnapshot.docs.map((doc) => doc.data());
+      setTasksState(data);
+        });
+  }, [])
 
   return (
     <main>

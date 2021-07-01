@@ -330,6 +330,7 @@ export default class Scheduler extends SampleBase {
         IsAllDay: cellData.isAllDay,
       };
       this.scheduleObj.openEditor(eventData, "Add", true);
+      this.deleteModules.bind(this, args.draggedNodeData.id);
     } catch (err) {
       console.log(err);
     }

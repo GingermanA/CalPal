@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-// import SimpleSelect from "./SimpleSelect";
+import { makeStyles } from "@material-ui/core/styles";
+//import InputLabel from "@material-ui/core/InputLabel";
+//import MenuItem from "@material-ui/core/MenuItem";
+//import FormHelperText from "@material-ui/core/FormHelperText";
+//import FormControl from "@material-ui/core/FormControl";
+//import Select from "@material-ui/core/Select";
+import SimpleSelect from "./SimpleSelect";
 import DatePickers from "./DatePickers";
 import "./Scheduler.css";
 //import Box from "../Box";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 function TaskManager(props) {
   const classes = useStyles();
-  const [module, setModule] = React.useState('');
+  const [module, setModule] = React.useState("");
 
   const handleChange = (event) => {
     console.log(event.target.value);
@@ -34,7 +34,12 @@ function TaskManager(props) {
   // Our tasks and setTasks is now passed down from App
   const { tasks, setTasks } = props; // tasks is an array of Objects
 
-  const [newTask, setNewTask] = useState({Title:'', Module:'', dueDate: null, Type: 'Task'});
+  const [newTask, setNewTask] = useState({
+    Title: "",
+    Module: "",
+    dueDate: null,
+    Type: "Task",
+  });
 
   function handleAddTask(event) {
     // React honours default browser behavior and the
@@ -57,22 +62,19 @@ function TaskManager(props) {
       {
         ...task,
         isComplete: false,
-        Type: 'Task',
+        //Type: "Task",
       },
     ];
     setTasks(newTasks);
     console.log(newTasks);
   }
 
-  // function handleChange(event) {
-  //   const value = event.target.value;
-  //   setNewTask({...newTask, [event.target.name]: value});
-  // }
+  const eventhandler = (data) => console.log(data);
 
   return (
     <>
       <h2>Add Tasks</h2>
-      
+
       <form className={styles.addTaskForm} onSubmit={handleAddTask}>
         <TextField
           className={styles.descTextField}
@@ -80,19 +82,9 @@ function TaskManager(props) {
           value={newTask.Title}
           // onChange={(event) => setNewTask(event.target.value)}
         />
-        <InputLabel id="demo-simple-select-label">Module</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={module}
-          onChange={handleChange}
-        ><MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
-        <DatePickers
-          value={newTask.dueDate}
-        />
+        <SimpleSelect onChange={eventhandler} />
+
+        <DatePickers value={newTask.dueDate} />
         <Button type="submit" variant="contained" color="primary">
           Add
         </Button>

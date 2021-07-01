@@ -1,26 +1,53 @@
 import React, { useState } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
-
+import { makeStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+// import SimpleSelect from "./SimpleSelect";
+import DatePickers from "./DatePickers";
+import "./Scheduler.css";
 //import Box from "../Box";
 
 import styles from "./TaskManager.module.css";
 
-function TaskManager(props) {
-  // Our tasks and setTasks is now passed down from App
-  const { tasks, setTasks } = props;
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
-  const [newTaskText, setNewTaskText] = useState("");
+function TaskManager(props) {
+  const classes = useStyles();
+  const [module, setModule] = React.useState('');
+
+  const handleChange = (event) => {
+    console.log(event.target.value);
+    setModule(event.target.value);
+  };
+  // Our tasks and setTasks is now passed down from App
+  const { tasks, setTasks } = props; // tasks is an array of Objects
+
+  const [newTask, setNewTask] = useState({Title:'', Module:'', dueDate: null, Type: 'Task'});
 
   function handleAddTask(event) {
     // React honours default browser behavior and the
     // default behaviour for a form submission is to
     // submit AND refresh the page. So we override the
     // default behaviour here as we don't want to refresh
+    console.log(event);
     event.preventDefault();
-    addTask(newTaskText);
+    addTask(newTask);
   }
 
-  function addTask(description) {
+  function addTask(task) {
+    console.log(task);
     const newTasks = [
       // the ... operator is called the spread operator
       // what we are doing is creating a brand new array of
@@ -28,29 +55,48 @@ function TaskManager(props) {
       // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
       ...tasks,
       {
-        description: description,
+        ...task,
         isComplete: false,
+        Type: 'Task',
       },
     ];
     setTasks(newTasks);
     console.log(newTasks);
   }
 
+  // function handleChange(event) {
+  //   const value = event.target.value;
+  //   setNewTask({...newTask, [event.target.name]: value});
+  // }
+
   return (
     <>
       <h2>Add Tasks</h2>
+      
       <form className={styles.addTaskForm} onSubmit={handleAddTask}>
         <TextField
           className={styles.descTextField}
-          label="Description"
-          value={newTaskText}
-          onChange={(event) => setNewTaskText(event.target.value)}
+          label="Title"
+          value={newTask.Title}
+          // onChange={(event) => setNewTask(event.target.value)}
+        />
+        <InputLabel id="demo-simple-select-label">Module</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={module}
+          onChange={handleChange}
+        ><MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+        <DatePickers
+          value={newTask.dueDate}
         />
         <Button type="submit" variant="contained" color="primary">
           Add
         </Button>
       </form>
-
       <h2>Task List</h2>
       {tasks.length > 0 ? (
         <TaskList tasks={tasks} setTasks={setTasks} />

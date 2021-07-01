@@ -35,9 +35,6 @@ import {
 } from "@syncfusion/ej2-react-navigations";
 import "./Scheduler.css";
 
-//import ModuleManager from "./ModuleManager";
-//import ModuleList from "./ModuleList";
-
 export default class Scheduler extends SampleBase {
   color: Array[] = [
     "#E83B3B",
@@ -174,12 +171,6 @@ export default class Scheduler extends SampleBase {
   GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
-  // this.data
-  //   .doc(args.changedRecords[0].DocumentId)
-  //   .update({ IsAllDay: args.changedRecords[0].IsAllDay });
-  // this.data
-  //   .doc(args.changedRecords[0].DocumentId)
-  //   .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
 
   loadEdits() {
     const uid = fire.auth().currentUser?.uid;
@@ -242,17 +233,6 @@ export default class Scheduler extends SampleBase {
           .update({ StartTime: args.changedRecords[0].StartTime });
         console.log(args.changedRecords[0]);
       } catch (err) {
-        // if (args.changedRecords[0].Location == null) {
-        //   this.data
-        //     .doc(args.changedRecords[0].DocumentId)
-        //     .update({ Location: "" })
-        //     .then(() => this.loadEdits());
-        // } else {
-        //   this.data
-        //     .doc(args.changedRecords[0].DocumentId)
-        //     .update({ Location: "" })
-        //     .then(() => this.loadEdits());
-        // }
       }
     } else if (args.requestType === "eventCreate") {
       let guid = (
@@ -293,7 +273,10 @@ export default class Scheduler extends SampleBase {
         StartTime: argsData.StartTime,
         Type: argsData.Type,
         RecurrenceRule: argsData.RecurrenceRule,
-      });
+      })
+      //this.deleteModulesByName(args.data[0].Subject);
+      // this.deleteModules(args.draggedNodeData.id);
+      ;
     } else if (args.requestType === "eventRemove") {
       if (args.changedRecords === []) {
         this.data.doc(args.changedRecords[0].DocumentId).delete();
@@ -307,8 +290,8 @@ export default class Scheduler extends SampleBase {
   //Color coding of Events based on Modules
 
   onEventRendered(args) {
-    console.log(this.state.modCode);
-    console.log(this.treeViewData);
+    // console.log(this.state.modCode);
+    // console.log(this.treeViewData);
     for (let i = 0; i < this.treeViewData.length; i++) {
       if (args.data.Module === this.treeViewData[i].Name) {
         args.element.style.backgroundColor = this.treeViewData[i].Color;
@@ -320,6 +303,7 @@ export default class Scheduler extends SampleBase {
 
   onTreeDragStop(args: DragAndDropEventArgs): void {
     try {
+      console.log(args.draggedNodeData);
       let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
         args.target
       );
@@ -329,6 +313,7 @@ export default class Scheduler extends SampleBase {
         EndTime: cellData.endTime,
         IsAllDay: cellData.isAllDay,
       };
+      console.log(eventData);
       this.scheduleObj.openEditor(eventData, "Add", true);
     } catch (err) {
       console.log(err);
@@ -372,6 +357,17 @@ export default class Scheduler extends SampleBase {
     this.loadEdits();
   };
 
+  deleteModulesByName = (name) => {
+    //console.log(index);
+    const newModCode = this.state.modCode.slice();
+    for (var i = 0; i < newModCode.length; i++) {
+      if (newModCode[i] === name) {
+        this.deleteModules(i);
+        break;
+      }
+    }
+  };
+
   nodeTemplate = (data) => {
     //console.log(data);
     return (
@@ -392,14 +388,7 @@ export default class Scheduler extends SampleBase {
 
   componentDidUpdate(prevState) {
     if (prevState.modCode !== this.state.modCode) {
-      console.log(this.state.modCode);
-      // const newModCode = this.state.modCode.slice();
-      // for (var i = 0; i < newModCode.length; i++) {
-      //   if (newModCode[i] === "") {
-      //     newModCode.splice(i, 1);
-      //     i--;
-      //   }
-      // }
+      // console.log(this.state.modCode);
       this.treeViewData = this.state.modCode
         .map((name, index) => {
           return {
@@ -409,7 +398,6 @@ export default class Scheduler extends SampleBase {
           };
         })
         .filter((mod) => mod.Name !== "");
-      console.log(this.treeViewData);
       this.field = {
         dataSource: this.treeViewData,
         id: "Id",
@@ -524,8 +512,6 @@ export default class Scheduler extends SampleBase {
               ref={(schedule) => (this.scheduleObj = schedule)}
               currentView="Month"
               actionBegin={this.onActionBegin.bind(this)}
-              //eventSettings={{ dataSource: this.test }}
-              //selectedDate={new Date(2019, 8, 27)}
               editorTemplate={this.editorWindowTemplate.bind(this)}
               eventRendered={this.onEventRendered.bind(this)}
             >
@@ -551,14 +537,10 @@ export default class Scheduler extends SampleBase {
           </div>
         </div>
         <div>Add modules here</div>
-        {/* <div className="treeview-form">
-          <ModuleManager />
-        </div> */}
         <div className="treeview-form">
           <textarea
             // value="Enter your module here!"
             className="form-control"
-            //onChange={(event) => this.setState({ newMod: event.target.value })}
             onChange={(e) => this.addModule(e.target.value)}
           />
         </div>
@@ -579,8 +561,6 @@ export default class Scheduler extends SampleBase {
             nodeDragStop={this.onTreeDragStop.bind(this)}
             nodeEdited={this.editModules.bind(this)}
             nodeTemplate={this.nodeTemplate}
-            //nodeSelected={this.onNodeSelected.bind(this)}
-            //dataBound={this.dataBound}
           />
         </div>
       </div>

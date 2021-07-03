@@ -1,5 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 import Scheduler from "./components/Scheduler";
 import PageTodolist from "./components/PageTodolist";
 import Login from "./components/Login";
@@ -11,13 +16,13 @@ const App = () => {
   return (
     <AuthProvider>
       <Router>
-        <Redirect from="/" to="/login" />
-        <div>
+        <Switch>
           <PrivateRoute exact path="/scheduler" component={Scheduler} />
           <PrivateRoute exact path="/tasks" component={PageTodolist} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signup" component={SignUp} />
-        </div>
+          <Redirect from="/" to="/login" />
+        </Switch>
       </Router>
     </AuthProvider>
   );

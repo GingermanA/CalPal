@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
+import DeleteIcon from "@material-ui/icons/Delete";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -151,7 +152,7 @@ function TaskManager(props) {
           label="Module"
         >
           {moduleList.map((mod) => (
-            <MenuItem key={mod} onClick={(event) => setModule(mod)}>
+            <MenuItem key={mod} onClick={() => setModule(mod)}>
               {mod}
             </MenuItem>
           ))}
@@ -200,7 +201,6 @@ function TaskManager(props) {
 function TaskList(props) {
   const { tasks, setTasks } = props;
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
-    console.log(event);
     event.preventDefault();
     console.log(toToggleTask);
     const newTasks = [
@@ -233,14 +233,33 @@ function TaskList(props) {
     });
   }
 
+  function deleteTask(task, index) {
+    const newTasks = [...tasks.slice(0, index), ...tasks.slice(index + 1)];
+    setTasks(newTasks);
+    const uid = fire.auth().currentUser?.uid;
+    const db = fire.firestore();
+    db.collection("Users")
+      .doc(uid)
+      .collection("Tasks")
+      .doc(task.DocumentId)
+      .delete();
+    const docRef = db.collection("Users").doc(uid).collection("Tasks");
+    docRef.get().then((querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => doc.data());
+      setTasks(data);
+    });
+  }
+
   return (
-    <table style={{ margin: "0 auto", width: "100%" }}>
+    <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
       <thead>
         <tr>
           <th>No.</th>
           <th>Task</th>
+          <th>Module</th>
           <th>Due Date</th>
           <th>Completed</th>
+          <th>Delete?</th>
         </tr>
       </thead>
       <tbody>
@@ -251,7 +270,8 @@ function TaskList(props) {
           <tr key={index}>
             <td>{index + 1}</td>
             <td>{task.Title}</td>
-            <td>{task.dueDateString}</td>
+            <td>{task.Module}</td>
+            <td>{task.dueDateString.slice(4, 21)}</td>
             <td>
               <Checkbox
                 color="primary"
@@ -263,6 +283,13 @@ function TaskList(props) {
                   "aria-label": `checkbox that determines if task ${index} is done`,
                 }}
               />
+            </td>
+            <td>
+              <Button
+                onClick={() => deleteTask(task, index)}
+                startIcon={<DeleteIcon />}
+                color="secondary"
+              ></Button>
             </td>
           </tr>
         ))}

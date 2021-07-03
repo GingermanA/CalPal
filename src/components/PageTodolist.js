@@ -20,18 +20,12 @@ function PageTodolist() {
   useEffect(() => {
     const uid = fire.auth().currentUser?.uid;
     const db = fire.firestore();
-    const docRef = db
-    .collection("Users")
-    .doc(uid)
-    .collection("Tasks");
-    
-    docRef
-    .get()
-    .then((querySnapshot) => {
-        const data = querySnapshot.docs.map((doc) => doc.data());
+    const docRef = db.collection("Users").doc(uid).collection("Tasks");
+    docRef.get().then((querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => doc.data());
       setTasksState(data);
-        });
-  }, [])
+    });
+  }, []);
 
   return (
     <main>

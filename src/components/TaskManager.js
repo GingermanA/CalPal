@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-//import InputLabel from "@material-ui/core/InputLabel";
-//import MenuItem from "@material-ui/core/MenuItem";
-//import FormHelperText from "@material-ui/core/FormHelperText";
-//import FormControl from "@material-ui/core/FormControl";
-//import Select from "@material-ui/core/Select";
-import SimpleSelect from "./SimpleSelect";
-import DatePickers from "./DatePickers";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+//import SimpleSelect from "./SimpleSelect";
+//import DatePickers from "./DatePickers";
 import "./Scheduler.css";
 //import Box from "../Box";
 
 import styles from "./TaskManager.module.css";
+import fire from "../fire";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -24,22 +25,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function TaskManager(props) {
+  const { tasks, setTasks } = props; // tasks is an array of Objects
   const classes = useStyles();
-  const [module, setModule] = React.useState("");
+  // const [newTask, setNewTask] = useState({Title:'', Module:'', dueDate: null, Type: 'Task'});
+  const [module, setModule] = useState("");
+  const [newTitleText, setNewTitleText] = useState("");
+  const [newDueDate, setNewDueDate] = useState("");
 
   const handleChange = (event) => {
     console.log(event.target.value);
     setModule(event.target.value);
   };
   // Our tasks and setTasks is now passed down from App
-  const { tasks, setTasks } = props; // tasks is an array of Objects
-
-  const [newTask, setNewTask] = useState({
-    Title: "",
-    Module: "",
-    dueDate: null,
-    Type: "Task",
-  });
 
   function handleAddTask(event) {
     // React honours default browser behavior and the
@@ -48,7 +45,16 @@ function TaskManager(props) {
     // default behaviour here as we don't want to refresh
     console.log(event);
     event.preventDefault();
-    addTask(newTask);
+    const task = {
+      Title: newTitleText,
+      Module: module,
+      dueData: newDueDate,
+      Type: "Task",
+      isComplete: false,
+    };
+    // setNewTask(task);
+    // console.log(newTask);
+    addTask(task, fire);
   }
 
   function addTask(task) {
@@ -61,8 +67,6 @@ function TaskManager(props) {
       ...tasks,
       {
         ...task,
-        isComplete: false,
-        //Type: "Task",
       },
     ];
     setTasks(newTasks);
@@ -70,6 +74,35 @@ function TaskManager(props) {
   }
 
   const eventhandler = (data) => console.log(data);
+
+  function GuidFun() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+  }
+
+  useEffect(() => {
+    const uid = fire.auth().currentUser?.uid;
+    const db = fire.firestore();
+    db.collection("Users")
+      .doc(uid)
+      .collection("Tasks")
+      .doc(
+        (
+          GuidFun() +
+          GuidFun() +
+          "-" +
+          GuidFun() +
+          "-4" +
+          GuidFun().substr(0, 3) +
+          "-" +
+          GuidFun() +
+          "-" +
+          GuidFun() +
+          GuidFun() +
+          GuidFun()
+        ).toLowerCase()
+      )
+      .set({ tasks });
+  }, [tasks]);
 
   return (
     <>
@@ -79,12 +112,24 @@ function TaskManager(props) {
         <TextField
           className={styles.descTextField}
           label="Title"
-          value={newTask.Title}
-          // onChange={(event) => setNewTask(event.target.value)}
+          value={newTitleText}
+          onChange={(event) => setNewTitleText(event.target.value)}
         />
-        <SimpleSelect onChange={eventhandler} />
-
-        <DatePickers value={newTask.dueDate} />
+        <InputLabel id="demo-simple-select-label">Module</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={module}
+          onChange={handleChange}
+        >
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+        {/* <DatePickers
+          value={newTask.dueDate}
+          onChange={(event) => setNewTask(event.target.value)}
+        /> */}
         <Button type="submit" variant="contained" color="primary">
           Add
         </Button>

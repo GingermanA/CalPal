@@ -232,8 +232,7 @@ export default class Scheduler extends SampleBase {
           .doc(args.changedRecords[0].DocumentId)
           .update({ StartTime: args.changedRecords[0].StartTime });
         console.log(args.changedRecords[0]);
-      } catch (err) {
-      }
+      } catch (err) {}
     } else if (args.requestType === "eventCreate") {
       let guid = (
         this.GuidFun() +
@@ -273,10 +272,9 @@ export default class Scheduler extends SampleBase {
         StartTime: argsData.StartTime,
         Type: argsData.Type,
         RecurrenceRule: argsData.RecurrenceRule,
-      })
+      });
       //this.deleteModulesByName(args.data[0].Subject);
       // this.deleteModules(args.draggedNodeData.id);
-      ;
     } else if (args.requestType === "eventRemove") {
       if (args.changedRecords === []) {
         this.data.doc(args.changedRecords[0].DocumentId).delete();

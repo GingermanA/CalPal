@@ -37,8 +37,7 @@ const Login = ({ history }) => {
   const { currentUser } = useContext(AuthContext);
 
   if (currentUser) {
-    console.log(history.goBack());
-    return <Redirect to="/scheduler" />;
+    return <Redirect to="/tasks" />;
     //return <Redirect to="/calendar" />;
   }
 

@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select";
 import "./Scheduler.css";
 import styles from "./TaskManager.module.css";
 import fire from "../fire";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -260,6 +261,7 @@ function TaskList(props) {
           <th>Due Date</th>
           <th>Completed</th>
           <th>Delete?</th>
+          <th>Add to Scheduler</th>
         </tr>
       </thead>
       <tbody>
@@ -290,6 +292,16 @@ function TaskList(props) {
                 startIcon={<DeleteIcon />}
                 color="secondary"
               ></Button>
+            </td>
+            <td>
+              <Link
+                to={{
+                  pathname: "/tasks/add",
+                  state: task,
+                }}
+              >
+                Add
+              </Link>
             </td>
           </tr>
         ))}

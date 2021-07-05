@@ -35,7 +35,7 @@ import {
 } from "@syncfusion/ej2-react-navigations";
 import "./Scheduler.css";
 
-export default class Scheduler extends SampleBase {
+export default class AddToScheduler extends SampleBase {
   color: Array[] = [
     "#E83B3B",
     "#2D53DE",
@@ -53,13 +53,14 @@ export default class Scheduler extends SampleBase {
   treeViewMod: { [key: string]: Object }[] = [];
   fieldMod: Object = {};
 
-  // treeViewTask: { [key: string]: Object }[] = [];
-  // fieldTask: Object = {};
+  treeViewTask: { [key: string]: Object }[] = [];
+  fieldTask: Object = {};
 
   constructor(props) {
     super(props);
-    console.log(props);
-    //console.log(this.props.location.state);
+    console.log(this.props.location.state);
+    console.log(this.props.history);
+
     this.state = {
       modCode: [],
       newMod: "",
@@ -131,14 +132,20 @@ export default class Scheduler extends SampleBase {
         console.log("error is caught");
       });
 
-    // this.treeViewTask.push(this.props.location.state);
+    this.treeViewTask.push(this.props.location.state);
 
-    // this.fieldTask = {
-    //   dataSource: this.treeViewTask,
-    //   id: "Module",
-    //   text: "Title",
-    // };
+    this.fieldTask = {
+      dataSource: this.treeViewTask,
+      id: "Module",
+      text: "Title",
+    };
   }
+
+  // componentDidMount() {
+  //   if (this.props.location.state === undefined) {
+  //     this.props.history.push("/scheduler");
+  //   }
+  // }
 
   //Enter Module in the form and Module list / Firebase will be updated
   addModule = (text) => {
@@ -286,6 +293,7 @@ export default class Scheduler extends SampleBase {
         Type: argsData.Type,
         RecurrenceRule: argsData.RecurrenceRule,
       });
+      this.props.history.push("/scheduler");
       //this.deleteModulesByName(args.data[0].Subject);
       // this.deleteModules(args.draggedNodeData.id);
     } else if (args.requestType === "eventRemove") {
@@ -332,27 +340,27 @@ export default class Scheduler extends SampleBase {
     }
   }
 
-  // onTreeDragStopTask(args: DragAndDropEventArgs): void {
-  //   try {
-  //     console.log(args.draggedNodeData);
-  //     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
-  //       args.target
-  //     );
-  //     let eventData: { [key: string]: Object } = {
-  //       Subject: args.draggedNodeData.text,
-  //       Module: args.draggedNodeData.id,
-  //       //Type: args.draggedNodeData.Type,
-  //       StartTime: cellData.startTime,
-  //       EndTime: cellData.endTime,
-  //       IsAllDay: cellData.isAllDay,
-  //     };
-  //     console.log(eventData);
-  //     this.scheduleObj.openEditor(eventData, "Add", true);
-  //     //this.deleteModules.bind(this, args.draggedNodeData.id);
-  //   } catch (err) {
-  //     //console.log(err);
-  //   }
-  // }
+  onTreeDragStopTask(args: DragAndDropEventArgs): void {
+    try {
+      console.log(args.draggedNodeData);
+      let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
+        args.target
+      );
+      let eventData: { [key: string]: Object } = {
+        Subject: args.draggedNodeData.text,
+        Module: args.draggedNodeData.id,
+        //Type: args.draggedNodeData.Type,
+        StartTime: cellData.startTime,
+        EndTime: cellData.endTime,
+        IsAllDay: cellData.isAllDay,
+      };
+      console.log(eventData);
+      this.scheduleObj.openEditor(eventData, "Add", true);
+      //this.deleteModules.bind(this, args.draggedNodeData.id);
+    } catch (err) {
+      //console.log(err);
+    }
+  }
 
   editModules(args) {
     const newModCode = this.state.modCode.slice();
@@ -533,6 +541,11 @@ export default class Scheduler extends SampleBase {
   }
 
   render() {
+    //Redirects user if they enter "/tasks/add" as url
+    if (this.props.location.state === undefined) {
+      this.props.history.push("/scheduler");
+      return null;
+    }
     //console.log(this.state.modCode);
     return (
       <div className="schedule-control-section">
@@ -596,7 +609,7 @@ export default class Scheduler extends SampleBase {
             nodeTemplate={this.nodeTemplate}
           />
         </div>
-        {/* <div className="treeview-component">
+        <div className="treeview-component">
           <TreeViewComponent
             fields={this.fieldTask}
             allowDragAndDrop={true}
@@ -605,7 +618,7 @@ export default class Scheduler extends SampleBase {
             //nodeEdited={this.editModules.bind(this)}
             //nodeTemplate={this.nodeTemplate}
           />
-        </div> */}
+        </div>
       </div>
     );
   }

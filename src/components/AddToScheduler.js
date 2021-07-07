@@ -551,7 +551,7 @@ export default class AddToScheduler extends SampleBase {
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
           <div className="control-wrapper">
-            <button onClick={() => fire.auth().signOut()}>Sign out</button>
+            {/* <button onClick={() => fire.auth().signOut()}>Sign out</button> */}
             <Link to="/tasks">Tasks</Link>
             <ScheduleComponent
               height="650px"
@@ -582,7 +582,7 @@ export default class AddToScheduler extends SampleBase {
             </ScheduleComponent>
           </div>
         </div>
-        <div>Add modules here</div>
+        {/* <div>Add modules here</div>
         <div className="treeview-form">
           <textarea
             // value="Enter your module here!"
@@ -608,7 +608,7 @@ export default class AddToScheduler extends SampleBase {
             nodeEdited={this.editModules.bind(this)}
             nodeTemplate={this.nodeTemplate}
           />
-        </div>
+        </div> */}
         <div className="treeview-component">
           <TreeViewComponent
             fields={this.fieldTask}

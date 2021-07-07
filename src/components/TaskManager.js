@@ -92,7 +92,8 @@ function TaskManager(props) {
         ...task,
       },
     ];
-    setTasks(newTasks); // This works: tasks will be updated to newTasks
+    const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
+    setTasks(sortedTasks); // This works: tasks will be updated to newTasks
     function GuidFun() {
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     }
@@ -201,6 +202,8 @@ function TaskManager(props) {
 
 function TaskList(props) {
   const { tasks, setTasks } = props;
+  console.log(tasks);
+  console.log(Date().toLocaleString());
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
     console.log(toToggleTask);
@@ -252,6 +255,12 @@ function TaskList(props) {
   }
 
   return (
+    // <Overdue
+    //   tasks={tasks}
+    //   handleTaskCompletionToggled={handleTaskCompletionToggled}
+    //   deleteTask={deleteTask}
+    // />
+
     <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
       <thead>
         <tr>
@@ -309,4 +318,66 @@ function TaskList(props) {
     </table>
   );
 }
+
+// function Overdue(props) {
+//   const { tasks, handleTaskCompletionToggled, deleteTask } = props;
+//   return (
+//     <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
+//       <caption>Overdue</caption>
+//       <thead>
+//         <tr>
+//           <th>No.</th>
+//           <th>Task</th>
+//           <th>Module</th>
+//           <th>Due Date</th>
+//           <th>Completed</th>
+//           <th>Delete?</th>
+//           <th>Add to Scheduler</th>
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {tasks.map((task, index) => (
+//           // We should specify key here to help react identify
+//           // what has updated
+//           // https://reactjs.org/docs/lists-and-keys.html#keys
+//           <tr key={index}>
+//             <td>{index + 1}</td>
+//             <td>{task.Title}</td>
+//             <td>{task.Module}</td>
+//             <td>{task.dueDateString.slice(4, 21)}</td>
+//             <td>
+//               <Checkbox
+//                 color="primary"
+//                 checked={task.isComplete}
+//                 onChange={(event) =>
+//                   handleTaskCompletionToggled(task, index, event)
+//                 }
+//                 inputProps={{
+//                   "aria-label": `checkbox that determines if task ${index} is done`,
+//                 }}
+//               />
+//             </td>
+//             <td>
+//               <Button
+//                 onClick={() => deleteTask(task, index)}
+//                 startIcon={<DeleteIcon />}
+//                 color="secondary"
+//               ></Button>
+//             </td>
+//             <td>
+//               <Link
+//                 to={{
+//                   pathname: "/tasks/add",
+//                   state: task,
+//                 }}
+//               >
+//                 Add
+//               </Link>
+//             </td>
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table>
+//   );
+// }
 export default TaskManager;

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+// import Stack from "@material-ui/core/Stack";
+import InputBase from "@material-ui/core/InputBase";
 import Select from "@material-ui/core/Select";
 import "./Scheduler.css";
 import styles from "./TaskManager.module.css";
@@ -28,7 +31,45 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     width: 200,
   },
+  margin: {
+    margin: theme.spacing(1),
+  },
 }));
+
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    "label + &": {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}))(InputBase);
 
 function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
@@ -89,9 +130,13 @@ function TaskManager(props) {
   function addTask(task) {
     console.log(tasks);
     let length = tasks.length;
-    for (let i = 0; i < length; i++) {
-      let time = tasks[i].dueDate.seconds.toString() + "000";
-      tasks[i].dueDate = new Date(parseInt(time));
+    try {
+      for (let i = 0; i < length; i++) {
+        let time = tasks[i].dueDate.seconds.toString() + "000";
+        tasks[i].dueDate = new Date(parseInt(time));
+      }
+    } catch (err) {
+      console.log("Its okay!");
     }
     const newTasks = [
       ...tasks,
@@ -147,38 +192,28 @@ function TaskManager(props) {
   return (
     <>
       <h2>Add Tasks</h2>
-      {/* <FormControl className={classes.formControl} onSubmit={handleAddTask}> */}
+      {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
       <form className={styles.addTaskForm} onSubmit={handleAddTask}>
+        {/* <Stack spacing={3}> */}
         <TextField
           className={styles.descTextField}
           label="Title"
           value={newTitleText}
           onChange={(event) => setNewTitleText(event.target.value)}
         />
-        <InputLabel id="demo-simple-select-outlined-label">Module</InputLabel>
         <Select
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
+          labelId="demo-customized-select-label"
+          id="demo-customized-select"
+          label="Select your module!"
           value={module}
-          label="Module"
+          input={<BootstrapInput />}
         >
           {moduleList.map((mod) => (
-            <MenuItem key={mod} onClick={() => setModule(mod)}>
+            <MenuItem key={mod} value={mod} onClick={() => setModule(mod)}>
               {mod}
             </MenuItem>
           ))}
         </Select>
-        {/* <InputLabel id="demo-simple-select-label">Module</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={module}
-          onChange={(event) => setModule(event.target.value)}
-        >
-          <MenuItem value={"CS1010S"}>CS1010S</MenuItem>
-          <MenuItem value={"MA1521"}>MA1521</MenuItem>
-          <MenuItem value={"IS1103"}>IS1103</MenuItem>
-        </Select> */}
         <DateTimePickerComponent
           id="date"
           className="e-field"
@@ -194,6 +229,8 @@ function TaskManager(props) {
         <Button type="submit" variant="contained" color="primary">
           Add
         </Button>
+        {/* </FormControl> */}
+        {/* </Stack> */}
       </form>
       <h2>Task List</h2>
       {tasks.length > 0 ? (

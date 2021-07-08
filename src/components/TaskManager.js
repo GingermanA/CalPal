@@ -3,8 +3,7 @@ import { Button, TextField, Checkbox } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import DeleteIcon from "@material-ui/icons/Delete";
-import Input from "@material-ui/core/Input";
-import FormControl from "@material-ui/core/FormControl";
+import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import "./Scheduler.css";
@@ -70,7 +69,9 @@ function TaskManager(props) {
     // submit AND refresh the page. So we override the
     // default behaviour here as we don't want to refresh
     // console.log(event);
+    // const date = new Date(newDueDate);
     const date = new Date(newDueDate);
+    console.log(date);
     event.preventDefault();
     const task = {
       Title: newTitleText,
@@ -86,14 +87,22 @@ function TaskManager(props) {
   }
 
   function addTask(task) {
+    console.log(tasks);
+    let length = tasks.length;
+    for (let i = 0; i < length; i++) {
+      let time = tasks[i].dueDate.seconds.toString() + "000";
+      tasks[i].dueDate = new Date(parseInt(time));
+    }
     const newTasks = [
       ...tasks,
       {
         ...task,
       },
     ];
+    console.log(newTasks);
     const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
-    setTasks(sortedTasks); // This works: tasks will be updated to newTasks
+    console.log(sortedTasks);
+    setTasks(sortedTasks); // This works: tasks will be updated to sortedTasks
     function GuidFun() {
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     }
@@ -170,25 +179,21 @@ function TaskManager(props) {
           <MenuItem value={"MA1521"}>MA1521</MenuItem>
           <MenuItem value={"IS1103"}>IS1103</MenuItem>
         </Select> */}
-        <TextField
+        <DateTimePickerComponent
           id="date"
-          label="Due Date"
-          type="datetime-local"
-          className={classes.textField}
-          InputLabelProps={{
-            shrink: true,
-          }}
+          className="e-field"
+          date-name="Due Date"
+          format="dd/MM/yy hh:mm a"
           value={newDueDate}
           onChange={(event) => {
             setNewDueDate(event.target.value);
             console.log(event.target.value);
             console.log(newDueDate);
           }}
-        />
+        ></DateTimePickerComponent>
         <Button type="submit" variant="contained" color="primary">
           Add
         </Button>
-        {/* </FormControl> */}
       </form>
       <h2>Task List</h2>
       {tasks.length > 0 ? (
@@ -202,8 +207,8 @@ function TaskManager(props) {
 
 function TaskList(props) {
   const { tasks, setTasks } = props;
-  console.log(tasks);
-  console.log(Date().toLocaleString());
+  // console.log(tasks);
+  // console.log(Date().toLocaleString());
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
     console.log(toToggleTask);

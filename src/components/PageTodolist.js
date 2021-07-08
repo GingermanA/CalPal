@@ -22,7 +22,9 @@ function PageTodolist() {
     const db = fire.firestore();
     const docRef = db.collection("Users").doc(uid).collection("Tasks");
     docRef.get().then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
+      const data = querySnapshot.docs
+        .map((doc) => doc.data())
+        .sort((a, b) => a.dueDate - b.dueDate);
       setTasksState(data);
     });
   }, []);

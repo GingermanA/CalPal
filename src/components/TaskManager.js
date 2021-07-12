@@ -1,85 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
-import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
+import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
+import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 // import Stack from "@material-ui/core/Stack";
-import InputBase from "@material-ui/core/InputBase";
-import Select from "@material-ui/core/Select";
 import "./Scheduler.css";
 import styles from "./TaskManager.module.css";
 import fire from "../fire";
 import { Link } from "react-router-dom";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-  container: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200,
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-}));
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    "label + &": {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    borderRadius: 4,
-    position: "relative",
-    backgroundColor: theme.palette.background.paper,
-    border: "1px solid #ced4da",
-    fontSize: 16,
-    padding: "10px 26px 10px 12px",
-    transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:focus": {
-      borderRadius: 4,
-      borderColor: "#80bdff",
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-    },
-  },
-}))(InputBase);
+// const useStyles = makeStyles((theme) => ({
+//   formControl: {
+//     margin: theme.spacing(1),
+//     minWidth: 120,
+//   },
+//   selectEmpty: {
+//     marginTop: theme.spacing(2),
+//   },
+//   container: {
+//     display: "flex",
+//     flexWrap: "wrap",
+//   },
+//   textField: {
+//     marginLeft: theme.spacing(1),
+//     marginRight: theme.spacing(1),
+//     width: 200,
+//   },
+//   margin: {
+//     margin: theme.spacing(1),
+//   },
+// }));
 
 function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
-  const classes = useStyles();
-  // const [newTask, setNewTask] = useState({Title:'', Module:'', dueDate: null, Type: 'Task'});
+  const [overdueTasks, setOverdueTasks] = useState([]);
+  // const classes = useStyles();
   const [moduleList, setModuleList] = useState([]);
   const [module, setModule] = React.useState("");
   const [newTitleText, setNewTitleText] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date());
 
+  console.log(tasks);
+
+  // this useEffect is to get the updated modules that a user adds
   useEffect(() => {
     const uid = fire.auth().currentUser?.uid;
     fire
@@ -103,6 +67,25 @@ function TaskManager(props) {
         }
       });
   }, []);
+
+  // this useEffect is to update what tasks are overdue
+  useEffect(() => {
+    const ot = [];
+    console.log(tasks);
+    if (tasks.length > 0) {
+      for (var i = 0; i < tasks.length; i++) {
+        try {
+          let time = tasks[i].dueDate.seconds.toString() + "000";
+          tasks[i].dueDate = new Date(parseInt(time));
+        } catch (err) {}
+        if (tasks[i].dueDate.getTime() < new Date()) {
+          ot.push(tasks[i]);
+        }
+      }
+      setOverdueTasks(ot);
+    } else {
+    }
+  }, [tasks]);
 
   function handleAddTask(event) {
     // React honours default browser behavior and the
@@ -184,11 +167,6 @@ function TaskManager(props) {
     });
   }
 
-  // function handleChange(event) {
-  //   const value = event.target.value;
-  //   setNewTask({...newTask, [event.target.name]: value});
-  // }
-
   return (
     <>
       <h2>Add Tasks</h2>
@@ -201,19 +179,15 @@ function TaskManager(props) {
           value={newTitleText}
           onChange={(event) => setNewTitleText(event.target.value)}
         />
-        <Select
-          labelId="demo-customized-select-label"
-          id="demo-customized-select"
-          label="Select your module!"
-          value={module}
-          input={<BootstrapInput />}
-        >
-          {moduleList.map((mod) => (
-            <MenuItem key={mod} value={mod} onClick={() => setModule(mod)}>
-              {mod}
-            </MenuItem>
-          ))}
-        </Select>
+        <td>
+          <DropDownListComponent
+            id="Module"
+            className="e-field"
+            dataSource={moduleList}
+            placeholder="Select module"
+            change={(event) => setModule(event.itemData.value)}
+          ></DropDownListComponent>
+        </td>
         <DateTimePickerComponent
           id="date"
           className="e-field"
@@ -222,8 +196,6 @@ function TaskManager(props) {
           value={newDueDate}
           onChange={(event) => {
             setNewDueDate(event.target.value);
-            console.log(event.target.value);
-            console.log(newDueDate);
           }}
         ></DateTimePickerComponent>
         <Button type="submit" variant="contained" color="primary">
@@ -233,6 +205,13 @@ function TaskManager(props) {
         {/* </Stack> */}
       </form>
       <h2>Task List</h2>
+      <h3>Overdue Tasks!</h3>
+      {overdueTasks.length > 0 ? (
+        <OverdueTaskList tasks={tasks} setTasks={setTasks} />
+      ) : (
+        <p>No overdue tasks!</p>
+      )}
+      <h3>Current Tasks</h3>
       {tasks.length > 0 ? (
         <TaskList tasks={tasks} setTasks={setTasks} />
       ) : (
@@ -244,8 +223,138 @@ function TaskManager(props) {
 
 function TaskList(props) {
   const { tasks, setTasks } = props;
-  // console.log(tasks);
-  // console.log(Date().toLocaleString());
+  function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
+    event.preventDefault();
+    console.log(toToggleTask);
+    const newTasks = [
+      ...tasks.slice(0, toToggleTaskIndex),
+      {
+        ...toToggleTask,
+        isComplete: !toToggleTask.isComplete,
+      },
+      ...tasks.slice(toToggleTaskIndex + 1),
+    ];
+    // We set new tasks in such a complex way so that we maintain immutability
+    // Read this article to find out more:
+    // https://blog.logrocket.com/immutability-in-react-ebe55253a1cc/
+    setTasks(newTasks);
+    const uid = fire.auth().currentUser?.uid;
+    const db = fire.firestore();
+    console.log(!toToggleTask.isComplete);
+    const boolean = !toToggleTask.isComplete;
+    db.collection("Users")
+      .doc(uid)
+      .collection("Tasks")
+      .doc(toToggleTask.DocumentId)
+      .update({
+        isComplete: boolean,
+      });
+    const docRef = db.collection("Users").doc(uid).collection("Tasks");
+    docRef.get().then((querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => doc.data());
+      setTasks(data);
+    });
+  }
+
+  function isOverdue(task) {
+    try {
+      let time = tasks.dueDate.seconds.toString() + "000";
+      task.dueDate = new Date(parseInt(time));
+    } catch (err) {}
+    if (task.dueDate < new Date()) {
+      return true;
+    }
+  }
+
+  function deleteTask(task, index) {
+    const newTasks = [...tasks.slice(0, index), ...tasks.slice(index + 1)];
+    setTasks(newTasks);
+    const uid = fire.auth().currentUser?.uid;
+    const db = fire.firestore();
+    db.collection("Users")
+      .doc(uid)
+      .collection("Tasks")
+      .doc(task.DocumentId)
+      .delete();
+    const docRef = db.collection("Users").doc(uid).collection("Tasks");
+    docRef.get().then((querySnapshot) => {
+      const data = querySnapshot.docs.map((doc) => doc.data());
+      setTasks(data);
+    });
+  }
+
+  return (
+    <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Task</th>
+          <th>Module</th>
+          <th>Due Date</th>
+          <th>Completed</th>
+          <th>Delete?</th>
+          <th>Add to Scheduler</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tasks
+          .filter((task) => !isOverdue(task))
+          .map((task, index) => (
+            // We should specify key here to help react identify
+            // what has updated
+            // https://reactjs.org/docs/lists-and-keys.html#keys
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{task.Title}</td>
+              <td>{task.Module}</td>
+              <td>{task.dueDateString.slice(4, 21)}</td>
+              <td>
+                <Checkbox
+                  color="primary"
+                  checked={task.isComplete}
+                  onChange={(event) =>
+                    handleTaskCompletionToggled(task, index, event)
+                  }
+                  inputProps={{
+                    "aria-label": `checkbox that determines if task ${index} is done`,
+                  }}
+                />
+              </td>
+              <td>
+                <Button
+                  onClick={() => deleteTask(task, index)}
+                  startIcon={<DeleteIcon />}
+                  color="secondary"
+                ></Button>
+              </td>
+              <td>
+                <Link
+                  to={{
+                    pathname: "/tasks/add",
+                    state: task,
+                  }}
+                >
+                  Add
+                </Link>
+              </td>
+            </tr>
+          ))}
+      </tbody>
+    </table>
+  );
+}
+
+function OverdueTaskList(props) {
+  const { tasks, setTasks } = props;
+  function isOverdue(task) {
+    try {
+      let time = tasks.dueDate.seconds.toString() + "000";
+      task.dueDate = new Date(parseInt(time));
+    } catch (err) {}
+    if (task.dueDate < new Date()) {
+      return true;
+    }
+  }
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
     console.log(toToggleTask);
@@ -297,12 +406,6 @@ function TaskList(props) {
   }
 
   return (
-    // <Overdue
-    //   tasks={tasks}
-    //   handleTaskCompletionToggled={handleTaskCompletionToggled}
-    //   deleteTask={deleteTask}
-    // />
-
     <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
       <thead>
         <tr>
@@ -316,110 +419,51 @@ function TaskList(props) {
         </tr>
       </thead>
       <tbody>
-        {tasks.map((task, index) => (
-          // We should specify key here to help react identify
-          // what has updated
-          // https://reactjs.org/docs/lists-and-keys.html#keys
-          <tr key={index}>
-            <td>{index + 1}</td>
-            <td>{task.Title}</td>
-            <td>{task.Module}</td>
-            <td>{task.dueDateString.slice(4, 21)}</td>
-            <td>
-              <Checkbox
-                color="primary"
-                checked={task.isComplete}
-                onChange={(event) =>
-                  handleTaskCompletionToggled(task, index, event)
-                }
-                inputProps={{
-                  "aria-label": `checkbox that determines if task ${index} is done`,
-                }}
-              />
-            </td>
-            <td>
-              <Button
-                onClick={() => deleteTask(task, index)}
-                startIcon={<DeleteIcon />}
-                color="secondary"
-              ></Button>
-            </td>
-            <td>
-              <Link
-                to={{
-                  pathname: "/tasks/add",
-                  state: task,
-                }}
-              >
-                Add
-              </Link>
-            </td>
-          </tr>
-        ))}
+        {tasks
+          .filter((task) => isOverdue(task))
+          .map((task, index) => (
+            // We should specify key here to help react identify
+            // what has updated
+            // https://reactjs.org/docs/lists-and-keys.html#keys
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{task.Title}</td>
+              <td>{task.Module}</td>
+              <td>{task.dueDateString.slice(4, 21)}</td>
+              <td>
+                <Checkbox
+                  color="primary"
+                  checked={task.isComplete}
+                  onChange={(event) =>
+                    handleTaskCompletionToggled(task, index, event)
+                  }
+                  inputProps={{
+                    "aria-label": `checkbox that determines if task ${index} is done`,
+                  }}
+                />
+              </td>
+              <td>
+                <Button
+                  onClick={() => deleteTask(task, index)}
+                  startIcon={<DeleteIcon />}
+                  color="secondary"
+                ></Button>
+              </td>
+              <td>
+                <Link
+                  to={{
+                    pathname: "/tasks/add",
+                    state: task,
+                  }}
+                >
+                  Add
+                </Link>
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
 }
 
-// function Overdue(props) {
-//   const { tasks, handleTaskCompletionToggled, deleteTask } = props;
-//   return (
-//     <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
-//       <caption>Overdue</caption>
-//       <thead>
-//         <tr>
-//           <th>No.</th>
-//           <th>Task</th>
-//           <th>Module</th>
-//           <th>Due Date</th>
-//           <th>Completed</th>
-//           <th>Delete?</th>
-//           <th>Add to Scheduler</th>
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {tasks.map((task, index) => (
-//           // We should specify key here to help react identify
-//           // what has updated
-//           // https://reactjs.org/docs/lists-and-keys.html#keys
-//           <tr key={index}>
-//             <td>{index + 1}</td>
-//             <td>{task.Title}</td>
-//             <td>{task.Module}</td>
-//             <td>{task.dueDateString.slice(4, 21)}</td>
-//             <td>
-//               <Checkbox
-//                 color="primary"
-//                 checked={task.isComplete}
-//                 onChange={(event) =>
-//                   handleTaskCompletionToggled(task, index, event)
-//                 }
-//                 inputProps={{
-//                   "aria-label": `checkbox that determines if task ${index} is done`,
-//                 }}
-//               />
-//             </td>
-//             <td>
-//               <Button
-//                 onClick={() => deleteTask(task, index)}
-//                 startIcon={<DeleteIcon />}
-//                 color="secondary"
-//               ></Button>
-//             </td>
-//             <td>
-//               <Link
-//                 to={{
-//                   pathname: "/tasks/add",
-//                   state: task,
-//                 }}
-//               >
-//                 Add
-//               </Link>
-//             </td>
-//           </tr>
-//         ))}
-//       </tbody>
-//     </table>
-//   );
-// }
 export default TaskManager;

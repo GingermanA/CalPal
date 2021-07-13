@@ -40,6 +40,7 @@ function TaskManager(props) {
   const [module, setModule] = React.useState("");
   const [newTitleText, setNewTitleText] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date());
+  const [filter, setFilter] = useState("");
 
   console.log(tasks);
 
@@ -167,6 +168,10 @@ function TaskManager(props) {
     });
   }
 
+  function search(rows) {
+    return rows.filter((row) => row.Module.toLowerCase().indexOf(filter) > -1);
+  }
+
   return (
     <>
       <h2>Add Tasks</h2>
@@ -205,15 +210,20 @@ function TaskManager(props) {
         {/* </Stack> */}
       </form>
       <h2>Task List</h2>
+      <input
+        type="text"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      />
       <h3>Overdue Tasks!</h3>
       {overdueTasks.length > 0 ? (
-        <OverdueTaskList tasks={tasks} setTasks={setTasks} />
+        <OverdueTaskList tasks={search(tasks)} setTasks={setTasks} />
       ) : (
         <p>No overdue tasks!</p>
       )}
       <h3>Current Tasks</h3>
       {tasks.length > 0 ? (
-        <TaskList tasks={tasks} setTasks={setTasks} />
+        <TaskList tasks={search(tasks)} setTasks={setTasks} />
       ) : (
         <p>No tasks yet! Add one above!</p>
       )}
@@ -223,6 +233,7 @@ function TaskManager(props) {
 
 function TaskList(props) {
   const { tasks, setTasks } = props;
+
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
     console.log(toToggleTask);

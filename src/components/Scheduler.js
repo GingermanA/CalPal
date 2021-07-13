@@ -332,28 +332,6 @@ export default class Scheduler extends SampleBase {
     }
   }
 
-  // onTreeDragStopTask(args: DragAndDropEventArgs): void {
-  //   try {
-  //     console.log(args.draggedNodeData);
-  //     let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
-  //       args.target
-  //     );
-  //     let eventData: { [key: string]: Object } = {
-  //       Subject: args.draggedNodeData.text,
-  //       Module: args.draggedNodeData.id,
-  //       //Type: args.draggedNodeData.Type,
-  //       StartTime: cellData.startTime,
-  //       EndTime: cellData.endTime,
-  //       IsAllDay: cellData.isAllDay,
-  //     };
-  //     console.log(eventData);
-  //     this.scheduleObj.openEditor(eventData, "Add", true);
-  //     //this.deleteModules.bind(this, args.draggedNodeData.id);
-  //   } catch (err) {
-  //     //console.log(err);
-  //   }
-  // }
-
   editModules(args) {
     const newModCode = this.state.modCode.slice();
     for (let i = 0; i < newModCode.length; i++) {

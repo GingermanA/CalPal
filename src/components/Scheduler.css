@@ -1,3 +1,15 @@
+.control-wrapper {
+  display: flex;
+}
+
+.scheduler {
+  width: 80%;
+}
+
+.module-manager {
+  width: 20%;
+}
+
 .scheduler-title-container {
   width: 80%;
   display: inline-block;
@@ -19,9 +31,8 @@
 }
 
 .treeview-component {
-  float: right;
-  width: 20%;
 }
+
 .tree-control-wrapper {
   max-width: 320px;
   margin: auto;

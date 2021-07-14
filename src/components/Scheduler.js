@@ -349,6 +349,9 @@ export default class Scheduler extends SampleBase {
     //console.log(index);
     const newModCode = this.state.modCode.slice();
     newModCode.splice(index, 1, "");
+    // newModCode.splice(index, 1);
+    // const delCol = this.color.splice(index, 1);
+    // this.color.splice(this.color.length, 1, delCol);
     this.setState({ modCode: newModCode }, () => {
       this.updateFire();
     });
@@ -515,64 +518,68 @@ export default class Scheduler extends SampleBase {
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
+          <button onClick={() => fire.auth().signOut()}>Sign out</button>
+          <Link to="/tasks">Tasks</Link>
           <div className="control-wrapper">
-            <button onClick={() => fire.auth().signOut()}>Sign out</button>
-            <Link to="/tasks">Tasks</Link>
-            <ScheduleComponent
-              height="650px"
-              ref={(schedule) => (this.scheduleObj = schedule)}
-              currentView="Month"
-              actionBegin={this.onActionBegin.bind(this)}
-              editorTemplate={this.editorWindowTemplate.bind(this)}
-              eventRendered={this.onEventRendered.bind(this)}
-            >
-              <ViewsDirective>
-                <ViewDirective option="Day" />
-                <ViewDirective option="Week" />
-                <ViewDirective option="WorkWeek" />
-                <ViewDirective option="Month" />
-              </ViewsDirective>
+            <div className="module-manager">
+              <div>Add modules here</div>
+              <div className="treeview-form">
+                <textarea
+                  // value="Enter your module here!"
+                  className="form-control"
+                  onChange={(e) => this.addModule(e.target.value)}
+                />
+              </div>
+              <div>
+                <button
+                  type="submit"
+                  className="btn btn-md btn-primary sign-in-button"
+                  onClick={this.setModules}
+                >
+                  Add
+                </button>
+              </div>
+              <div className="treeview-component">
+                <TreeViewComponent
+                  fields={this.fieldMod}
+                  allowDragAndDrop={true}
+                  allowEditing={true}
+                  nodeDragStop={this.onTreeDragStopMod.bind(this)}
+                  nodeEdited={this.editModules.bind(this)}
+                  nodeTemplate={this.nodeTemplate}
+                />
+              </div>
+            </div>
+            <div className="scheduler">
+              <ScheduleComponent
+                height="650px"
+                ref={(schedule) => (this.scheduleObj = schedule)}
+                currentView="Month"
+                actionBegin={this.onActionBegin.bind(this)}
+                editorTemplate={this.editorWindowTemplate.bind(this)}
+                eventRendered={this.onEventRendered.bind(this)}
+              >
+                <ViewsDirective>
+                  <ViewDirective option="Day" />
+                  <ViewDirective option="Week" />
+                  <ViewDirective option="WorkWeek" />
+                  <ViewDirective option="Month" />
+                </ViewsDirective>
 
-              <Inject
-                services={[
-                  Day,
-                  Week,
-                  WorkWeek,
-                  Month,
-                  Agenda,
-                  Resize,
-                  DragAndDrop,
-                ]}
-              />
-            </ScheduleComponent>
+                <Inject
+                  services={[
+                    Day,
+                    Week,
+                    WorkWeek,
+                    Month,
+                    Agenda,
+                    Resize,
+                    DragAndDrop,
+                  ]}
+                />
+              </ScheduleComponent>
+            </div>
           </div>
-        </div>
-        <div>Add modules here</div>
-        <div className="treeview-form">
-          <textarea
-            // value="Enter your module here!"
-            className="form-control"
-            onChange={(e) => this.addModule(e.target.value)}
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="btn btn-md btn-primary sign-in-button"
-            onClick={this.setModules}
-          >
-            Add
-          </button>
-        </div>
-        <div className="treeview-component">
-          <TreeViewComponent
-            fields={this.fieldMod}
-            allowDragAndDrop={true}
-            allowEditing={true}
-            nodeDragStop={this.onTreeDragStopMod.bind(this)}
-            nodeEdited={this.editModules.bind(this)}
-            nodeTemplate={this.nodeTemplate}
-          />
         </div>
         {/* <div className="treeview-component">
           <TreeViewComponent

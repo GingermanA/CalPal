@@ -173,61 +173,70 @@ function TaskManager(props) {
   }
 
   return (
-    <>
-      <h2>Add Tasks</h2>
-      {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
-      <form className={styles.addTaskForm} onSubmit={handleAddTask}>
-        {/* <Stack spacing={3}> */}
-        <TextField
-          className={styles.descTextField}
-          label="Title"
-          value={newTitleText}
-          onChange={(event) => setNewTitleText(event.target.value)}
+    <div className={styles.split}>
+      <div className={styles.left}>
+        <h2>Add Tasks</h2>
+        {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
+        <form className={styles.addTaskForm} onSubmit={handleAddTask}>
+          {/* <Stack spacing={3}> */}
+          <div>
+            <TextField
+              className={styles.descTextField}
+              label="Title"
+              value={newTitleText}
+              onChange={(event) => setNewTitleText(event.target.value)}
+            />
+          </div>
+          <br />
+          <div>
+            <DropDownListComponent
+              id="Module"
+              className="e-field"
+              dataSource={moduleList}
+              placeholder="Select module"
+              change={(event) => setModule(event.itemData.value)}
+            ></DropDownListComponent>
+          </div>
+          <div>
+            <DateTimePickerComponent
+              id="date"
+              className="e-field"
+              date-name="Due Date"
+              format="dd/MM/yy hh:mm a"
+              value={newDueDate}
+              onChange={(event) => {
+                setNewDueDate(event.target.value);
+              }}
+            ></DateTimePickerComponent>
+          </div>
+          <Button type="submit" variant="contained" color="primary">
+            Add
+          </Button>
+          {/* </FormControl> */}
+          {/* </Stack> */}
+        </form>
+      </div>
+      <div className={styles.right}>
+        <h2>Task List</h2>
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
         />
-        <td>
-          <DropDownListComponent
-            id="Module"
-            className="e-field"
-            dataSource={moduleList}
-            placeholder="Select module"
-            change={(event) => setModule(event.itemData.value)}
-          ></DropDownListComponent>
-        </td>
-        <DateTimePickerComponent
-          id="date"
-          className="e-field"
-          date-name="Due Date"
-          format="dd/MM/yy hh:mm a"
-          value={newDueDate}
-          onChange={(event) => {
-            setNewDueDate(event.target.value);
-          }}
-        ></DateTimePickerComponent>
-        <Button type="submit" variant="contained" color="primary">
-          Add
-        </Button>
-        {/* </FormControl> */}
-        {/* </Stack> */}
-      </form>
-      <h2>Task List</h2>
-      <input
-        type="text"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
-      <h3>Overdue Tasks!</h3>
-      {overdueTasks.length > 0 ? (
-        <OverdueTaskList tasks={search(tasks)} setTasks={setTasks} />
-      ) : (
-        <p>No overdue tasks!</p>
-      )}
-      <h3>Current Tasks</h3>
-      {tasks.length > 0 ? (
-        <TaskList tasks={search(tasks)} setTasks={setTasks} />
-      ) : (
-        <p>No tasks yet! Add one above!</p>
-      )}
-    </>
+        <h3>Overdue Tasks!</h3>
+        {overdueTasks.length > 0 ? (
+          <OverdueTaskList tasks={search(tasks)} setTasks={setTasks} />
+        ) : (
+          <p>No overdue tasks!</p>
+        )}
+        <h3>Current Tasks</h3>
+        {tasks.length > 0 ? (
+          <TaskList tasks={search(tasks)} setTasks={setTasks} />
+        ) : (
+          <p>No tasks yet! Add one above!</p>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -295,7 +304,10 @@ function TaskList(props) {
   }
 
   return (
-    <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
+    <table
+      className={styles.tasks}
+      style={{ margin: "0 auto", width: "100%", textAlign: "center" }}
+    >
       <thead>
         <tr>
           <th>No.</th>
@@ -417,7 +429,10 @@ function OverdueTaskList(props) {
   }
 
   return (
-    <table style={{ margin: "0 auto", width: "100%", textAlign: "center" }}>
+    <table
+      className={styles.tasks}
+      style={{ margin: "0 auto", width: "100%", textAlign: "center" }}
+    >
       <thead>
         <tr>
           <th>No.</th>

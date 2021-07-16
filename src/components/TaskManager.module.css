@@ -53,17 +53,18 @@ table.tasks {
 }
 
 table.tasks tr {
-  border-bottom: 1px solid black;
+  border: 1px solid black;
 }
 
-/* .tasks thead th:nth-child(1) {
-  width: 10%;
-} */
+/*
+.tasks thead th:nth-child(1) {
+  width: 5%;
+}
 
 .tasks thead th:nth-child(2) {
   width: 30%;
 }
-/*
+
 .tasks thead th:nth-child(3) {
   width: 15%;
 }
@@ -85,9 +86,23 @@ table.tasks tr {
 } */
 
 .tasks td {
-  padding: 20px;
+  /* padding: 20px; */
   font-family: proxima-nova, sans-serif;
   font-size: 14px;
   overflow-wrap: break-word;
+  text-align: left;
   /* max-width: 5rem; */
+}
+
+.tasks tbody td:nth-child(1) {
+  border-right: 1px solid black;
+  /* background-color: #56ab2f; */
+}
+
+.tasks tbody td:nth-child(2) {
+  width: 5%;
+}
+
+.tasks tbody td:nth-child(3) {
+  width: 50%;
 }

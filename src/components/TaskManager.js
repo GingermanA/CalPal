@@ -19,6 +19,7 @@ function TaskManager(props) {
   const [newTitleText, setNewTitleText] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date());
   const [filter, setFilter] = useState("");
+  //const [color, setColor] = useState("");
 
   console.log(tasks);
 
@@ -214,13 +215,21 @@ function TaskManager(props) {
         />
         <h3>Overdue Tasks!</h3>
         {overdueTasks.length > 0 ? (
-          <OverdueTaskList tasks={search(tasks)} setTasks={setTasks} />
+          <OverdueTaskList
+            tasks={search(tasks)}
+            setTasks={setTasks}
+            moduleList={moduleList}
+          />
         ) : (
           <p>No overdue tasks!</p>
         )}
         <h3>Current Tasks</h3>
         {tasks.length > 0 ? (
-          <TaskList tasks={search(tasks)} setTasks={setTasks} />
+          <TaskList
+            tasks={search(tasks)}
+            setTasks={setTasks}
+            moduleList={moduleList}
+          />
         ) : (
           <p>No tasks yet! Add one above!</p>
         )}
@@ -230,7 +239,20 @@ function TaskManager(props) {
 }
 
 function TaskList(props) {
-  const { tasks, setTasks } = props;
+  const colorArr = [
+    "#E83B3B",
+    "#2D53DE",
+    "#6F18D1",
+    "#119925",
+    "yellow",
+    "orange",
+    "purple",
+    "pink",
+    "grey",
+    "brown",
+    "cyan",
+  ];
+  const { tasks, setTasks, moduleList } = props;
 
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
@@ -292,6 +314,17 @@ function TaskList(props) {
     });
   }
 
+  function getColor(mod) {
+    for (var i = 0; i < moduleList.length; i++) {
+      if (moduleList[i] === mod) {
+        return colorArr[i];
+      }
+    }
+    // console.log(mod);
+    // console.log(moduleList);
+    // console.log(i);
+  }
+
   return (
     <table
       className={styles.tasks}
@@ -302,17 +335,6 @@ function TaskList(props) {
         tableLayout: "fixed",
       }}
     >
-      <thead>
-        <tr>
-          <th>No.</th>
-          <th>Task</th>
-          <th>Module</th>
-          <th>Due Date</th>
-          <th>Completed</th>
-          <th>Delete?</th>
-          <th>Add to Scheduler</th>
-        </tr>
-      </thead>
       <tbody>
         {tasks
           .filter((task) => !isOverdue(task))
@@ -321,10 +343,7 @@ function TaskList(props) {
             // what has updated
             // https://reactjs.org/docs/lists-and-keys.html#keys
             <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{task.Title}</td>
-              <td>{task.Module}</td>
-              <td>{task.dueDateString.slice(4, 21)}</td>
+              <td bgcolor={getColor(task.Module)}>{task.Module}</td>
               <td>
                 <Checkbox
                   color="primary"
@@ -337,6 +356,10 @@ function TaskList(props) {
                   }}
                 />
               </td>
+              <td>{task.Title}</td>
+
+              <td>{task.dueDateString.slice(4, 21)}</td>
+
               <td>
                 <Button
                   onClick={() => deleteTask(task, index)}
@@ -362,7 +385,20 @@ function TaskList(props) {
 }
 
 function OverdueTaskList(props) {
-  const { tasks, setTasks } = props;
+  const colorArr = [
+    "#E83B3B",
+    "#2D53DE",
+    "#6F18D1",
+    "#119925",
+    "yellow",
+    "orange",
+    "purple",
+    "pink",
+    "grey",
+    "brown",
+    "cyan",
+  ];
+  const { tasks, setTasks, moduleList } = props;
   function isOverdue(task) {
     try {
       let time = tasks.dueDate.seconds.toString() + "000";
@@ -422,6 +458,17 @@ function OverdueTaskList(props) {
     });
   }
 
+  function getColor(mod) {
+    for (var i = 0; i < moduleList.length; i++) {
+      if (moduleList[i] === mod) {
+        return colorArr[i];
+      }
+    }
+    // console.log(mod);
+    // console.log(moduleList);
+    // console.log(i);
+  }
+
   return (
     <table
       className={styles.tasks}
@@ -432,17 +479,15 @@ function OverdueTaskList(props) {
         tableLayout: "fixed",
       }}
     >
-      <thead>
+      {/* <thead>
         <tr>
-          <th>No.</th>
-          <th>Task</th>
           <th>Module</th>
-          <th>Due Date</th>
-          <th>Completed</th>
+          <th>Task</th>
+          <th>Actions</th>
           <th>Delete?</th>
-          <th>Add to Scheduler</th>
+          <th>Add to Scheduler</th> 
         </tr>
-      </thead>
+      </thead> */}
       <tbody>
         {tasks
           .filter((task) => isOverdue(task))
@@ -451,10 +496,7 @@ function OverdueTaskList(props) {
             // what has updated
             // https://reactjs.org/docs/lists-and-keys.html#keys
             <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{task.Title}</td>
-              <td>{task.Module}</td>
-              <td>{task.dueDateString.slice(4, 21)}</td>
+              <td bgcolor={getColor(task.Module)}>{task.Module}</td>
               <td>
                 <Checkbox
                   color="primary"
@@ -467,6 +509,10 @@ function OverdueTaskList(props) {
                   }}
                 />
               </td>
+              <td>{task.Title}</td>
+
+              <td>{task.dueDateString.slice(4, 21)}</td>
+
               <td>
                 <Button
                   onClick={() => deleteTask(task, index)}

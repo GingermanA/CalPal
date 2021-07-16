@@ -19,16 +19,11 @@ import {
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
-
-//import { extend } from "@syncfusion/ej2-base";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { SampleBase } from "./sample-base";
 import fire from "../fire";
-
 import { Link } from "react-router-dom";
-
-//To help with the dragging and dropping of modules into the scheduler, and the appropriate css for the scheduler
 import {
   TreeViewComponent,
   DragAndDropEventArgs,
@@ -53,13 +48,9 @@ export default class Scheduler extends SampleBase {
   treeViewMod: { [key: string]: Object }[] = [];
   fieldMod: Object = {};
 
-  // treeViewTask: { [key: string]: Object }[] = [];
-  // fieldTask: Object = {};
-
   constructor(props) {
     super(props);
     console.log(props);
-    //console.log(this.props.location.state);
     this.state = {
       modCode: [],
       newMod: "",
@@ -130,17 +121,8 @@ export default class Scheduler extends SampleBase {
       .catch((error) => {
         console.log("error is caught");
       });
-
-    // this.treeViewTask.push(this.props.location.state);
-
-    // this.fieldTask = {
-    //   dataSource: this.treeViewTask,
-    //   id: "Module",
-    //   text: "Title",
-    // };
   }
 
-  //Enter Module in the form and Module list / Firebase will be updated
   addModule = (text) => {
     this.setState({ newMod: text });
   };
@@ -286,8 +268,6 @@ export default class Scheduler extends SampleBase {
         Type: argsData.Type,
         RecurrenceRule: argsData.RecurrenceRule,
       });
-      //this.deleteModulesByName(args.data[0].Subject);
-      // this.deleteModules(args.draggedNodeData.id);
     } else if (args.requestType === "eventRemove") {
       if (args.changedRecords === []) {
         this.data.doc(args.changedRecords[0].DocumentId).delete();
@@ -301,7 +281,6 @@ export default class Scheduler extends SampleBase {
   //Color coding of Events based on Modules
 
   onEventRendered(args) {
-    // console.log(this.state.modCode);
     console.log(this.treeViewMod);
     for (let i = 0; i < this.treeViewMod.length; i++) {
       if (args.data.Module === this.treeViewMod[i].Name) {
@@ -349,9 +328,6 @@ export default class Scheduler extends SampleBase {
     //console.log(index);
     const newModCode = this.state.modCode.slice();
     newModCode.splice(index, 1, "");
-    // newModCode.splice(index, 1);
-    // const delCol = this.color.splice(index, 1);
-    // this.color.splice(this.color.length, 1, delCol);
     this.setState({ modCode: newModCode }, () => {
       this.updateFire();
     });
@@ -581,16 +557,6 @@ export default class Scheduler extends SampleBase {
             </div>
           </div>
         </div>
-        {/* <div className="treeview-component">
-          <TreeViewComponent
-            fields={this.fieldTask}
-            allowDragAndDrop={true}
-            //allowEditing={true}
-            nodeDragStop={this.onTreeDragStopTask.bind(this)}
-            //nodeEdited={this.editModules.bind(this)}
-            //nodeTemplate={this.nodeTemplate}
-          />
-        </div> */}
       </div>
     );
   }

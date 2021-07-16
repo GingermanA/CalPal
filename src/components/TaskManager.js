@@ -4,7 +4,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
-// import Stack from "@material-ui/core/Stack";
 import "./Scheduler.css";
 import styles from "./TaskManager.module.css";
 import fire from "../fire";
@@ -13,6 +12,7 @@ import { Link } from "react-router-dom";
 function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
   const [overdueTasks, setOverdueTasks] = useState([]);
+  const [numberOfOtTasks, setNumberOfOtTasks] = useState(0);
   // const classes = useStyles();
   const [moduleList, setModuleList] = useState([]);
   const [module, setModule] = React.useState("");
@@ -63,21 +63,37 @@ function TaskManager(props) {
         }
       }
       setOverdueTasks(ot);
+      setNumberOfOtTasks(ot.length);
     } else {
     }
   }, [tasks]);
 
   function handleAddTask(event) {
-    // React honours default browser behavior and the
-    // default behaviour for a form submission is to
-    // submit AND refresh the page. So we override the
-    // default behaviour here as we don't want to refresh
-    // console.log(event);
-    // const date = new Date(newDueDate);
+    function GuidFun() {
+      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    function guid() {
+      return (
+        GuidFun() +
+        GuidFun() +
+        "-" +
+        GuidFun() +
+        "-4" +
+        GuidFun().substr(0, 3) +
+        "-" +
+        GuidFun() +
+        "-" +
+        GuidFun() +
+        GuidFun() +
+        GuidFun()
+      ).toLowerCase();
+    }
     const date = new Date(newDueDate);
     console.log(date);
     event.preventDefault();
+    const DocumentId = guid();
     const task = {
+      DocumentId: DocumentId,
       Title: newTitleText,
       Module: module,
       dueDate: date,
@@ -111,40 +127,25 @@ function TaskManager(props) {
     const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
     console.log(sortedTasks);
     setTasks(sortedTasks); // This works: tasks will be updated to sortedTasks
-    function GuidFun() {
-      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-    }
 
-    function guid() {
-      return (
-        GuidFun() +
-        GuidFun() +
-        "-" +
-        GuidFun() +
-        "-4" +
-        GuidFun().substr(0, 3) +
-        "-" +
-        GuidFun() +
-        "-" +
-        GuidFun() +
-        GuidFun() +
-        GuidFun()
-      ).toLowerCase();
-    }
     const uid = fire.auth().currentUser?.uid;
     const db = fire.firestore();
     const date = task.dueDate;
     const dateString = date.toString();
-    const DocumentId = guid();
-    db.collection("Users").doc(uid).collection("Tasks").doc(DocumentId).set({
-      DocumentId: DocumentId,
-      Title: task.Title,
-      Module: task.Module,
-      dueDate: date,
-      dueDateString: dateString,
-      Type: task.Type,
-      isComplete: task.isComplete,
-    });
+
+    db.collection("Users")
+      .doc(uid)
+      .collection("Tasks")
+      .doc(task.DocumentId)
+      .set({
+        DocumentId: task.DocumentId,
+        Title: task.Title,
+        Module: task.Module,
+        dueDate: date,
+        dueDateString: dateString,
+        Type: task.Type,
+        isComplete: task.isComplete,
+      });
   }
 
   function search(rows) {
@@ -153,6 +154,16 @@ function TaskManager(props) {
         row.Module.toLowerCase().indexOf(filter) > -1 ||
         row.Module.indexOf(filter) > -1
     );
+  }
+
+  function isOverdue(task) {
+    try {
+      let time = tasks.dueDate.seconds.toString() + "000";
+      task.dueDate = new Date(parseInt(time));
+    } catch (err) {}
+    if (task.dueDate < new Date()) {
+      return true;
+    }
   }
 
   return (
@@ -224,10 +235,11 @@ function TaskManager(props) {
           <p>No overdue tasks!</p>
         )}
         <h3>Current Tasks</h3>
-        {tasks.length > 0 ? (
+        {tasks.filter((task) => !isOverdue(task)).length > 0 ? (
           <TaskList
             tasks={search(tasks)}
             setTasks={setTasks}
+            numberOfOtTasks={numberOfOtTasks}
             moduleList={moduleList}
           />
         ) : (
@@ -252,27 +264,31 @@ function TaskList(props) {
     "brown",
     "cyan",
   ];
-  const { tasks, setTasks, moduleList } = props;
+  const { tasks, setTasks, moduleList, numberOfOtTasks } = props;
 
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
-    console.log(toToggleTask);
+    console.log(tasks);
+    const helper = !toToggleTask.isComplete;
+    delete toToggleTask["isComplete"];
+    console.log(toToggleTask, toToggleTaskIndex);
+    console.log(helper);
     const newTasks = [
       ...tasks.slice(0, toToggleTaskIndex),
       {
         ...toToggleTask,
-        isComplete: !toToggleTask.isComplete,
+        isComplete: helper,
       },
       ...tasks.slice(toToggleTaskIndex + 1),
     ];
-    // We set new tasks in such a complex way so that we maintain immutability
-    // Read this article to find out more:
-    // https://blog.logrocket.com/immutability-in-react-ebe55253a1cc/
-    setTasks(newTasks);
+    console.log(newTasks);
+    const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
+    console.log(sortedTasks);
+    setTasks(sortedTasks);
     const uid = fire.auth().currentUser?.uid;
     const db = fire.firestore();
-    console.log(!toToggleTask.isComplete);
-    const boolean = !toToggleTask.isComplete;
+
+    const boolean = helper;
     db.collection("Users")
       .doc(uid)
       .collection("Tasks")
@@ -280,11 +296,6 @@ function TaskList(props) {
       .update({
         isComplete: boolean,
       });
-    const docRef = db.collection("Users").doc(uid).collection("Tasks");
-    docRef.get().then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setTasks(data);
-    });
   }
 
   function isOverdue(task) {
@@ -297,9 +308,17 @@ function TaskList(props) {
     }
   }
 
+  function numberOfOverdueTasks() {
+    return numberOfOtTasks;
+  }
+
   function deleteTask(task, index) {
+    console.log(index);
     const newTasks = [...tasks.slice(0, index), ...tasks.slice(index + 1)];
-    setTasks(newTasks);
+    console.log(newTasks);
+    const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
+    console.log(sortedTasks);
+    setTasks(sortedTasks);
     const uid = fire.auth().currentUser?.uid;
     const db = fire.firestore();
     db.collection("Users")
@@ -307,11 +326,6 @@ function TaskList(props) {
       .collection("Tasks")
       .doc(task.DocumentId)
       .delete();
-    const docRef = db.collection("Users").doc(uid).collection("Tasks");
-    docRef.get().then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setTasks(data);
-    });
   }
 
   function getColor(mod) {
@@ -339,9 +353,6 @@ function TaskList(props) {
         {tasks
           .filter((task) => !isOverdue(task))
           .map((task, index) => (
-            // We should specify key here to help react identify
-            // what has updated
-            // https://reactjs.org/docs/lists-and-keys.html#keys
             <tr key={index}>
               <td bgcolor={getColor(task.Module)}>{task.Module}</td>
               <td>
@@ -349,7 +360,11 @@ function TaskList(props) {
                   color="primary"
                   checked={task.isComplete}
                   onChange={(event) =>
-                    handleTaskCompletionToggled(task, index, event)
+                    handleTaskCompletionToggled(
+                      task,
+                      index + numberOfOverdueTasks(),
+                      event
+                    )
                   }
                   inputProps={{
                     "aria-label": `checkbox that determines if task ${index} is done`,
@@ -362,7 +377,9 @@ function TaskList(props) {
 
               <td>
                 <Button
-                  onClick={() => deleteTask(task, index)}
+                  onClick={() =>
+                    deleteTask(task, index + numberOfOverdueTasks())
+                  }
                   startIcon={<DeleteIcon />}
                   color="secondary"
                 ></Button>
@@ -410,23 +427,27 @@ function OverdueTaskList(props) {
   }
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
-    console.log(toToggleTask);
+    console.log(tasks);
+    const helper = !toToggleTask.isComplete;
+    delete toToggleTask["isComplete"];
+    console.log(toToggleTask, toToggleTaskIndex);
+    console.log(helper);
     const newTasks = [
       ...tasks.slice(0, toToggleTaskIndex),
       {
         ...toToggleTask,
-        isComplete: !toToggleTask.isComplete,
+        isComplete: helper,
       },
       ...tasks.slice(toToggleTaskIndex + 1),
     ];
-    // We set new tasks in such a complex way so that we maintain immutability
-    // Read this article to find out more:
-    // https://blog.logrocket.com/immutability-in-react-ebe55253a1cc/
-    setTasks(newTasks);
+    console.log(newTasks);
+    const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
+    console.log(sortedTasks);
+    setTasks(sortedTasks);
     const uid = fire.auth().currentUser?.uid;
     const db = fire.firestore();
-    console.log(!toToggleTask.isComplete);
-    const boolean = !toToggleTask.isComplete;
+
+    const boolean = helper;
     db.collection("Users")
       .doc(uid)
       .collection("Tasks")
@@ -434,16 +455,12 @@ function OverdueTaskList(props) {
       .update({
         isComplete: boolean,
       });
-    const docRef = db.collection("Users").doc(uid).collection("Tasks");
-    docRef.get().then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setTasks(data);
-    });
   }
 
   function deleteTask(task, index) {
     const newTasks = [...tasks.slice(0, index), ...tasks.slice(index + 1)];
-    setTasks(newTasks);
+    const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
+    setTasks(sortedTasks);
     const uid = fire.auth().currentUser?.uid;
     const db = fire.firestore();
     db.collection("Users")
@@ -451,11 +468,6 @@ function OverdueTaskList(props) {
       .collection("Tasks")
       .doc(task.DocumentId)
       .delete();
-    const docRef = db.collection("Users").doc(uid).collection("Tasks");
-    docRef.get().then((querySnapshot) => {
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setTasks(data);
-    });
   }
 
   function getColor(mod) {
@@ -492,9 +504,6 @@ function OverdueTaskList(props) {
         {tasks
           .filter((task) => isOverdue(task))
           .map((task, index) => (
-            // We should specify key here to help react identify
-            // what has updated
-            // https://reactjs.org/docs/lists-and-keys.html#keys
             <tr key={index}>
               <td bgcolor={getColor(task.Module)}>{task.Module}</td>
               <td>

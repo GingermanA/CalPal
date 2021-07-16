@@ -1,3 +1,11 @@
+.formWrap {
+  width: 240px;
+  border-radius: 10px;
+  overflow: hidden;
+  padding: 10%;
+  background: linear-gradient(45deg, #56ab2f, #a8e063);
+}
+
 form .descTextField {
   margin: 0 0rem;
   width: 100%;
@@ -26,7 +34,7 @@ form .descTextField {
 
 .left {
   height: 100%;
-  width: 25%;
+  width: 35%;
   padding-left: 3rem;
   /* align-items: center; */
   /* padding-right: 2rem; */
@@ -34,7 +42,7 @@ form .descTextField {
 
 .right {
   height: 100%;
-  width: 75%;
+  width: 65%;
   border-left: 8px solid #bbb;
   padding-left: 5rem;
   padding-right: 2rem;
@@ -48,14 +56,14 @@ table.tasks tr {
   border-bottom: 1px solid black;
 }
 
-.tasks thead th:nth-child(1) {
+/* .tasks thead th:nth-child(1) {
   width: 10%;
-}
+} */
 
 .tasks thead th:nth-child(2) {
-  width: 40%;
+  width: 30%;
 }
-
+/*
 .tasks thead th:nth-child(3) {
   width: 15%;
 }
@@ -74,10 +82,12 @@ table.tasks tr {
 
 .tasks thead th:nth-child(7) {
   width: 10%;
-}
+} */
 
 .tasks td {
   padding: 20px;
   font-family: proxima-nova, sans-serif;
   font-size: 14px;
+  overflow-wrap: break-word;
+  /* max-width: 5rem; */
 }

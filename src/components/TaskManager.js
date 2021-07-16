@@ -10,28 +10,6 @@ import styles from "./TaskManager.module.css";
 import fire from "../fire";
 import { Link } from "react-router-dom";
 
-// const useStyles = makeStyles((theme) => ({
-//   formControl: {
-//     margin: theme.spacing(1),
-//     minWidth: 120,
-//   },
-//   selectEmpty: {
-//     marginTop: theme.spacing(2),
-//   },
-//   container: {
-//     display: "flex",
-//     flexWrap: "wrap",
-//   },
-//   textField: {
-//     marginLeft: theme.spacing(1),
-//     marginRight: theme.spacing(1),
-//     width: 200,
-//   },
-//   margin: {
-//     margin: theme.spacing(1),
-//   },
-// }));
-
 function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
   const [overdueTasks, setOverdueTasks] = useState([]);
@@ -179,51 +157,53 @@ function TaskManager(props) {
   return (
     <div className={styles.split}>
       <div className={styles.left}>
-        <h2>Add Tasks</h2>
-        {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
-        <form className={styles.addTaskForm} onSubmit={handleAddTask}>
-          {/* <Stack spacing={3}> */}
-          <div>
-            Title
-            <TextField
-              className={styles.descTextField}
-              //label=""
-              value={newTitleText}
-              onChange={(event) => setNewTitleText(event.target.value)}
-            />
-          </div>
-          <div className={styles.blankSpace}></div>
-          <div>
-            Module
-            <DropDownListComponent
-              id="Module"
-              className="e-field"
-              dataSource={moduleList}
-              placeholder="Select module"
-              change={(event) => setModule(event.itemData.value)}
-            ></DropDownListComponent>
-          </div>
-          <div className={styles.blankSpace}></div>
-          <div>
-            Due Date
-            <DateTimePickerComponent
-              id="date"
-              className="e-field"
-              date-name="Due Date"
-              format="dd/MM/yy hh:mm a"
-              value={newDueDate}
-              onChange={(event) => {
-                setNewDueDate(event.target.value);
-              }}
-            ></DateTimePickerComponent>
-          </div>
-          <div className={styles.blankSpace2}></div>
-          <Button type="submit" variant="contained" color="primary">
-            Add
-          </Button>
-          {/* </FormControl> */}
-          {/* </Stack> */}
-        </form>
+        <div className={styles.formWrap}>
+          <h2>Add Tasks</h2>
+          {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
+          <form className={styles.addTaskForm} onSubmit={handleAddTask}>
+            {/* <Stack spacing={3}> */}
+            <div>
+              Title
+              <TextField
+                className={styles.descTextField}
+                //label=""
+                value={newTitleText}
+                onChange={(event) => setNewTitleText(event.target.value)}
+              />
+            </div>
+            <div className={styles.blankSpace}></div>
+            <div>
+              Module
+              <DropDownListComponent
+                id="Module"
+                className="e-field"
+                dataSource={moduleList}
+                placeholder="Select module"
+                change={(event) => setModule(event.itemData.value)}
+              ></DropDownListComponent>
+            </div>
+            <div className={styles.blankSpace}></div>
+            <div>
+              Due Date
+              <DateTimePickerComponent
+                id="date"
+                className="e-field"
+                date-name="Due Date"
+                format="dd/MM/yy hh:mm a"
+                value={newDueDate}
+                onChange={(event) => {
+                  setNewDueDate(event.target.value);
+                }}
+              ></DateTimePickerComponent>
+            </div>
+            <div className={styles.blankSpace2}></div>
+            <Button type="submit" variant="contained" color="primary">
+              Add
+            </Button>
+            {/* </FormControl> */}
+            {/* </Stack> */}
+          </form>
+        </div>
       </div>
       <div className={styles.right}>
         <h2>Task List</h2>
@@ -315,7 +295,12 @@ function TaskList(props) {
   return (
     <table
       className={styles.tasks}
-      style={{ margin: "0 auto", width: "100%", textAlign: "center" }}
+      style={{
+        margin: "0 auto",
+        width: "100%",
+        textAlign: "center",
+        tableLayout: "fixed",
+      }}
     >
       <thead>
         <tr>
@@ -440,7 +425,12 @@ function OverdueTaskList(props) {
   return (
     <table
       className={styles.tasks}
-      style={{ margin: "0 auto", width: "100%", textAlign: "center" }}
+      style={{
+        margin: "0 auto",
+        width: "100%",
+        textAlign: "center",
+        tableLayout: "fixed",
+      }}
     >
       <thead>
         <tr>

@@ -169,7 +169,11 @@ function TaskManager(props) {
   }
 
   function search(rows) {
-    return rows.filter((row) => row.Module.toLowerCase().indexOf(filter) > -1);
+    return rows.filter(
+      (row) =>
+        row.Module.toLowerCase().indexOf(filter) > -1 ||
+        row.Module.indexOf(filter) > -1
+    );
   }
 
   return (
@@ -179,7 +183,7 @@ function TaskManager(props) {
         {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
         <form className={styles.addTaskForm} onSubmit={handleAddTask}>
           {/* <Stack spacing={3}> */}
-          <div>
+          <div className={styles.help}>
             <TextField
               className={styles.descTextField}
               label="Title"
@@ -187,8 +191,7 @@ function TaskManager(props) {
               onChange={(event) => setNewTitleText(event.target.value)}
             />
           </div>
-          <br />
-          <div>
+          <div className={styles.help}>
             <DropDownListComponent
               id="Module"
               className="e-field"
@@ -197,7 +200,7 @@ function TaskManager(props) {
               change={(event) => setModule(event.itemData.value)}
             ></DropDownListComponent>
           </div>
-          <div>
+          <div className={styles.help}>
             <DateTimePickerComponent
               id="date"
               className="e-field"

@@ -8,17 +8,7 @@ form .descTextField {
   align-items: center;
   justify-content: center;
   width: 75%;
-  margin: 0 2rem;
-  border: 2px solid red;
-  border-radius: 10px;
-}
-
-.blankSpace {
-  height: 50px;
-}
-
-.blankSpace2 {
-  height: 20px;
+  /* margin: 0 2rem; */
 }
 
 .split {
@@ -26,14 +16,28 @@ form .descTextField {
   flex-direction: row;
 }
 
+.blankSpace {
+  height: 50px;
+}
+
+.blankSpace2 {
+  height: 30px;
+}
+
 .left {
-  height: 100vh;
+  height: 100%;
   width: 25%;
+  padding-left: 3rem;
+  /* align-items: center; */
+  /* padding-right: 2rem; */
 }
 
 .right {
-  height: 100vh;
+  height: 100%;
   width: 75%;
+  border-left: 8px solid #bbb;
+  padding-left: 5rem;
+  padding-right: 2rem;
 }
 
 table.tasks {

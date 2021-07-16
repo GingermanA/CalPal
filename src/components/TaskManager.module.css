@@ -1,12 +1,24 @@
 form .descTextField {
-  margin: 0 1rem;
+  margin: 0 0rem;
+  width: 100%;
 }
 
 .addTaskForm {
-  display: flex;
+  display: block;
   align-items: center;
   justify-content: center;
+  width: 75%;
   margin: 0 2rem;
+  border: 2px solid red;
+  border-radius: 10px;
+}
+
+.blankSpace {
+  height: 50px;
+}
+
+.blankSpace2 {
+  height: 20px;
 }
 
 .split {
@@ -14,10 +26,14 @@ form .descTextField {
   flex-direction: row;
 }
 
-.left,
+.left {
+  height: 100vh;
+  width: 25%;
+}
+
 .right {
   height: 100vh;
-  width: 50%;
+  width: 75%;
 }
 
 table.tasks {

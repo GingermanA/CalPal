@@ -169,7 +169,11 @@ function TaskManager(props) {
   }
 
   function search(rows) {
-    return rows.filter((row) => row.Module.toLowerCase().indexOf(filter) > -1);
+    return rows.filter(
+      (row) =>
+        row.Module.toLowerCase().indexOf(filter) > -1 ||
+        row.Module.indexOf(filter) > -1
+    );
   }
 
   return (
@@ -180,15 +184,17 @@ function TaskManager(props) {
         <form className={styles.addTaskForm} onSubmit={handleAddTask}>
           {/* <Stack spacing={3}> */}
           <div>
+            Title
             <TextField
               className={styles.descTextField}
-              label="Title"
+              //label=""
               value={newTitleText}
               onChange={(event) => setNewTitleText(event.target.value)}
             />
           </div>
-          <br />
+          <div className={styles.blankSpace}></div>
           <div>
+            Module
             <DropDownListComponent
               id="Module"
               className="e-field"
@@ -197,7 +203,9 @@ function TaskManager(props) {
               change={(event) => setModule(event.itemData.value)}
             ></DropDownListComponent>
           </div>
+          <div className={styles.blankSpace}></div>
           <div>
+            Due Date
             <DateTimePickerComponent
               id="date"
               className="e-field"
@@ -209,6 +217,7 @@ function TaskManager(props) {
               }}
             ></DateTimePickerComponent>
           </div>
+          <div className={styles.blankSpace2}></div>
           <Button type="submit" variant="contained" color="primary">
             Add
           </Button>

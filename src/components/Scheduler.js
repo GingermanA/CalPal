@@ -32,17 +32,16 @@ import "./Scheduler.css";
 
 export default class Scheduler extends SampleBase {
   color: Array[] = [
-    "#E83B3B",
-    "#2D53DE",
-    "#6F18D1",
-    "#119925",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "grey",
-    "brown",
-    "cyan",
+    "#e97474",
+    "#7b8eeb",
+    "#b074e9",
+    "#5ac75c",
+    "#dedf00",
+    "#ffae55",
+    "#7e4591",
+    "#ff91f4",
+    "#935b5b",
+    "#a7a7a7",
   ];
 
   treeViewMod: { [key: string]: Object }[] = [];
@@ -53,6 +52,8 @@ export default class Scheduler extends SampleBase {
     console.log(props);
     this.state = {
       modCode: [],
+      modColor: [],
+      colors: [],
       newMod: "",
       text: "",
     };
@@ -96,32 +97,48 @@ export default class Scheduler extends SampleBase {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          this.treeViewMod = doc
-            .data()
-            .modCode.map((name, index) => {
-              return {
-                Name: name,
-                Color: this.color[index],
-                Id: index,
-              };
-            })
-            .filter((mod) => mod.Name !== "");
+          this.treeViewMod = doc.data().modCode.map((name, index) => {
+            return {
+              Name: name,
+              Color: doc.data().modColor[index],
+              Id: index,
+            };
+          });
+          console.log(this.treeViewMod);
           this.fieldMod = {
             dataSource: this.treeViewMod,
             id: "Id",
             text: "Name",
           };
 
-          this.setState({ modCode: doc.data().modCode }, () => {
-            this.addModule();
-          });
+          console.log(doc.data().colors.length);
+          this.setState(
+            {
+              modCode: doc.data().modCode,
+              modColor: doc.data().modColor,
+              colors: doc.data().colors,
+            },
+            () => {
+              this.addModule();
+            }
+          );
         } else {
+          this.setState(
+            {
+              colors: this.color,
+            },
+            () => {
+              this.initiationUpdateFire();
+            }
+          );
         }
       })
       .catch((error) => {
-        console.log("error is caught");
+        console.log(error);
       });
   }
+
+  randomColor = () => "#" + Math.floor(Math.random() * 16777215).toString(16);
 
   addModule = (text) => {
     this.setState({ newMod: text });
@@ -131,33 +148,98 @@ export default class Scheduler extends SampleBase {
     console.log(this.state);
     if (this.state.newMod !== "") {
       const newModCode = this.state.modCode.slice();
-      var replaced = false;
-      for (var i = 0; i < newModCode.length; i++) {
-        if (newModCode[i] === "") {
-          newModCode.splice(i, 1, this.state.newMod);
-          replaced = true;
-          break;
-        }
-      }
-
-      if (replaced) {
-        this.setState({ modCode: newModCode }, () => {
-          this.updateFire();
-        });
+      const newModColor = this.state.modColor.slice();
+      const newColors = this.state.colors.slice();
+      newModCode.push(this.state.newMod);
+      if (newColors.length > 0) {
+        newModColor.push(newColors.shift());
       } else {
-        this.setState(
-          { modCode: [...this.state.modCode, this.state.newMod] },
-          () => {
-            this.updateFire();
-          }
-        );
+        newModColor.push(this.randomColor());
+      }
+      this.setState(
+        { modCode: newModCode, modColor: newModColor, colors: newColors },
+        () => {
+          this.loadEdits();
+          this.updateFire();
+        }
+      );
+      // console.log(newColors);
+    }
+  };
+
+  editModules(args) {
+    const newModCode = this.state.modCode.slice();
+    for (let i = 0; i < newModCode.length; i++) {
+      if (newModCode[i] === args.oldText) {
+        newModCode[i] = args.newText;
+      }
+    }
+    this.setState({ modCode: newModCode }, () => {
+      this.updateFire();
+    });
+    this.loadEdits();
+  }
+
+  deleteModules = (index) => {
+    //console.log(index);
+    const newModCode = this.state.modCode.slice();
+    const newModColor = this.state.modColor.slice();
+    const newColors = this.state.colors.slice();
+    newModCode.splice(index, 1);
+    if (this.color.includes(newModColor[index])) {
+      newColors.splice(index, 0, newModColor[index]);
+    }
+    newModColor.splice(index, 1);
+    this.setState(
+      { modCode: newModCode, modColor: newModColor, colors: newColors },
+      () => {
+        this.updateFire();
+      }
+    );
+    this.treeViewMod = newModCode
+      .map((name, index) => {
+        return {
+          Name: name,
+          Color: newModColor[index],
+          Id: index,
+        };
+      })
+      .filter((mod) => mod.Name !== "");
+    console.log(this.treeViewMod);
+    this.fieldMod = {
+      dataSource: this.treeViewMod,
+      id: "Id",
+      text: "Name",
+    };
+    this.loadEdits();
+  };
+
+  deleteModulesByName = (name) => {
+    //console.log(index);
+    const newModCode = this.state.modCode.slice();
+    for (var i = 0; i < newModCode.length; i++) {
+      if (newModCode[i] === name) {
+        this.deleteModules(i);
+        break;
       }
     }
   };
 
+  initiationUpdateFire = () => {
+    //this.setModules();
+    this.modsRef.set({
+      colors: this.state.colors,
+    });
+    this.forceUpdate();
+  };
+
   updateFire = () => {
     //this.setModules();
-    this.modsRef.set({ modCode: this.state.modCode });
+    this.modsRef.set({
+      modCode: this.state.modCode,
+      modColor: this.state.modColor,
+      colors: this.state.colors,
+    });
     this.forceUpdate();
   };
 
@@ -311,54 +393,6 @@ export default class Scheduler extends SampleBase {
     }
   }
 
-  editModules(args) {
-    const newModCode = this.state.modCode.slice();
-    for (let i = 0; i < newModCode.length; i++) {
-      if (newModCode[i] === args.oldText) {
-        newModCode[i] = args.newText;
-      }
-    }
-    this.setState({ modCode: newModCode }, () => {
-      this.updateFire();
-    });
-    this.loadEdits();
-  }
-
-  deleteModules = (index) => {
-    //console.log(index);
-    const newModCode = this.state.modCode.slice();
-    newModCode.splice(index, 1, "");
-    this.setState({ modCode: newModCode }, () => {
-      this.updateFire();
-    });
-    this.treeViewMod = newModCode
-      .map((name, index) => {
-        return {
-          Name: name,
-          Color: this.color[index],
-          Id: index,
-        };
-      })
-      .filter((mod) => mod.Name !== "");
-    this.fieldMod = {
-      dataSource: this.treeViewMod,
-      id: "Id",
-      text: "Name",
-    };
-    this.loadEdits();
-  };
-
-  deleteModulesByName = (name) => {
-    //console.log(index);
-    const newModCode = this.state.modCode.slice();
-    for (var i = 0; i < newModCode.length; i++) {
-      if (newModCode[i] === name) {
-        this.deleteModules(i);
-        break;
-      }
-    }
-  };
-
   nodeTemplate = (data) => {
     //console.log(data);
     return (
@@ -384,7 +418,7 @@ export default class Scheduler extends SampleBase {
         .map((name, index) => {
           return {
             Name: name,
-            Color: this.color[index],
+            Color: this.state.modColor[index],
             Id: index,
           };
         })
@@ -530,7 +564,7 @@ export default class Scheduler extends SampleBase {
               <ScheduleComponent
                 height="650px"
                 ref={(schedule) => (this.scheduleObj = schedule)}
-                currentView="Month"
+                currentView="Week"
                 actionBegin={this.onActionBegin.bind(this)}
                 editorTemplate={this.editorWindowTemplate.bind(this)}
                 eventRendered={this.onEventRendered.bind(this)}

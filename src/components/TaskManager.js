@@ -15,6 +15,7 @@ function TaskManager(props) {
   const [numberOfOtTasks, setNumberOfOtTasks] = useState(0);
   // const classes = useStyles();
   const [moduleList, setModuleList] = useState([]);
+  const [colorList, setColorList] = useState([]);
   const [module, setModule] = React.useState("");
   const [newTitleText, setNewTitleText] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date());
@@ -36,13 +37,14 @@ function TaskManager(props) {
       .then((doc) => {
         if (doc.exists) {
           var modules = doc.data().modCode;
-          var help = [];
-          for (var i = 0; i < modules.length; i++) {
-            if (modules[i] !== "") {
-              help.push(modules[i]);
-            }
-          }
-          setModuleList(help);
+          var colorOfModules = doc.data().modColor;
+          // for (var i = 0; i < modules.length; i++) {
+          //   if (modules[i] !== "") {
+          //     mods.push(modules[i]);
+          //   }
+          // }
+          setModuleList(modules);
+          setColorList(colorOfModules);
         } else {
         }
       });
@@ -230,6 +232,7 @@ function TaskManager(props) {
             tasks={search(tasks)}
             setTasks={setTasks}
             moduleList={moduleList}
+            colorList={colorList}
           />
         ) : (
           <p>No overdue tasks!</p>
@@ -241,6 +244,7 @@ function TaskManager(props) {
             setTasks={setTasks}
             numberOfOtTasks={numberOfOtTasks}
             moduleList={moduleList}
+            colorList={colorList}
           />
         ) : (
           <p>No tasks yet! Add one above!</p>
@@ -251,20 +255,7 @@ function TaskManager(props) {
 }
 
 function TaskList(props) {
-  const colorArr = [
-    "#E83B3B",
-    "#2D53DE",
-    "#6F18D1",
-    "#119925",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "grey",
-    "brown",
-    "cyan",
-  ];
-  const { tasks, setTasks, moduleList, numberOfOtTasks } = props;
+  const { tasks, setTasks, moduleList, numberOfOtTasks, colorList } = props;
 
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
@@ -331,7 +322,7 @@ function TaskList(props) {
   function getColor(mod) {
     for (var i = 0; i < moduleList.length; i++) {
       if (moduleList[i] === mod) {
-        return colorArr[i];
+        return colorList[i];
       }
     }
     // console.log(mod);
@@ -402,20 +393,7 @@ function TaskList(props) {
 }
 
 function OverdueTaskList(props) {
-  const colorArr = [
-    "#E83B3B",
-    "#2D53DE",
-    "#6F18D1",
-    "#119925",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "grey",
-    "brown",
-    "cyan",
-  ];
-  const { tasks, setTasks, moduleList } = props;
+  const { tasks, setTasks, moduleList, colorList } = props;
   function isOverdue(task) {
     try {
       let time = tasks.dueDate.seconds.toString() + "000";
@@ -473,7 +451,7 @@ function OverdueTaskList(props) {
   function getColor(mod) {
     for (var i = 0; i < moduleList.length; i++) {
       if (moduleList[i] === mod) {
-        return colorArr[i];
+        return colorList[i];
       }
     }
     // console.log(mod);

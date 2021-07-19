@@ -556,7 +556,7 @@ export default class AddToScheduler extends SampleBase {
             <ScheduleComponent
               height="650px"
               ref={(schedule) => (this.scheduleObj = schedule)}
-              currentView="Month"
+              currentView="Week"
               actionBegin={this.onActionBegin.bind(this)}
               editorTemplate={this.editorWindowTemplate.bind(this)}
               eventRendered={this.onEventRendered.bind(this)}

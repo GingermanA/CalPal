@@ -34,16 +34,16 @@ form .descTextField {
 
 .left {
   height: 100%;
-  width: 35%;
+  width: 60%;
   padding-left: 3rem;
+  border-right: 8px solid #bbb;
   /* align-items: center; */
   /* padding-right: 2rem; */
 }
 
 .right {
   height: 100%;
-  width: 65%;
-  border-left: 8px solid #bbb;
+  width: 30%;
   padding-left: 5rem;
   padding-right: 2rem;
 }
@@ -52,9 +52,10 @@ table.tasks {
   border-collapse: collapse;
 }
 
-/* table.tasks tr {
-  border: 1px solid black;
-} */
+table.tasks tr {
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+}
 /*
 .tasks thead th:nth-child(1) {
   width: 5%;
@@ -85,7 +86,8 @@ table.tasks {
 } */
 
 .tasks td {
-  /* padding: 20px; */
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-family: proxima-nova, sans-serif;
   font-size: 14px;
   overflow-wrap: break-word;
@@ -98,10 +100,26 @@ table.tasks {
   background-color: #56ab2f; 
 } */
 
+.tasks tbody td:nth-child(1) {
+  width: 2%;
+}
+
 .tasks tbody td:nth-child(2) {
-  width: 5%;
+  width: 7%;
 }
 
 .tasks tbody td:nth-child(3) {
   width: 50%;
+}
+
+.taskTitle {
+  padding-bottom: 5px;
+}
+
+.dueDateCurrent {
+  color: #0099ff;
+}
+
+.dueDateOverdue {
+  color: #ff0000;
 }

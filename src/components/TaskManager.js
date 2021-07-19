@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
+import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
@@ -15,6 +16,7 @@ function TaskManager(props) {
   const [numberOfOtTasks, setNumberOfOtTasks] = useState(0);
   // const classes = useStyles();
   const [moduleList, setModuleList] = useState([]);
+  const [colorList, setColorList] = useState([]);
   const [module, setModule] = React.useState("");
   const [newTitleText, setNewTitleText] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date());
@@ -36,13 +38,14 @@ function TaskManager(props) {
       .then((doc) => {
         if (doc.exists) {
           var modules = doc.data().modCode;
-          var help = [];
-          for (var i = 0; i < modules.length; i++) {
-            if (modules[i] !== "") {
-              help.push(modules[i]);
-            }
-          }
-          setModuleList(help);
+          var colorOfModules = doc.data().modColor;
+          // for (var i = 0; i < modules.length; i++) {
+          //   if (modules[i] !== "") {
+          //     mods.push(modules[i]);
+          //   }
+          // }
+          setModuleList(modules);
+          setColorList(colorOfModules);
         } else {
         }
       });
@@ -169,6 +172,37 @@ function TaskManager(props) {
   return (
     <div className={styles.split}>
       <div className={styles.left}>
+        <h2>Task List</h2>
+        <input
+          type="text"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+        <h3>Overdue Tasks!</h3>
+        {overdueTasks.length > 0 ? (
+          <OverdueTaskList
+            tasks={search(tasks)}
+            setTasks={setTasks}
+            moduleList={moduleList}
+            colorList={colorList}
+          />
+        ) : (
+          <p>No overdue tasks!</p>
+        )}
+        <h3>Current Tasks</h3>
+        {tasks.filter((task) => !isOverdue(task)).length > 0 ? (
+          <TaskList
+            tasks={search(tasks)}
+            setTasks={setTasks}
+            numberOfOtTasks={numberOfOtTasks}
+            moduleList={moduleList}
+            colorList={colorList}
+          />
+        ) : (
+          <p>No tasks yet! Add one above!</p>
+        )}
+      </div>
+      <div className={styles.right}>
         <div className={styles.formWrap}>
           <h2>Add Tasks</h2>
           {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
@@ -217,54 +251,12 @@ function TaskManager(props) {
           </form>
         </div>
       </div>
-      <div className={styles.right}>
-        <h2>Task List</h2>
-        <input
-          type="text"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        />
-        <h3>Overdue Tasks!</h3>
-        {overdueTasks.length > 0 ? (
-          <OverdueTaskList
-            tasks={search(tasks)}
-            setTasks={setTasks}
-            moduleList={moduleList}
-          />
-        ) : (
-          <p>No overdue tasks!</p>
-        )}
-        <h3>Current Tasks</h3>
-        {tasks.filter((task) => !isOverdue(task)).length > 0 ? (
-          <TaskList
-            tasks={search(tasks)}
-            setTasks={setTasks}
-            numberOfOtTasks={numberOfOtTasks}
-            moduleList={moduleList}
-          />
-        ) : (
-          <p>No tasks yet! Add one above!</p>
-        )}
-      </div>
     </div>
   );
 }
 
 function TaskList(props) {
-  const colorArr = [
-    "#E83B3B",
-    "#2D53DE",
-    "#6F18D1",
-    "#119925",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "grey",
-    "brown",
-    "cyan",
-  ];
-  const { tasks, setTasks, moduleList, numberOfOtTasks } = props;
+  const { tasks, setTasks, moduleList, numberOfOtTasks, colorList } = props;
 
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
@@ -331,7 +323,7 @@ function TaskList(props) {
   function getColor(mod) {
     for (var i = 0; i < moduleList.length; i++) {
       if (moduleList[i] === mod) {
-        return colorArr[i];
+        return colorList[i];
       }
     }
     // console.log(mod);
@@ -354,7 +346,7 @@ function TaskList(props) {
           .filter((task) => !isOverdue(task))
           .map((task, index) => (
             <tr key={index}>
-              <td bgcolor={getColor(task.Module)}>{task.Module}</td>
+              <td bgcolor={getColor(task.Module)}></td>
               <td>
                 <Checkbox
                   color="primary"
@@ -371,18 +363,24 @@ function TaskList(props) {
                   }}
                 />
               </td>
-              <td>{task.Title}</td>
+              <td>
+                <div className={styles.taskTitle}>{task.Title}</div>
+                <div className={styles.dueDateCurrent}>
+                  <AccessTimeIcon style={{ fontSize: 15 }} />
+                  {task.dueDateString.slice(4, 21)}
+                </div>
+              </td>
 
-              <td>{task.dueDateString.slice(4, 21)}</td>
+              {/* <td>{task.dueDateString.slice(4, 21)}</td> */}
 
               <td>
                 <Button
-                  onClick={() =>
-                    deleteTask(task, index + numberOfOverdueTasks())
-                  }
-                  startIcon={<DeleteIcon />}
+                  onClick={() => deleteTask(task, index)}
+                  variant="contained"
                   color="secondary"
-                ></Button>
+                >
+                  Delete
+                </Button>
               </td>
               <td>
                 <Link
@@ -390,8 +388,14 @@ function TaskList(props) {
                     pathname: "/tasks/add",
                     state: task,
                   }}
+                  style={{ textDecoration: "none" }}
                 >
-                  Add
+                  <Button
+                    style={{ backgroundColor: "#00ff00" }}
+                    variant="contained"
+                  >
+                    Schedule
+                  </Button>
                 </Link>
               </td>
             </tr>
@@ -402,20 +406,7 @@ function TaskList(props) {
 }
 
 function OverdueTaskList(props) {
-  const colorArr = [
-    "#E83B3B",
-    "#2D53DE",
-    "#6F18D1",
-    "#119925",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "grey",
-    "brown",
-    "cyan",
-  ];
-  const { tasks, setTasks, moduleList } = props;
+  const { tasks, setTasks, moduleList, colorList } = props;
   function isOverdue(task) {
     try {
       let time = tasks.dueDate.seconds.toString() + "000";
@@ -473,7 +464,7 @@ function OverdueTaskList(props) {
   function getColor(mod) {
     for (var i = 0; i < moduleList.length; i++) {
       if (moduleList[i] === mod) {
-        return "3px solid " + colorArr[i];
+        return colorList[i];
       }
     }
     // console.log(mod);
@@ -487,7 +478,6 @@ function OverdueTaskList(props) {
       style={{
         margin: "0 auto",
         width: "100%",
-        textAlign: "center",
         tableLayout: "fixed",
       }}
     >
@@ -504,8 +494,8 @@ function OverdueTaskList(props) {
         {tasks
           .filter((task) => isOverdue(task))
           .map((task, index) => (
-            <tr key={index} style={{ border: getColor(task.Module) }}>
-              {/* <td bgcolor={getColor(task.Module)}>{task.Module}</td> */}
+            <tr key={index}>
+              <td bgcolor={getColor(task.Module)}></td>
               <td>
                 <Checkbox
                   color="primary"
@@ -518,16 +508,24 @@ function OverdueTaskList(props) {
                   }}
                 />
               </td>
-              <td>{task.Title}</td>
+              <td>
+                <div className={styles.taskTitle}>{task.Title}</div>
+                <div className={styles.dueDateOverdue}>
+                  <AccessTimeIcon style={{ fontSize: 15 }} />
+                  {task.dueDateString.slice(4, 21)}
+                </div>
+              </td>
 
-              <td>{task.dueDateString.slice(4, 21)}</td>
+              {/* <td>{task.dueDateString.slice(4, 21)}</td> */}
 
               <td>
                 <Button
                   onClick={() => deleteTask(task, index)}
-                  startIcon={<DeleteIcon />}
+                  variant="contained"
                   color="secondary"
-                ></Button>
+                >
+                  Delete
+                </Button>
               </td>
               <td>
                 <Link
@@ -535,8 +533,14 @@ function OverdueTaskList(props) {
                     pathname: "/tasks/add",
                     state: task,
                   }}
+                  style={{ textDecoration: "none" }}
                 >
-                  Add
+                  <Button
+                    style={{ backgroundColor: "#00ff00" }}
+                    variant="contained"
+                  >
+                    Schedule
+                  </Button>
                 </Link>
               </td>
             </tr>

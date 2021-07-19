@@ -52,10 +52,9 @@ table.tasks {
   border-collapse: collapse;
 }
 
-table.tasks tr {
+/* table.tasks tr {
   border: 1px solid black;
-}
-
+} */
 /*
 .tasks thead th:nth-child(1) {
   width: 5%;
@@ -94,10 +93,10 @@ table.tasks tr {
   /* max-width: 5rem; */
 }
 
-.tasks tbody td:nth-child(1) {
+/* .tasks tbody td:nth-child(1) {
   border-right: 1px solid black;
-  /* background-color: #56ab2f; */
-}
+  background-color: #56ab2f; 
+} */
 
 .tasks tbody td:nth-child(2) {
   width: 5%;

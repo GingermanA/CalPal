@@ -473,7 +473,7 @@ function OverdueTaskList(props) {
   function getColor(mod) {
     for (var i = 0; i < moduleList.length; i++) {
       if (moduleList[i] === mod) {
-        return colorArr[i];
+        return "3px solid " + colorArr[i];
       }
     }
     // console.log(mod);
@@ -504,8 +504,8 @@ function OverdueTaskList(props) {
         {tasks
           .filter((task) => isOverdue(task))
           .map((task, index) => (
-            <tr key={index}>
-              <td bgcolor={getColor(task.Module)}>{task.Module}</td>
+            <tr key={index} style={{ border: getColor(task.Module) }}>
+              {/* <td bgcolor={getColor(task.Module)}>{task.Module}</td> */}
               <td>
                 <Checkbox
                   color="primary"

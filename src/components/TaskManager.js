@@ -36,13 +36,16 @@ function TaskManager(props) {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          var modules = doc.data().modCode;
-          var colorOfModules = doc.data().modColor;
-          // for (var i = 0; i < modules.length; i++) {
-          //   if (modules[i] !== "") {
-          //     mods.push(modules[i]);
-          //   }
-          // }
+          try {
+            var modules = doc.data().modCode;
+            var help = modules.length;
+            console.log(help);
+          } catch (err) {
+            modules = [];
+          }
+          try {
+            var colorOfModules = doc.data().modColor;
+          } catch (err) {}
           setModuleList(modules);
           setColorList(colorOfModules);
         } else {

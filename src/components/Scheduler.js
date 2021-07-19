@@ -532,7 +532,7 @@ export default class Scheduler extends SampleBase {
           <Link to="/tasks">Tasks</Link>
           <div className="control-wrapper">
             <div className="module-manager">
-              <div>Add modules here</div>
+              <div>Add modules here Testing for Heroku!</div>
               <div className="treeview-form">
                 <textarea
                   // value="Enter your module here!"

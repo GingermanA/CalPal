@@ -206,16 +206,19 @@ function TaskManager(props) {
         )}
       </div>
       <div className={styles.right}>
+        <div className={styles.titleWrap}>
+          <h2 className={styles.newTaskTitle}>Enter a new task</h2>
+        </div>
         <div className={styles.formWrap}>
-          <h2>Add Tasks</h2>
           {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
           <form className={styles.addTaskForm} onSubmit={handleAddTask}>
             {/* <Stack spacing={3}> */}
             <div>
               Title
               <TextField
+                required
                 className={styles.descTextField}
-                //label=""
+                inputProps={{ style: { fontSize: 14 } }}
                 value={newTitleText}
                 onChange={(event) => setNewTitleText(event.target.value)}
               />
@@ -329,6 +332,7 @@ function TaskList(props) {
         return colorList[i];
       }
     }
+    return "#3f51b5";
     // console.log(mod);
     // console.log(moduleList);
     // console.log(i);
@@ -470,6 +474,7 @@ function OverdueTaskList(props) {
         return colorList[i];
       }
     }
+    return "#3f51b5";
     // console.log(mod);
     // console.log(moduleList);
     // console.log(i);

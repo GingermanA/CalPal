@@ -8,6 +8,22 @@
 
 .module-manager {
   width: 20%;
+  background-color: #f0f0f5;
+  min-height: 100vh;
+  height: 100%;
+}
+
+.heading-wrapper {
+  background-color: black;
+  padding-top: 1rem;
+}
+
+.module-manager-heading {
+  margin: 0 0rem;
+  padding-left: 10%;
+  padding-bottom: 2%;
+  background-color: black;
+  color: white;
 }
 
 .scheduler-title-container {
@@ -31,6 +47,7 @@
 }
 
 .treeview-component {
+  float: left;
 }
 
 .tree-control-wrapper {

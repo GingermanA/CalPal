@@ -564,7 +564,9 @@ export default class Scheduler extends SampleBase {
               </ScheduleComponent>
             </div>
             <div className="module-manager">
-              <div>Add modules here</div>
+              <div className="heading-wrapper">
+                <h2 className="module-manager-heading">Your Modules</h2>
+              </div>
               <div className="treeview-form">
                 <textarea
                   // value="Enter your module here!"

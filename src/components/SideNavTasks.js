@@ -17,8 +17,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import EventIcon from "@material-ui/icons/Event";
 import AssignmentTurnedInIcon from "@material-ui/icons/AssignmentTurnedIn";
 import MuiListItem from "@material-ui/core/ListItem";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import IconButton from "@material-ui/core/IconButton";
+import fire from "../fire";
 
-export default function SideNavTasks() {
+export default function SideNavScheduler() {
   const drawerWidth = 240;
 
   const useStyles = makeStyles((theme) => ({
@@ -42,6 +45,13 @@ export default function SideNavTasks() {
     },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
+    blank: {
+      height: "520px",
+    },
+    signout: {
+      display: "inline-block",
+      textAlign: "right",
+    },
     //   content: {
     //     flexGrow: 1,
     //     backgroundColor: theme.palette.background.default,
@@ -85,7 +95,12 @@ export default function SideNavTasks() {
         }}
         anchor="left"
       >
-        <div className={classes.toolbar} />
+        <div className={classes.toolbar}>
+          <h1 style={{ color: "#ffffff" }}>CalPal</h1>
+          {/* <ListItem>
+            <ListItemText primary="CalPal" style={{ color: "#ffffff" }} />
+          </ListItem> */}
+        </div>
         <Divider />
         <List>
           <ListItem
@@ -113,6 +128,12 @@ export default function SideNavTasks() {
             <ListItemText primary="Tasks" style={{ color: "#ffffff" }} />
           </ListItem>
         </List>
+        <div className={classes.blank} />
+        <div className={classes.signout}>
+          <IconButton onClick={() => fire.auth().signOut()}>
+            <ExitToAppIcon style={{ color: "#ffffff", fontSize: 40 }} />
+          </IconButton>
+        </div>
       </Drawer>
     </>
   );

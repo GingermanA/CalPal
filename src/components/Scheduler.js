@@ -18,6 +18,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 
 import DeleteIcon from "@material-ui/icons/Delete";
+import { TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
@@ -394,20 +395,41 @@ export default class Scheduler extends SampleBase {
     }
   }
 
+  // nodeTemplate = (data) => {
+  //   //console.log(data);
+  //   return (
+  //     <table>
+  //       <tr>
+  //         <td className="treeName">{data.Name}</td>
+  //         <td className="inline2">
+  //           <Button
+  //             onClick={this.deleteModules.bind(this, data.Id)}
+  //             startIcon={<DeleteIcon />}
+  //             color="secondary"
+  //           ></Button>
+  //         </td>
+  //       </tr>
+  //     </table>
+  //   );
+  // };
+
   nodeTemplate = (data) => {
-    //console.log(data);
+    console.log(data);
     return (
-      <div>
-        <div className="treeviewdiv">
-          <div className="textcontent">
-            <span className="treeName">{data.Name}</span>
-            <Button
-              onClick={this.deleteModules.bind(this, data.Id)}
-              startIcon={<DeleteIcon />}
-              color="secondary"
-            ></Button>
-          </div>
+      <div className="min-width">
+        {/* <div className="blankSpace3" backgroundColor={data.Color}></div> */}
+        <div bgcolor={data.Color} className="inline">
+          <span className="treeName">{data.Name}</span>
         </div>
+        <div className="inline2">
+          <Button
+            onClick={this.deleteModules.bind(this, data.Id)}
+            startIcon={<DeleteIcon />}
+            color="secondary"
+          ></Button>
+        </div>
+        {/* </div>
+        </div> */}
       </div>
     );
   };
@@ -567,23 +589,25 @@ export default class Scheduler extends SampleBase {
               <div className="heading-wrapper">
                 <h2 className="module-manager-heading">Your Modules</h2>
               </div>
-              <div className="treeview-form">
-                <textarea
+              <div className="padding">
+                Add modules here:
+                <TextField
                   // value="Enter your module here!"
-                  className="form-control"
+                  className="descTextField"
+                  inputProps={{ style: { fontSize: 14 } }}
                   onChange={(e) => this.addModule(e.target.value)}
                 />
-              </div>
-              <div>
-                <button
+                <div className="blankSpace2"></div>
+                <Button
                   type="submit"
-                  className="btn btn-md btn-primary sign-in-button"
+                  variant="contained"
+                  color="primary"
                   onClick={this.setModules}
                 >
                   Add
-                </button>
+                </Button>
               </div>
-              <div className="treeview-component">
+              <div>
                 <TreeViewComponent
                   fields={this.fieldMod}
                   allowDragAndDrop={true}

@@ -2,6 +2,19 @@
   display: flex;
 }
 
+.min-width {
+  min-width: 8rem;
+}
+
+.inline {
+  display: inline;
+}
+
+.inline2 {
+  display: inline;
+  float: right;
+}
+
 .scheduler {
   width: 80%;
 }
@@ -11,6 +24,13 @@
   background-color: #f0f0f5;
   min-height: 100vh;
   height: 100%;
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+
+.padding {
+  padding: 10%;
 }
 
 .heading-wrapper {
@@ -82,6 +102,23 @@
   pointer-events: auto;
 }
 
+.e-text-content {
+  padding: 0px;
+}
+
 .e-event-delete {
   display: none;
+}
+
+.descTextField {
+  margin: 0 0rem;
+  width: 100%;
+}
+
+.addModuleForm {
+  display: block;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* margin: 0 2rem; */
 }

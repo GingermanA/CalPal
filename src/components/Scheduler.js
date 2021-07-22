@@ -51,7 +51,7 @@ export default class Scheduler extends SampleBase {
 
   constructor(props) {
     super(props);
-    console.log(props);
+    // console.log(props);
     this.state = {
       modCode: [],
       modColor: [],
@@ -84,7 +84,7 @@ export default class Scheduler extends SampleBase {
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
         } catch (err) {
-          console.log(this.test);
+          // console.log(this.test);
         }
       });
 
@@ -106,14 +106,14 @@ export default class Scheduler extends SampleBase {
               Id: index,
             };
           });
-          console.log(this.treeViewMod);
+          // console.log(this.treeViewMod);
           this.fieldMod = {
             dataSource: this.treeViewMod,
             id: "Id",
             text: "Name",
           };
 
-          console.log(doc.data().colors.length);
+          // console.log(doc.data().colors.length);
           this.setState(
             {
               modCode: doc.data().modCode,
@@ -138,6 +138,12 @@ export default class Scheduler extends SampleBase {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  onPopupOpen(args) {
+    if (args.type === "Editor") {
+      this.scheduleObj.eventWindow.recurrenceEditor = this.recurrObject;
+    }
   }
 
   randomColor = () => "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -283,8 +289,46 @@ export default class Scheduler extends SampleBase {
 
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
+      // console.log(args);
+      // console.log(args.changedRecords[0]);
+      // console.log(args.changedRecords[0].RecurrenceRule);
+      // console.log(args.data.occurrence.RecurrenceException);
       try {
-        console.log(args.changedRecords[0]);
+        //   // if this is to create an exception event...
+        //   if (args.changedRecords[0].RecurrenceException !== undefined) {
+        //     console.log("if case");
+        //     //this is needed so that the recurrenceID can have the parent's documentID
+        //     const changedRecords = args.changedRecords[0];
+        //     const DocumentId = changedRecords.DocumentId;
+        //     //this is the raw exception event, needa refine it
+        //     const occurrence = args.data.occurrence;
+        //     // Set the recurrenceID as the parent's document ID
+        //     occurrence.RecurrenceID = DocumentId;
+        //     // give this exception event its on documentID
+        //     occurrence.DocumentId = occurrence.Guid;
+        //     //removing unneccesary things from the occurrence object
+        //     delete occurrence.Guid;
+        //     delete occurrence.FollowingID;
+        //     delete occurrence.RecurrenceRule;
+        //     delete occurrence.RecurrenceException;
+        //     //create a separate exception event
+        //     this.data.doc(occurrence.DocumentId).set(occurrence);
+
+        //     //now to update the original recurrent events. Need to include the recurrenceException string
+        //     this.data.doc(DocumentId).delete();
+        //     this.data.doc(DocumentId).set({
+        //       DocumentId: DocumentId,
+        //       Endtime: changedRecords.Endtime,
+        //       Location: changedRecords.Location,
+        //       Module: changedRecords.Module,
+        //       RecurrenceRule: changedRecords.RecurrenceRule,
+        //       RecurrenceException: changedRecords.RecurrenceException,
+        //       StartTime: changedRecords.StartTime,
+        //       Subject: changedRecords.Subject,
+        //       Type: changedRecords.Type,
+        //     });
+        //   } else {
+        //     console.log("else case");
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Subject: args.changedRecords[0].Subject });
@@ -294,23 +338,21 @@ export default class Scheduler extends SampleBase {
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Type: args.changedRecords[0].Type });
-        if (args.changedRecords[0].Location != null) {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ Location: args.changedRecords[0].Location });
-        }
-        if (args.changedRecords[0].RecurrenceRule != null) {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
-        }
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ EndTime: args.changedRecords[0].EndTime });
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ StartTime: args.changedRecords[0].StartTime });
-        console.log(args.changedRecords[0]);
+        // this.data
+        //   .doc(args.changedRecords[0].DocumentId)
+        //   .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
+        // console.log("Recurrence Rule updated");
+        if (args.changedRecords[0].Location !== null) {
+          this.data
+            .doc(args.changedRecords[0].DocumentId)
+            .update({ Location: args.changedRecords[0].Location });
+        }
       } catch (err) {}
     } else if (args.requestType === "eventCreate") {
       let guid = (
@@ -328,8 +370,8 @@ export default class Scheduler extends SampleBase {
         this.GuidFun()
       ).toLowerCase();
       args.data[0].DocumentId = guid.toString();
-
       const argsData = args.data[0];
+      delete argsData.Id;
       if (argsData.Location == null) {
         argsData.Location = "";
       }
@@ -339,19 +381,13 @@ export default class Scheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      if (argsData.RecurrenceRule == null) {
-        argsData.RecurrenceRule = null;
-      }
-      this.data.doc(guid).set({
-        Subject: argsData.Subject,
-        DocumentId: argsData.DocumentId,
-        EndTime: argsData.EndTime,
-        Location: argsData.Location,
-        Module: argsData.Module,
-        StartTime: argsData.StartTime,
-        Type: argsData.Type,
-        RecurrenceRule: argsData.RecurrenceRule,
-      });
+      // if (argsData.RecurrenceRule === null) {
+      //   argsData.RecurrenceRule = "";
+      // }
+      delete argsData.RecurrenceRule;
+      delete argsData.EngTimezone;
+      delete argsData.StartTimezone;
+      this.data.doc(guid).set(args.data[0]);
     } else if (args.requestType === "eventRemove") {
       if (args.changedRecords === []) {
         this.data.doc(args.changedRecords[0].DocumentId).delete();
@@ -365,7 +401,6 @@ export default class Scheduler extends SampleBase {
   //Color coding of Events based on Modules
 
   onEventRendered(args) {
-    console.log(this.treeViewMod);
     for (let i = 0; i < this.treeViewMod.length; i++) {
       if (args.data.Module === this.treeViewMod[i].Name) {
         args.element.style.backgroundColor = this.treeViewMod[i].Color;
@@ -395,26 +430,7 @@ export default class Scheduler extends SampleBase {
     }
   }
 
-  // nodeTemplate = (data) => {
-  //   //console.log(data);
-  //   return (
-  //     <table>
-  //       <tr>
-  //         <td className="treeName">{data.Name}</td>
-  //         <td className="inline2">
-  //           <Button
-  //             onClick={this.deleteModules.bind(this, data.Id)}
-  //             startIcon={<DeleteIcon />}
-  //             color="secondary"
-  //           ></Button>
-  //         </td>
-  //       </tr>
-  //     </table>
-  //   );
-  // };
-
   nodeTemplate = (data) => {
-    console.log(data);
     return (
       <div className="min-width">
         {/* <div className="blankSpace3" backgroundColor={data.Color}></div> */}
@@ -514,7 +530,7 @@ export default class Scheduler extends SampleBase {
               <DateTimePickerComponent
                 id="StartTime"
                 className="e-field"
-                date-name="StartTime"
+                data-name="StartTime"
                 value={new Date(props.startTime || props.StartTime)}
                 format="dd/MM/yy hh:mm a"
               ></DateTimePickerComponent>
@@ -525,14 +541,14 @@ export default class Scheduler extends SampleBase {
             <td>
               <DateTimePickerComponent
                 id="EndTime"
-                date-name="EndTime"
+                data-name="EndTime"
                 value={new Date(props.endTime || props.EndTime)}
                 format="dd/MM/yy hh:mm a"
                 className="e-field"
               ></DateTimePickerComponent>
             </td>
           </tr>
-          <tr>
+          {/* <tr>
             <td className="e-textlabel">Recurrence</td>
             <td>
               <RecurrenceEditorComponent
@@ -540,7 +556,7 @@ export default class Scheduler extends SampleBase {
                 ref={(recurrObject) => (this.recurrObject = recurrObject)}
               ></RecurrenceEditorComponent>
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
     );
@@ -560,7 +576,7 @@ export default class Scheduler extends SampleBase {
               <ScheduleComponent
                 height="650px"
                 ref={(schedule) => (this.scheduleObj = schedule)}
-                currentView="Week"
+                currentView="Month"
                 actionBegin={this.onActionBegin.bind(this)}
                 editorTemplate={this.editorWindowTemplate.bind(this)}
                 eventRendered={this.onEventRendered.bind(this)}

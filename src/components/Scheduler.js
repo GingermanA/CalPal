@@ -289,46 +289,7 @@ export default class Scheduler extends SampleBase {
 
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
-      // console.log(args);
-      // console.log(args.changedRecords[0]);
-      // console.log(args.changedRecords[0].RecurrenceRule);
-      // console.log(args.data.occurrence.RecurrenceException);
       try {
-        //   // if this is to create an exception event...
-        //   if (args.changedRecords[0].RecurrenceException !== undefined) {
-        //     console.log("if case");
-        //     //this is needed so that the recurrenceID can have the parent's documentID
-        //     const changedRecords = args.changedRecords[0];
-        //     const DocumentId = changedRecords.DocumentId;
-        //     //this is the raw exception event, needa refine it
-        //     const occurrence = args.data.occurrence;
-        //     // Set the recurrenceID as the parent's document ID
-        //     occurrence.RecurrenceID = DocumentId;
-        //     // give this exception event its on documentID
-        //     occurrence.DocumentId = occurrence.Guid;
-        //     //removing unneccesary things from the occurrence object
-        //     delete occurrence.Guid;
-        //     delete occurrence.FollowingID;
-        //     delete occurrence.RecurrenceRule;
-        //     delete occurrence.RecurrenceException;
-        //     //create a separate exception event
-        //     this.data.doc(occurrence.DocumentId).set(occurrence);
-
-        //     //now to update the original recurrent events. Need to include the recurrenceException string
-        //     this.data.doc(DocumentId).delete();
-        //     this.data.doc(DocumentId).set({
-        //       DocumentId: DocumentId,
-        //       Endtime: changedRecords.Endtime,
-        //       Location: changedRecords.Location,
-        //       Module: changedRecords.Module,
-        //       RecurrenceRule: changedRecords.RecurrenceRule,
-        //       RecurrenceException: changedRecords.RecurrenceException,
-        //       StartTime: changedRecords.StartTime,
-        //       Subject: changedRecords.Subject,
-        //       Type: changedRecords.Type,
-        //     });
-        //   } else {
-        //     console.log("else case");
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Subject: args.changedRecords[0].Subject });
@@ -344,10 +305,6 @@ export default class Scheduler extends SampleBase {
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ StartTime: args.changedRecords[0].StartTime });
-        // this.data
-        //   .doc(args.changedRecords[0].DocumentId)
-        //   .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
-        // console.log("Recurrence Rule updated");
         if (args.changedRecords[0].Location !== null) {
           this.data
             .doc(args.changedRecords[0].DocumentId)
@@ -381,9 +338,6 @@ export default class Scheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      // if (argsData.RecurrenceRule === null) {
-      //   argsData.RecurrenceRule = "";
-      // }
       delete argsData.RecurrenceRule;
       delete argsData.EngTimezone;
       delete argsData.StartTimezone;
@@ -576,7 +530,7 @@ export default class Scheduler extends SampleBase {
               <ScheduleComponent
                 height="650px"
                 ref={(schedule) => (this.scheduleObj = schedule)}
-                currentView="Month"
+                currentView="Week"
                 actionBegin={this.onActionBegin.bind(this)}
                 editorTemplate={this.editorWindowTemplate.bind(this)}
                 eventRendered={this.onEventRendered.bind(this)}

@@ -25,6 +25,7 @@ import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { SampleBase } from "./sample-base";
 import fire from "../fire";
+import SideNavScheduler from "./SideNavScheduler";
 
 import { Link } from "react-router-dom";
 
@@ -240,11 +241,11 @@ export default class AddToScheduler extends SampleBase {
             .doc(args.changedRecords[0].DocumentId)
             .update({ Location: args.changedRecords[0].Location });
         }
-        if (args.changedRecords[0].RecurrenceRule != null) {
-          this.data
-            .doc(args.changedRecords[0].DocumentId)
-            .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
-        }
+        // if (args.changedRecords[0].RecurrenceRule != null) {
+        //   this.data
+        //     .doc(args.changedRecords[0].DocumentId)
+        //     .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
+        // }
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ EndTime: args.changedRecords[0].EndTime });
@@ -280,9 +281,9 @@ export default class AddToScheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      if (argsData.RecurrenceRule == null) {
-        argsData.RecurrenceRule = null;
-      }
+      // if (argsData.RecurrenceRule == null) {
+      //   argsData.RecurrenceRule = null;
+      // }
       this.data.doc(guid).set({
         Subject: argsData.Subject,
         DocumentId: argsData.DocumentId,
@@ -291,8 +292,9 @@ export default class AddToScheduler extends SampleBase {
         Module: argsData.Module,
         StartTime: argsData.StartTime,
         Type: argsData.Type,
-        RecurrenceRule: argsData.RecurrenceRule,
+        // RecurrenceRule: argsData.RecurrenceRule,
       });
+      this.loadEdits();
       this.props.history.push("/scheduler");
       //this.deleteModulesByName(args.data[0].Subject);
       // this.deleteModules(args.draggedNodeData.id);
@@ -526,7 +528,7 @@ export default class AddToScheduler extends SampleBase {
               ></DateTimePickerComponent>
             </td>
           </tr>
-          <tr>
+          {/* <tr>
             <td className="e-textlabel">Recurrence</td>
             <td>
               <RecurrenceEditorComponent
@@ -534,7 +536,7 @@ export default class AddToScheduler extends SampleBase {
                 ref={(recurrObject) => (this.recurrObject = recurrObject)}
               ></RecurrenceEditorComponent>
             </td>
-          </tr>
+          </tr> */}
         </tbody>
       </table>
     );
@@ -552,72 +554,53 @@ export default class AddToScheduler extends SampleBase {
         <div className="col-lg-9 control-section">
           <div className="control-wrapper">
             {/* <button onClick={() => fire.auth().signOut()}>Sign out</button> */}
-            <Link to="/tasks">Tasks</Link>
-            <ScheduleComponent
-              height="650px"
-              ref={(schedule) => (this.scheduleObj = schedule)}
-              currentView="Week"
-              actionBegin={this.onActionBegin.bind(this)}
-              editorTemplate={this.editorWindowTemplate.bind(this)}
-              eventRendered={this.onEventRendered.bind(this)}
-            >
-              <ViewsDirective>
-                <ViewDirective option="Day" />
-                <ViewDirective option="Week" />
-                <ViewDirective option="WorkWeek" />
-                <ViewDirective option="Month" />
-              </ViewsDirective>
 
-              <Inject
-                services={[
-                  Day,
-                  Week,
-                  WorkWeek,
-                  Month,
-                  Agenda,
-                  Resize,
-                  DragAndDrop,
-                ]}
-              />
-            </ScheduleComponent>
+            <SideNavScheduler />
+            <div className="scheduler">
+              <ScheduleComponent
+                height="650px"
+                ref={(schedule) => (this.scheduleObj = schedule)}
+                currentView="Week"
+                actionBegin={this.onActionBegin.bind(this)}
+                editorTemplate={this.editorWindowTemplate.bind(this)}
+                eventRendered={this.onEventRendered.bind(this)}
+              >
+                <ViewsDirective>
+                  <ViewDirective option="Day" />
+                  <ViewDirective option="Week" />
+                  <ViewDirective option="WorkWeek" />
+                  <ViewDirective option="Month" />
+                </ViewsDirective>
+
+                <Inject
+                  services={[
+                    Day,
+                    Week,
+                    WorkWeek,
+                    Month,
+                    Agenda,
+                    Resize,
+                    DragAndDrop,
+                  ]}
+                />
+              </ScheduleComponent>
+            </div>
+            <div className="module-manager">
+              <div className="heading-wrapper">
+                <h2 className="module-manager-heading">Tasks to Add</h2>
+              </div>
+              <div className="padding">
+                <TreeViewComponent
+                  fields={this.fieldTask}
+                  allowDragAndDrop={true}
+                  //allowEditing={true}
+                  nodeDragStop={this.onTreeDragStopTask.bind(this)}
+                  //nodeEdited={this.editModules.bind(this)}
+                  //nodeTemplate={this.nodeTemplate}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        {/* <div>Add modules here</div>
-        <div className="treeview-form">
-          <textarea
-            // value="Enter your module here!"
-            className="form-control"
-            onChange={(e) => this.addModule(e.target.value)}
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="btn btn-md btn-primary sign-in-button"
-            onClick={this.setModules}
-          >
-            Add
-          </button>
-        </div>
-        <div className="treeview-component">
-          <TreeViewComponent
-            fields={this.fieldMod}
-            allowDragAndDrop={true}
-            allowEditing={true}
-            nodeDragStop={this.onTreeDragStopMod.bind(this)}
-            nodeEdited={this.editModules.bind(this)}
-            nodeTemplate={this.nodeTemplate}
-          />
-        </div> */}
-        <div className="treeview-component">
-          <TreeViewComponent
-            fields={this.fieldTask}
-            allowDragAndDrop={true}
-            //allowEditing={true}
-            nodeDragStop={this.onTreeDragStopTask.bind(this)}
-            //nodeEdited={this.editModules.bind(this)}
-            //nodeTemplate={this.nodeTemplate}
-          />
         </div>
       </div>
     );

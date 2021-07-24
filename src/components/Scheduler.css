@@ -6,8 +6,27 @@
   min-width: 8rem;
 }
 
+/* .mod-color {
+  height: 10px;
+  width: 10px;
+  background-color: #3366ff;
+  border-radius: 50%;
+  display: inline-block;
+} */
+
 .inline {
   display: inline;
+}
+
+.treeName {
+  font-size: 14px;
+  padding-right: 50px;
+}
+
+.mod-color {
+  display: inline;
+  float: left;
+  margin-top: 3px;
 }
 
 .inline2 {
@@ -27,6 +46,10 @@
   display: block;
   align-items: center;
   justify-content: center;
+}
+
+.add-module {
+  font-size: 16px;
 }
 
 .padding {
@@ -99,6 +122,13 @@
 }
 .material .treeCount.e-badge {
   vertical-align: middle;
+}
+
+.e-treeview .e-ul {
+  padding: 0;
+}
+
+.e-treeview .e-list-item {
 }
 
 /* If you want perform any operation using icons. set the pointer events as auto. It triggers the click event for icon.*/

@@ -35,6 +35,7 @@ import {
   DragAndDropEventArgs,
 } from "@syncfusion/ej2-react-navigations";
 import "./Scheduler.css";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 export default class AddToScheduler extends SampleBase {
   color: Array[] = [
@@ -413,18 +414,16 @@ export default class AddToScheduler extends SampleBase {
   };
 
   nodeTemplate = (data) => {
-    //console.log(data);
+    const color = data.Color;
+
     return (
-      <div>
-        <div className="treeviewdiv">
-          <div className="textcontent">
-            <span className="treeName">{data.Name}</span>
-            <Button
-              onClick={this.deleteModules.bind(this, data.Id)}
-              startIcon={<DeleteIcon />}
-              color="secondary"
-            ></Button>
-          </div>
+      <div className="min-width">
+        {/* <div className="blankSpace3" backgroundColor={data.Color}></div> */}
+        <div className="mod-color">
+          <FiberManualRecordIcon style={{ color: color }} />
+        </div>
+        <div className="inline">
+          <span className="treeName">{data.Name}</span>
         </div>
       </div>
     );

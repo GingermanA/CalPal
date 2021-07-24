@@ -31,6 +31,8 @@ import {
 } from "@syncfusion/ej2-react-navigations";
 import "./Scheduler.css";
 import SideNavScheduler from "./SideNavScheduler";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import { withStyles } from "@material-ui/core/styles";
 
 export default class Scheduler extends SampleBase {
   color: Array[] = [
@@ -385,19 +387,34 @@ export default class Scheduler extends SampleBase {
   }
 
   nodeTemplate = (data) => {
+    const color = data.Color;
+    const StyledButton = withStyles({
+      root: {
+        backgroundColor: "#f0f0f5",
+        color: "#f0f0f5",
+        "&:hover": {
+          backgroundColor: "#fff",
+          color: "#3c52b2",
+        },
+      },
+    })(Button);
     return (
       <div className="min-width">
         {/* <div className="blankSpace3" backgroundColor={data.Color}></div> */}
-        <div bgcolor={data.Color} className="inline">
+        <div className="mod-color">
+          <FiberManualRecordIcon style={{ color: color }} />
+        </div>
+        <div className="inline">
           <span className="treeName">{data.Name}</span>
         </div>
         <div className="inline2">
-          <Button
+          <StyledButton
             onClick={this.deleteModules.bind(this, data.Id)}
             startIcon={<DeleteIcon />}
             color="secondary"
-          ></Button>
+          ></StyledButton>
         </div>
+
         {/* </div>
         </div> */}
       </div>
@@ -557,10 +574,10 @@ export default class Scheduler extends SampleBase {
             </div>
             <div className="module-manager">
               <div className="heading-wrapper">
-                <h2 className="module-manager-heading">Your Modules</h2>
+                <h2 className="module-manager-heading">My Modules</h2>
               </div>
               <div className="padding">
-                Add modules here:
+                <div className="add-module">Add a new Module:</div>
                 <TextField
                   // value="Enter your module here!"
                   className="descTextField"

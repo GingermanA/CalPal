@@ -156,7 +156,7 @@ export default class Scheduler extends SampleBase {
 
   setModules = () => {
     console.log(this.state);
-    if (this.state.newMod !== "") {
+    if (this.state.newMod !== undefined) {
       const newModCode = this.state.modCode.slice();
       const newModColor = this.state.modColor.slice();
       const newColors = this.state.colors.slice();
@@ -173,7 +173,7 @@ export default class Scheduler extends SampleBase {
           this.updateFire();
         }
       );
-      // console.log(newColors);
+    } else {
     }
   };
 
@@ -245,12 +245,14 @@ export default class Scheduler extends SampleBase {
 
   updateFire = () => {
     //this.setModules();
-    this.modsRef.set({
-      modCode: this.state.modCode,
-      modColor: this.state.modColor,
-      colors: this.state.colors,
-    });
-    this.forceUpdate();
+    try {
+      this.modsRef.set({
+        modCode: this.state.modCode,
+        modColor: this.state.modColor,
+        colors: this.state.colors,
+      });
+      this.forceUpdate();
+    } catch (err) {}
   };
 
   //CRUD operations on Scheduler

@@ -47,7 +47,6 @@ export default class Scheduler extends SampleBase {
     "#935b5b",
     "#a7a7a7",
   ];
-
   treeViewMod: { [key: string]: Object }[] = [];
   fieldMod: Object = {};
 
@@ -410,11 +409,11 @@ export default class Scheduler extends SampleBase {
           <span className="treeName">{data.Name}</span>
         </div>
         <div className="inline2">
-          <StyledButton
+          <Button
             onClick={this.deleteModules.bind(this, data.Id)}
             startIcon={<DeleteIcon />}
             color="secondary"
-          ></StyledButton>
+          ></Button>
         </div>
 
         {/* </div>

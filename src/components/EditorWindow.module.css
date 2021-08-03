@@ -120,20 +120,20 @@ table.tasks tr {
 }
 
 .tasks tbody td:nth-child(3) {
-  width: 40%;
+  width: 50%;
 }
 
-/* .tasks tbody td:nth-child(4) {
+.tasks tbody td:nth-child(4) {
   width: 13%;
 }
 
 .tasks tbody td:nth-child(5) {
   width: 10%;
-} 
+}
 
 .tasks tbody td:nth-child(6) {
-  width: 18%;
-} */
+  width: 20%;
+}
 
 .taskTitle {
   padding-bottom: 5px;

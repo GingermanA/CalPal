@@ -9,6 +9,7 @@ import "./Scheduler.css";
 import styles from "./TaskManager.module.css";
 import fire from "../fire";
 import { Link } from "react-router-dom";
+import EditorWindow from "./EditorWindow";
 
 function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
@@ -392,7 +393,7 @@ function TaskList(props) {
                   Delete
                 </Button>
               </td>
-              <td>
+              {/* <td>
                 <Link
                   to={{
                     pathname: "/tasks/edit",
@@ -407,6 +408,14 @@ function TaskList(props) {
                     Edit
                   </Button>
                 </Link>
+              </td> */}
+              <td>
+                <EditorWindow
+                  editedTask={task}
+                  moduleList={moduleList}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
               </td>
               <td>
                 <Link
@@ -545,7 +554,7 @@ function OverdueTaskList(props) {
                   Delete
                 </Button>
               </td>
-              <td>
+              {/* <td>
                 <Link
                   to={{
                     pathname: "/tasks/edit",
@@ -560,6 +569,14 @@ function OverdueTaskList(props) {
                     Edit
                   </Button>
                 </Link>
+              </td> */}
+              <td>
+                <EditorWindow
+                  editedTask={task}
+                  moduleList={moduleList}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
               </td>
               <td>
                 <Link

@@ -382,7 +382,9 @@ function TaskList(props) {
 
               <td>
                 <Button
-                  onClick={() => deleteTask(task, index)}
+                  onClick={() =>
+                    deleteTask(task, index + numberOfOverdueTasks())
+                  }
                   variant="contained"
                   color="secondary"
                 >
@@ -489,15 +491,6 @@ function OverdueTaskList(props) {
         tableLayout: "fixed",
       }}
     >
-      {/* <thead>
-        <tr>
-          <th>Module</th>
-          <th>Task</th>
-          <th>Actions</th>
-          <th>Delete?</th>
-          <th>Add to Scheduler</th> 
-        </tr>
-      </thead> */}
       <tbody>
         {tasks
           .filter((task) => isOverdue(task))

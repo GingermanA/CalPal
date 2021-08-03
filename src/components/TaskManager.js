@@ -178,6 +178,7 @@ function TaskManager(props) {
         <h2>Task List</h2>
         <input
           type="text"
+          placeholder="Filter by module"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
@@ -390,6 +391,22 @@ function TaskList(props) {
                 >
                   Delete
                 </Button>
+              </td>
+              <td>
+                <Link
+                  to={{
+                    pathname: "/tasks/edit",
+                    state: task,
+                  }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Button
+                    style={{ backgroundColor: "#0066ff" }}
+                    variant="contained"
+                  >
+                    Edit
+                  </Button>
+                </Link>
               </td>
               <td>
                 <Link

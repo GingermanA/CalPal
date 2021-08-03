@@ -423,6 +423,14 @@ function TaskList(props) {
                 </Button>
               </td>
               <td>
+                <Button
+                  style={{ backgroundColor: "#0066ff" }}
+                  variant="contained"
+                >
+                  Edit
+                </Button>
+              </td>
+              <td>
                 <Link
                   to={{
                     pathname: "/tasks/add",

@@ -1,28 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Button, TextField, Checkbox } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
+import { IconButton, Button, TextField, Checkbox } from "@material-ui/core";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import "./Scheduler.css";
-import styles from "./TaskManager.module.css";
+import styles from "./TaskEdit.module.css";
 import fire from "../fire";
 import { Link } from "react-router-dom";
+import { ContactsOutlined } from "@material-ui/icons";
+import ClearIcon from "@material-ui/icons/Clear";
 
-function TaskManager(props) {
-  const { tasks, setTasks } = props; // tasks is an array of Objects
+function TaskEdit(props) {
+  const { tasks, setTasks, editedTask } = props; // tasks is an array of Objects
   const [overdueTasks, setOverdueTasks] = useState([]);
   const [numberOfOtTasks, setNumberOfOtTasks] = useState(0);
   // const classes = useStyles();
   const [moduleList, setModuleList] = useState([]);
   const [colorList, setColorList] = useState([]);
-  const [module, setModule] = React.useState("");
-  const [newTitleText, setNewTitleText] = useState("");
-  const [newDueDate, setNewDueDate] = useState(new Date());
+  const [module, setModule] = React.useState(editedTask.Module);
+  const [newTitleText, setNewTitleText] = useState(editedTask.Title);
+  const [newDueDate, setNewDueDate] = useState(editedTask.dueDate);
   const [filter, setFilter] = useState("");
+  let history = useHistory();
   //const [color, setColor] = useState("");
 
+  console.log(editedTask);
   console.log(tasks);
 
   // this useEffect is to get the updated modules that a user adds
@@ -75,6 +80,17 @@ function TaskManager(props) {
   }, [tasks]);
 
   function handleAddTask(event) {
+    // const newTasks = [...tasks.slice(0, index), ...tasks.slice(index + 1)];
+    // const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
+    // setTasks(sortedTasks);
+    // const uid = fire.auth().currentUser?.uid;
+    // const db = fire.firestore();
+    // db.collection("Users")
+    //   .doc(uid)
+    //   .collection("Tasks")
+    //   .doc(task.DocumentId)
+    //   .delete();
+
     function GuidFun() {
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     }
@@ -110,6 +126,16 @@ function TaskManager(props) {
     // setNewTask(task);
     console.log(task);
     addTask(task, fire);
+
+    const uid = fire.auth().currentUser?.uid;
+    const db = fire.firestore();
+    db.collection("Users")
+      .doc(uid)
+      .collection("Tasks")
+      .doc(editedTask.DocumentId)
+      .delete();
+
+    history.push("/tasks");
   }
 
   function addTask(task) {
@@ -207,7 +233,12 @@ function TaskManager(props) {
       </div>
       <div className={styles.right}>
         <div className={styles.titleWrap}>
-          <h2 className={styles.newTaskTitle}>Enter a new task</h2>
+          <h2 className={styles.newTaskTitle}>Editing task</h2>
+          <Link to="/tasks" style={{ textDecoration: "none" }}>
+            <IconButton>
+              <ClearIcon style={{ color: "#ffffff", fontSize: 40 }} />
+            </IconButton>
+          </Link>
         </div>
         <div className={styles.formWrap}>
           {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
@@ -230,7 +261,7 @@ function TaskManager(props) {
                 id="Module"
                 className="e-field"
                 dataSource={moduleList}
-                placeholder="Select module"
+                placeholder={module}
                 change={(event) => setModule(event.itemData.value)}
               ></DropDownListComponent>
             </div>
@@ -529,20 +560,12 @@ function OverdueTaskList(props) {
                 </Button>
               </td>
               <td>
-                <Link
-                  to={{
-                    pathname: "/tasks/edit",
-                    state: task,
-                  }}
-                  style={{ textDecoration: "none" }}
+                <Button
+                  style={{ backgroundColor: "#0066ff" }}
+                  variant="contained"
                 >
-                  <Button
-                    style={{ backgroundColor: "#0066ff" }}
-                    variant="contained"
-                  >
-                    Edit
-                  </Button>
-                </Link>
+                  Edit
+                </Button>
               </td>
               <td>
                 <Link
@@ -567,4 +590,4 @@ function OverdueTaskList(props) {
   );
 }
 
-export default TaskManager;
+export default TaskEdit;

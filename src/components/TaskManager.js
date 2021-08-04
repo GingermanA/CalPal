@@ -9,11 +9,7 @@ import "./Scheduler.css";
 import styles from "./TaskManager.module.css";
 import fire from "../fire";
 import { Link } from "react-router-dom";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import EditorWindow from "./EditorWindow";
 
 function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
@@ -407,86 +403,29 @@ function TaskList(props) {
                   Delete
                 </Button>
               </td>
+              {/* <td>
+                <Link
+                  to={{
+                    pathname: "/tasks/edit",
+                    state: task,
+                  }}
+                  style={{ textDecoration: "none" }}
+                >
+                  <Button
+                    style={{ backgroundColor: "#0066ff" }}
+                    variant="contained"
+                  >
+                    Edit
+                  </Button>
+                </Link>
+              </td> */}
               <td>
-                <Button
-                  style={{ backgroundColor: "#0066ff" }}
-                  variant="contained"
-                  onClick={handleClickOpen}
-                >
-                  Edit
-                </Button>
-                <Dialog
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="form-dialog-title"
-                >
-                  <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
-                  <DialogContent>
-                    <div className={styles.formWrap}>
-                      {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
-                      <form
-                        className={styles.addTaskForm}
-                        // onSubmit={handleAddTask}
-                      >
-                        {/* <Stack spacing={3}> */}
-                        <div>
-                          Title
-                          <TextField
-                            required
-                            className={styles.descTextField}
-                            inputProps={{ style: { fontSize: 14 } }}
-                            value={console.log(task)}
-                            // onChange={(event) =>
-                            //   setNewTitleText(event.target.value)
-                            // }
-                          />
-                        </div>
-                        <div className={styles.blankSpace}></div>
-                        <div>
-                          Module
-                          <DropDownListComponent
-                            className="e-field"
-                            dataSource={moduleList}
-                            placeholder={task.Module}
-                            // change={(event) => setModule(event.itemData.value)}
-                          ></DropDownListComponent>
-                        </div>
-                        <div className={styles.blankSpace}></div>
-                        <div>
-                          Due Date
-                          <DateTimePickerComponent
-                            className="e-field"
-                            date-name="Due Date"
-                            format="dd/MM/yy hh:mm a"
-                            // value={newDueDate}
-                            // onChange={(event) => {
-                            //   setNewDueDate(event.target.value);
-                            // }}
-                          ></DateTimePickerComponent>
-                        </div>
-                        <div className={styles.blankSpace2}></div>
-                        <Button
-                          type="submit"
-                          variant="contained"
-                          color="primary"
-                        >
-                          SAVE
-                        </Button>
-                        {/* </FormControl> */}
-                        {/* </Stack> */}
-                      </form>
-                    </div>
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                      Cancel
-                    </Button>
-                    <Button onClick={handleClose} color="primary">
-                      SAVE
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-                {/* </Link> */}
+                <EditorWindow
+                  editedTask={task}
+                  moduleList={moduleList}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
               </td>
               <td>
                 <Link
@@ -625,7 +564,7 @@ function OverdueTaskList(props) {
                   Delete
                 </Button>
               </td>
-              <td>
+              {/* <td>
                 <Link
                   to={{
                     pathname: "/tasks/edit",
@@ -640,6 +579,14 @@ function OverdueTaskList(props) {
                     Edit
                   </Button>
                 </Link>
+              </td> */}
+              <td>
+                <EditorWindow
+                  editedTask={task}
+                  moduleList={moduleList}
+                  tasks={tasks}
+                  setTasks={setTasks}
+                />
               </td>
               <td>
                 <Link

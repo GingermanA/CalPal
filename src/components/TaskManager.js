@@ -25,7 +25,7 @@ function TaskManager(props) {
 
   //const [color, setColor] = useState("");
 
-  console.log(tasks);
+  // console.log(tasks);
 
   // this useEffect is to get the updated modules that a user adds
   useEffect(() => {
@@ -41,8 +41,8 @@ function TaskManager(props) {
         if (doc.exists) {
           try {
             var modules = doc.data().modCode;
-            var help = modules.length;
-            console.log(help);
+            // var help = modules.length;
+            // console.log(help);
           } catch (err) {
             modules = [];
           }
@@ -59,7 +59,7 @@ function TaskManager(props) {
   // this useEffect is to update what tasks are overdue
   useEffect(() => {
     const ot = [];
-    console.log(tasks);
+    // console.log(tasks);
     if (tasks.length > 0) {
       for (var i = 0; i < tasks.length; i++) {
         try {

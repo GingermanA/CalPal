@@ -69,59 +69,73 @@ const SignUp = ({ history }) => {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={useStyles.paper}>
-        <Avatar className={useStyles.avatar}>
-          <LockIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          CalPal Sign Up
-        </Typography>
+        <Box mt={3}>
+          <center>
+            <Avatar className={useStyles.avatar}>
+              <LockIcon />
+            </Avatar>
+          </center>
+        </Box>
+        <Box mt={2}>
+          <center>
+            <Typography component="h1" variant="h5">
+              CalPal Sign Up
+            </Typography>
+          </center>
+        </Box>
         <form className={useStyles.form} onSubmit={handleSignUp}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-              />
+          <Box mt={2}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  variant="outlined"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                variant="outlined"
-                required
+            <Box mt={1}>
+              <Button
+                type="submit"
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-            </Grid>
-          </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={useStyles.submit}
-          >
-            Sign up
-          </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <Link
-                onClick={() => {
-                  history.push("/login");
-                }}
-                variant="body2"
+                variant="contained"
+                color="primary"
+                className={useStyles.submit}
               >
-                Already have an account? Login here.
-              </Link>
-            </Grid>
-          </Grid>
+                Sign up
+              </Button>
+            </Box>
+            <Box mt={1}>
+              <Grid container justify="flex-end">
+                <Grid item>
+                  <Link
+                    onClick={() => {
+                      history.push("/login");
+                    }}
+                    variant="body2"
+                  >
+                    Already have an account? Login here.
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
         </form>
       </div>
       <Box mt={5}>
@@ -129,31 +143,6 @@ const SignUp = ({ history }) => {
       </Box>
     </Container>
   );
-  //   <div>
-  //     <h1>Sign up</h1>
-  //     <form onSubmit={handleSignUp}>
-  //       <label>
-  //         Email
-  //         <input name="email" type="email" placeholder="Email" />
-  //       </label>
-  //       <label>
-  //         Password
-  //         <input name="password" type="password" placeholder="Password" />
-  //       </label>
-  //       <button type="submit">Sign Up</button>
-  //     </form>
-  //     <p>
-  //       Have an account?{" "}
-  //       <span
-  //         onClick={() => {
-  //           history.push("/login");
-  //         }}
-  //       >
-  //         Login
-  //       </span>
-  //     </p>
-  //   </div>
-  // );
 };
 
 export default withRouter(SignUp);

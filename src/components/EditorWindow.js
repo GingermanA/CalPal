@@ -102,7 +102,7 @@ export default function EditorWindow(props) {
         tasks[i].dueDate = new Date(parseInt(time));
       }
     } catch (err) {
-      console.log("Its okay!");
+      // console.log("Its okay!");
     }
 
     const copyTasks = [...tasks];
@@ -111,11 +111,13 @@ export default function EditorWindow(props) {
         copyTasks[i].Title = newTitleText;
         copyTasks[i].Module = module;
         copyTasks[i].dueDate = date;
+        copyTasks[i].dueDateString = dateString;
         break;
       }
     }
     const sortedTasks = copyTasks.sort((a, b) => a.dueDate - b.dueDate);
     setTasks(sortedTasks);
+    console.log(tasks);
 
     // const newTasks = [
     //   ...tasks,
@@ -157,11 +159,7 @@ export default function EditorWindow(props) {
       >
         Edit
       </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
+      <Dialog open={open} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
         <DialogContent>
           {/* <DialogContentText>
@@ -207,7 +205,7 @@ export default function EditorWindow(props) {
             </div>
             <div className={styles.blankSpace2}></div>
             <Button type="submit" variant="contained" color="primary">
-              Add
+              Save
             </Button>
             {/* </FormControl> */}
             {/* </Stack> */}

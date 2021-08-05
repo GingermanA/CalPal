@@ -76,6 +76,11 @@ const Login = ({ history }) => {
     },
   }));
 
+  // const handleGoogleSignIn = (firebase) => {
+  //   const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+  //   firebase.auth().signInWithPopup(googleAuthProvider);
+  // };
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

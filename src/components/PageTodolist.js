@@ -24,7 +24,7 @@ import fire from "../fire";
 import { setBlankIconStyle } from "@syncfusion/ej2-splitbuttons";
 
 function PageTodolist(props) {
-  console.log(props.selectedIndex);
+  // console.log(props.selectedIndex);
   // Task state has to be lifted to be at the App level
   // because Header also needs to know the task state to display
   // no. of undone tasks. It cannot be contained within TaskManager

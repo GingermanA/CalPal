@@ -51,6 +51,7 @@ export default class Scheduler extends SampleBase {
   fieldMod: Object = {};
 
   constructor(props) {
+    console.log(props);
     super(props);
     // console.log(props);
     this.state = {
@@ -84,6 +85,7 @@ export default class Scheduler extends SampleBase {
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
+          console.log(this.test);
         } catch (err) {
           // console.log(this.test);
         }
@@ -288,6 +290,12 @@ export default class Scheduler extends SampleBase {
           // console.log(this.test);
         }
       });
+    console.log(this.test);
+    // for (let i = 0; i < this.treeViewMod.length; i++) {
+    //   if (this.test.Module === this.treeViewMod[i].Name) {
+    //     args.element.style.backgroundColor = this.treeViewMod[i].Color;
+    //   }
+    // }
   }
 
   onActionBegin(args) {
@@ -359,6 +367,7 @@ export default class Scheduler extends SampleBase {
 
   onEventRendered(args) {
     for (let i = 0; i < this.treeViewMod.length; i++) {
+      console.log(args);
       if (args.data.Module === this.treeViewMod[i].Name) {
         args.element.style.backgroundColor = this.treeViewMod[i].Color;
       }

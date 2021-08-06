@@ -392,7 +392,7 @@ function TaskList(props) {
 
               {/* <td>{task.dueDateString.slice(4, 21)}</td> */}
 
-              <td>
+              <td className={styles.buttonCell}>
                 <Button
                   onClick={() =>
                     deleteTask(task, index + numberOfOverdueTasks())
@@ -419,7 +419,7 @@ function TaskList(props) {
                   </Button>
                 </Link>
               </td> */}
-              <td>
+              <td className={styles.buttonCell}>
                 <EditorWindow
                   editedTask={task}
                   moduleList={moduleList}
@@ -427,7 +427,7 @@ function TaskList(props) {
                   setTasks={setTasks}
                 />
               </td>
-              <td>
+              <td className={styles.buttonCell}>
                 <Link
                   to={{
                     pathname: "/tasks/add",

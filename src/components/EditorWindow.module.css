@@ -43,6 +43,10 @@ form .descTextField {
   height: 30px;
 }
 
+.blankSpace3 {
+  height: 10px;
+}
+
 .left {
   height: 100%;
   width: 60%;
@@ -145,4 +149,13 @@ table.tasks tr {
 
 .dueDateOverdue {
   color: #ff0000;
+}
+
+.editorHeader {
+  float: left;
+  padding-top: 10px;
+}
+
+.editorClose {
+  float: right;
 }

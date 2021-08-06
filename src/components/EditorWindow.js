@@ -1,6 +1,5 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+import { IconButton, Button, TextField } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -10,6 +9,7 @@ import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import styles from "./EditorWindow.module.css";
 import fire from "../fire";
+import ClearIcon from "@material-ui/icons/Clear";
 
 export default function EditorWindow(props) {
   const { editedTask, moduleList, tasks, setTasks } = props;
@@ -160,7 +160,14 @@ export default function EditorWindow(props) {
         Edit
       </Button>
       <Dialog open={open} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Edit Task</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          <div className={styles.editorHeader}>Edit Task</div>
+          <div className={styles.editorClose}>
+            <IconButton onClick={handleClose}>
+              <ClearIcon />
+            </IconButton>
+          </div>
+        </DialogTitle>
         <DialogContent>
           {/* <DialogContentText>
             To subscribe to this website, please enter your email address here.
@@ -209,6 +216,7 @@ export default function EditorWindow(props) {
             </Button>
             {/* </FormControl> */}
             {/* </Stack> */}
+            <div className={styles.blankSpace3}></div>
           </form>
         </DialogContent>
         {/* <DialogActions>

@@ -51,9 +51,8 @@ export default class Scheduler extends SampleBase {
   fieldMod: Object = {};
 
   constructor(props) {
-    console.log(props);
     super(props);
-    // console.log(props);
+
     this.state = {
       modCode: [],
       modColor: [],
@@ -141,6 +140,12 @@ export default class Scheduler extends SampleBase {
       .catch((error) => {
         console.log(error);
       });
+
+    // for (let i = 0; i < this.treeViewMod.length; i++) {
+    //   if (this.test.Module === this.treeViewMod[i].Name) {
+    //     args.element.style.backgroundColor = this.treeViewMod[i].Color;
+    //   }
+    // }
   }
 
   onPopupOpen(args) {

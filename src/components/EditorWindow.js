@@ -25,7 +25,11 @@ export default function EditorWindow(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
+    setNewTitleText(editedTask.Title);
+    setModule(editedTask.Module);
+    setNewDueDate(editedTask.dueDate);
     setOpen(true);
+    console.log(newTitleText);
   };
 
   const handleClose = () => {
@@ -117,6 +121,7 @@ export default function EditorWindow(props) {
     }
     const sortedTasks = copyTasks.sort((a, b) => a.dueDate - b.dueDate);
     setTasks(sortedTasks);
+    console.log(sortedTasks);
     console.log(tasks);
 
     // const newTasks = [

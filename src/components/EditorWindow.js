@@ -16,7 +16,6 @@ export default function EditorWindow(props) {
   const [module, setModule] = React.useState(editedTask.Module);
   const [newTitleText, setNewTitleText] = React.useState(editedTask.Title);
   const [newDueDate, setNewDueDate] = React.useState(editedTask.dueDate);
-  const [editCount, setEditCount] = React.useState(0);
 
   // task={task}
   // moduleList={moduleList}
@@ -26,7 +25,11 @@ export default function EditorWindow(props) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
+    setNewTitleText(editedTask.Title);
+    setModule(editedTask.Module);
+    setNewDueDate(editedTask.dueDate);
     setOpen(true);
+    console.log(newTitleText);
   };
 
   const handleClose = () => {
@@ -69,7 +72,6 @@ export default function EditorWindow(props) {
     // console.log(task);
 
     editTask(editedTask, newTitleText, module, date, fire); //task is old task
-    setEditCount(editCount + 1);
 
     // const uid = fire.auth().currentUser?.uid;
     // const db = fire.firestore();
@@ -118,9 +120,8 @@ export default function EditorWindow(props) {
       }
     }
     const sortedTasks = copyTasks.sort((a, b) => a.dueDate - b.dueDate);
-    setTasks((prevState) => {
-      return { ...prevState, ...sortedTasks };
-    });
+    setTasks(sortedTasks);
+    console.log(sortedTasks);
     console.log(tasks);
 
     // const newTasks = [
@@ -152,24 +153,6 @@ export default function EditorWindow(props) {
     //     Type: task.Type,
     //     isComplete: task.isComplete,
     //   });
-  }
-
-  if (editCount > 0) {
-    const uid = fire.auth().currentUser?.uid;
-    const db = fire
-      .firestore()
-      .collection("Users")
-      .doc(uid)
-      .collection("Tasks")
-      .doc(editedTask.DocumentId);
-    db.get().then((doc) => {
-      if (doc.exists) {
-        console.log("Document data:", doc.data());
-      } else {
-        // doc.data() will be undefined in this case
-        console.log("No such document!");
-      }
-    });
   }
 
   return (

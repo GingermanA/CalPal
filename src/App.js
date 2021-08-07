@@ -19,7 +19,7 @@ const App = () => {
     <AuthProvider>
       <Router>
         <Switch>
-          <PrivateRoute exact path="/scheduler" component={Scheduler} />
+          <PrivateRoute path="/scheduler" component={Scheduler} />
           <PrivateRoute exact path="/tasks" component={PageTodolist} />
           <PrivateRoute exact path="/tasks/add" component={AddToScheduler} />
           <PrivateRoute exaact path="/tasks/edit" component={PageEditTask} />

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 //import Header from "../components/Header";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import TaskManager from "./TaskManager";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -23,6 +23,7 @@ import fire from "../fire";
 
 export default function SideNavScheduler() {
   const drawerWidth = 240;
+  const history = useHistory();
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -80,8 +81,14 @@ export default function SideNavScheduler() {
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleListItemClick = (event, index) => {
+  const handleListItemClickToScheduler = (event, index) => {
     setSelectedIndex(index);
+    history.push("/scheduler");
+  };
+
+  const handleListItemClickToTasks = (event, index) => {
+    setSelectedIndex(index);
+    history.push("/tasks");
   };
 
   return (
@@ -105,10 +112,10 @@ export default function SideNavScheduler() {
         <List>
           <ListItem
             button
-            component={Link}
-            to="/scheduler"
+            // component={Link}
+            // to="/scheduler"
             selected={selectedIndex === 0}
-            onClick={(event) => handleListItemClick(event, 0)}
+            onClick={(event) => handleListItemClickToScheduler(event, 0)}
           >
             <ListItemIcon>
               <EventIcon style={{ color: "#ffffff" }} />
@@ -117,10 +124,10 @@ export default function SideNavScheduler() {
           </ListItem>
           <ListItem
             button
-            component={Link}
-            to="/tasks"
+            // component={Link}
+            // to="/tasks"
             selected={selectedIndex === 1}
-            onClick={(event) => handleListItemClick(event, 1)}
+            onClick={(event) => handleListItemClickToTasks(event, 1)}
           >
             <ListItemIcon>
               <AssignmentTurnedInIcon style={{ color: "#ffffff" }} />

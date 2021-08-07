@@ -21,7 +21,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import IconButton from "@material-ui/core/IconButton";
 import fire from "../fire";
 
-export default function SideNavScheduler() {
+export default function SideNavTasks() {
   const drawerWidth = 240;
 
   const useStyles = makeStyles((theme) => ({

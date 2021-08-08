@@ -15,17 +15,12 @@ function TaskManager(props) {
   const { tasks, setTasks } = props; // tasks is an array of Objects
   const [overdueTasks, setOverdueTasks] = useState([]);
   const [numberOfOtTasks, setNumberOfOtTasks] = useState(0);
-  // const classes = useStyles();
   const [moduleList, setModuleList] = useState([]);
   const [colorList, setColorList] = useState([]);
-  const [module, setModule] = React.useState("");
+  const [module, setModule] = useState("");
   const [newTitleText, setNewTitleText] = useState("");
   const [newDueDate, setNewDueDate] = useState(new Date());
   const [filter, setFilter] = useState("");
-
-  //const [color, setColor] = useState("");
-
-  // console.log(tasks);
 
   // this useEffect is to get the updated modules that a user adds
   useEffect(() => {
@@ -97,7 +92,7 @@ function TaskManager(props) {
       ).toLowerCase();
     }
     const date = new Date(newDueDate);
-    console.log(date);
+    // console.log(date);
     event.preventDefault();
     const DocumentId = guid();
     const task = {
@@ -109,13 +104,12 @@ function TaskManager(props) {
       Type: "Task",
       isComplete: false,
     };
-    // setNewTask(task);
-    console.log(task);
+    // console.log(task);
     addTask(task, fire);
   }
 
   function addTask(task) {
-    console.log(tasks);
+    // console.log(tasks);
     let length = tasks.length;
     try {
       for (let i = 0; i < length; i++) {
@@ -131,9 +125,9 @@ function TaskManager(props) {
         ...task,
       },
     ];
-    console.log(newTasks);
+    // console.log(newTasks);
     const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
-    console.log(sortedTasks);
+    // console.log(sortedTasks);
     setTasks(sortedTasks); // This works: tasks will be updated to sortedTasks
 
     const uid = fire.auth().currentUser?.uid;
@@ -213,9 +207,7 @@ function TaskManager(props) {
           <h2 className={styles.newTaskTitle}>Enter a new task</h2>
         </div>
         <div className={styles.formWrap}>
-          {/* <FormControl className={classes.margin} onSubmit={handleAddTask}> */}
           <form className={styles.addTaskForm} onSubmit={handleAddTask}>
-            {/* <Stack spacing={3}> */}
             <div>
               Title
               <TextField
@@ -255,8 +247,6 @@ function TaskManager(props) {
             <Button type="submit" variant="contained" color="primary">
               Add
             </Button>
-            {/* </FormControl> */}
-            {/* </Stack> */}
           </form>
         </div>
       </div>
@@ -266,15 +256,6 @@ function TaskManager(props) {
 
 function TaskList(props) {
   const { tasks, setTasks, moduleList, numberOfOtTasks, colorList } = props;
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   function handleTaskCompletionToggled(toToggleTask, toToggleTaskIndex, event) {
     event.preventDefault();
@@ -345,9 +326,6 @@ function TaskList(props) {
       }
     }
     return "#3f51b5";
-    // console.log(mod);
-    // console.log(moduleList);
-    // console.log(i);
   }
 
   return (
@@ -390,8 +368,6 @@ function TaskList(props) {
                 </div>
               </td>
 
-              {/* <td>{task.dueDateString.slice(4, 21)}</td> */}
-
               <td className={styles.buttonCell}>
                 <Button
                   onClick={() =>
@@ -403,22 +379,7 @@ function TaskList(props) {
                   Delete
                 </Button>
               </td>
-              {/* <td>
-                <Link
-                  to={{
-                    pathname: "/tasks/edit",
-                    state: task,
-                  }}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Button
-                    style={{ backgroundColor: "#0066ff" }}
-                    variant="contained"
-                  >
-                    Edit
-                  </Button>
-                </Link>
-              </td> */}
+
               <td className={styles.buttonCell}>
                 <EditorWindow
                   editedTask={task}
@@ -513,9 +474,6 @@ function OverdueTaskList(props) {
       }
     }
     return "#3f51b5";
-    // console.log(mod);
-    // console.log(moduleList);
-    // console.log(i);
   }
 
   return (
@@ -553,8 +511,6 @@ function OverdueTaskList(props) {
                 </div>
               </td>
 
-              {/* <td>{task.dueDateString.slice(4, 21)}</td> */}
-
               <td>
                 <Button
                   onClick={() => deleteTask(task, index)}
@@ -564,22 +520,7 @@ function OverdueTaskList(props) {
                   Delete
                 </Button>
               </td>
-              {/* <td>
-                <Link
-                  to={{
-                    pathname: "/tasks/edit",
-                    state: task,
-                  }}
-                  style={{ textDecoration: "none" }}
-                >
-                  <Button
-                    style={{ backgroundColor: "#0066ff" }}
-                    variant="contained"
-                  >
-                    Edit
-                  </Button>
-                </Link>
-              </td> */}
+
               <td>
                 <EditorWindow
                   editedTask={task}

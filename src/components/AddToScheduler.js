@@ -1,5 +1,3 @@
-//import { render } from "react-dom";
-//import "./index.css";
 import * as React from "react";
 import {
   ScheduleComponent,
@@ -16,18 +14,11 @@ import {
   CellClickEventArgs,
   RecurrenceEditorComponent,
 } from "@syncfusion/ej2-react-schedule";
-
-import DeleteIcon from "@material-ui/icons/Delete";
-import Button from "@material-ui/core/Button";
-
-//import { extend } from "@syncfusion/ej2-base";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { SampleBase } from "./sample-base";
 import fire from "../fire";
 import SideNavScheduler from "./SideNavScheduler";
-
-import { Link } from "react-router-dom";
 
 //To help with the dragging and dropping of modules into the scheduler, and the appropriate css for the scheduler
 import {
@@ -39,17 +30,16 @@ import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 export default class AddToScheduler extends SampleBase {
   color: Array[] = [
-    "#E83B3B",
-    "#2D53DE",
-    "#6F18D1",
-    "#119925",
-    "yellow",
-    "orange",
-    "purple",
-    "pink",
-    "grey",
-    "brown",
-    "cyan",
+    "#e97474",
+    "#7b8eeb",
+    "#b074e9",
+    "#5ac75c",
+    "#dedf00",
+    "#ffae55",
+    "#7e4591",
+    "#ff91f4",
+    "#935b5b",
+    "#a7a7a7",
   ];
 
   treeViewMod: { [key: string]: Object }[] = [];
@@ -60,11 +50,12 @@ export default class AddToScheduler extends SampleBase {
 
   constructor(props) {
     super(props);
-    console.log(this.props.location.state);
-    console.log(this.props.history);
+    // console.log(this.props.location.state);
 
     this.state = {
       modCode: [],
+      modColor: [],
+      colors: [],
       newMod: "",
       text: "",
     };
@@ -92,8 +83,9 @@ export default class AddToScheduler extends SampleBase {
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
-        } catch (err) {
           console.log(this.test);
+        } catch (err) {
+          // console.log(this.test);
         }
       });
 
@@ -108,30 +100,44 @@ export default class AddToScheduler extends SampleBase {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          this.treeViewMod = doc
-            .data()
-            .modCode.map((name, index) => {
-              return {
-                Name: name,
-                Color: this.color[index],
-                Id: index,
-              };
-            })
-            .filter((mod) => mod.Name !== "");
+          this.treeViewMod = doc.data().modCode.map((name, index) => {
+            return {
+              Name: name,
+              Color: doc.data().modColor[index],
+              Id: index,
+            };
+          });
+          // console.log(this.treeViewMod);
           this.fieldMod = {
             dataSource: this.treeViewMod,
             id: "Id",
             text: "Name",
           };
 
-          this.setState({ modCode: doc.data().modCode }, () => {
-            this.addModule();
-          });
+          // console.log(doc.data().colors.length);
+          this.setState(
+            {
+              modCode: doc.data().modCode,
+              modColor: doc.data().modColor,
+              colors: doc.data().colors,
+            },
+            () => {
+              this.addModule();
+            }
+          );
         } else {
+          this.setState(
+            {
+              colors: this.color,
+            },
+            () => {
+              this.initiationUpdateFire();
+            }
+          );
         }
       })
       .catch((error) => {
-        console.log("error is caught");
+        console.log(error);
       });
 
     this.treeViewTask.push(this.props.location.state);
@@ -143,11 +149,7 @@ export default class AddToScheduler extends SampleBase {
     };
   }
 
-  // componentDidMount() {
-  //   if (this.props.location.state === undefined) {
-  //     this.props.history.push("/scheduler");
-  //   }
-  // }
+  randomColor = () => "#" + Math.floor(Math.random() * 16777215).toString(16);
 
   //Enter Module in the form and Module list / Firebase will be updated
   addModule = (text) => {
@@ -156,36 +158,45 @@ export default class AddToScheduler extends SampleBase {
 
   setModules = () => {
     console.log(this.state);
-    if (this.state.newMod !== "") {
+    if (this.state.newMod !== undefined) {
       const newModCode = this.state.modCode.slice();
-      var replaced = false;
-      for (var i = 0; i < newModCode.length; i++) {
-        if (newModCode[i] === "") {
-          newModCode.splice(i, 1, this.state.newMod);
-          replaced = true;
-          break;
-        }
-      }
-
-      if (replaced) {
-        this.setState({ modCode: newModCode }, () => {
-          this.updateFire();
-        });
+      const newModColor = this.state.modColor.slice();
+      const newColors = this.state.colors.slice();
+      newModCode.push(this.state.newMod);
+      if (newColors.length > 0) {
+        newModColor.push(newColors.shift());
       } else {
-        this.setState(
-          { modCode: [...this.state.modCode, this.state.newMod] },
-          () => {
-            this.updateFire();
-          }
-        );
+        newModColor.push(this.randomColor());
       }
+      this.setState(
+        { modCode: newModCode, modColor: newModColor, colors: newColors },
+        () => {
+          this.loadEdits();
+          this.updateFire();
+        }
+      );
+    } else {
     }
+  };
+
+  initiationUpdateFire = () => {
+    //this.setModules();
+    this.modsRef.set({
+      colors: this.state.colors,
+    });
+    this.forceUpdate();
   };
 
   updateFire = () => {
     //this.setModules();
-    this.modsRef.set({ modCode: this.state.modCode });
-    this.forceUpdate();
+    try {
+      this.modsRef.set({
+        modCode: this.state.modCode,
+        modColor: this.state.modColor,
+        colors: this.state.colors,
+      });
+      this.forceUpdate();
+    } catch (err) {}
   };
 
   //CRUD operations on Scheduler
@@ -227,7 +238,7 @@ export default class AddToScheduler extends SampleBase {
   onActionBegin(args) {
     if (args.requestType === "eventChange") {
       try {
-        console.log(args.changedRecords[0]);
+        // console.log(args.changedRecords[0]);
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ Subject: args.changedRecords[0].Subject });
@@ -242,11 +253,6 @@ export default class AddToScheduler extends SampleBase {
             .doc(args.changedRecords[0].DocumentId)
             .update({ Location: args.changedRecords[0].Location });
         }
-        // if (args.changedRecords[0].RecurrenceRule != null) {
-        //   this.data
-        //     .doc(args.changedRecords[0].DocumentId)
-        //     .update({ RecurrenceRule: args.changedRecords[0].RecurrenceRule });
-        // }
         this.data
           .doc(args.changedRecords[0].DocumentId)
           .update({ EndTime: args.changedRecords[0].EndTime });
@@ -282,9 +288,6 @@ export default class AddToScheduler extends SampleBase {
       if (argsData.Type == null) {
         argsData.Type = "";
       }
-      // if (argsData.RecurrenceRule == null) {
-      //   argsData.RecurrenceRule = null;
-      // }
       this.data.doc(guid).set({
         Subject: argsData.Subject,
         DocumentId: argsData.DocumentId,
@@ -293,12 +296,9 @@ export default class AddToScheduler extends SampleBase {
         Module: argsData.Module,
         StartTime: argsData.StartTime,
         Type: argsData.Type,
-        // RecurrenceRule: argsData.RecurrenceRule,
       });
       this.loadEdits();
       this.props.history.push("/scheduler");
-      //this.deleteModulesByName(args.data[0].Subject);
-      // this.deleteModules(args.draggedNodeData.id);
     } else if (args.requestType === "eventRemove") {
       if (args.changedRecords === []) {
         this.data.doc(args.changedRecords[0].DocumentId).delete();
@@ -313,7 +313,7 @@ export default class AddToScheduler extends SampleBase {
 
   onEventRendered(args) {
     // console.log(this.state.modCode);
-    console.log(this.treeViewMod);
+    // console.log(this.treeViewMod);
     for (let i = 0; i < this.treeViewMod.length; i++) {
       if (args.data.Module === this.treeViewMod[i].Name) {
         args.element.style.backgroundColor = this.treeViewMod[i].Color;
@@ -322,26 +322,6 @@ export default class AddToScheduler extends SampleBase {
   }
 
   //Other functionalities
-
-  onTreeDragStopMod(args: DragAndDropEventArgs): void {
-    try {
-      console.log(args.draggedNodeData);
-      let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
-        args.target
-      );
-      let eventData: { [key: string]: Object } = {
-        Module: args.draggedNodeData.text,
-        StartTime: cellData.startTime,
-        EndTime: cellData.endTime,
-        IsAllDay: cellData.isAllDay,
-      };
-      //console.log(eventData);
-      this.scheduleObj.openEditor(eventData, "Add", true);
-      //this.deleteModules.bind(this, args.draggedNodeData.id);
-    } catch (err) {
-      //console.log(err);
-    }
-  }
 
   onTreeDragStopTask(args: DragAndDropEventArgs): void {
     try {
@@ -359,59 +339,10 @@ export default class AddToScheduler extends SampleBase {
       };
       console.log(eventData);
       this.scheduleObj.openEditor(eventData, "Add", true);
-      //this.deleteModules.bind(this, args.draggedNodeData.id);
     } catch (err) {
       //console.log(err);
     }
   }
-
-  editModules(args) {
-    const newModCode = this.state.modCode.slice();
-    for (let i = 0; i < newModCode.length; i++) {
-      if (newModCode[i] === args.oldText) {
-        newModCode[i] = args.newText;
-      }
-    }
-    this.setState({ modCode: newModCode }, () => {
-      this.updateFire();
-    });
-    this.loadEdits();
-  }
-
-  deleteModules = (index) => {
-    //console.log(index);
-    const newModCode = this.state.modCode.slice();
-    newModCode.splice(index, 1, "");
-    this.setState({ modCode: newModCode }, () => {
-      this.updateFire();
-    });
-    this.treeViewMod = newModCode
-      .map((name, index) => {
-        return {
-          Name: name,
-          Color: this.color[index],
-          Id: index,
-        };
-      })
-      .filter((mod) => mod.Name !== "");
-    this.fieldMod = {
-      dataSource: this.treeViewMod,
-      id: "Id",
-      text: "Name",
-    };
-    this.loadEdits();
-  };
-
-  deleteModulesByName = (name) => {
-    //console.log(index);
-    const newModCode = this.state.modCode.slice();
-    for (var i = 0; i < newModCode.length; i++) {
-      if (newModCode[i] === name) {
-        this.deleteModules(i);
-        break;
-      }
-    }
-  };
 
   nodeTemplate = (data) => {
     const color = data.Color;
@@ -436,7 +367,7 @@ export default class AddToScheduler extends SampleBase {
         .map((name, index) => {
           return {
             Name: name,
-            Color: this.color[index],
+            Color: this.state.modColor[index],
             Id: index,
           };
         })
@@ -547,13 +478,11 @@ export default class AddToScheduler extends SampleBase {
       this.props.history.push("/scheduler");
       return null;
     }
-    //console.log(this.state.modCode);
+    this.loadEdits();
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
           <div className="control-wrapper">
-            {/* <button onClick={() => fire.auth().signOut()}>Sign out</button> */}
-
             <SideNavScheduler />
             <div className="scheduler">
               <ScheduleComponent
@@ -592,10 +521,7 @@ export default class AddToScheduler extends SampleBase {
                 <TreeViewComponent
                   fields={this.fieldTask}
                   allowDragAndDrop={true}
-                  //allowEditing={true}
                   nodeDragStop={this.onTreeDragStopTask.bind(this)}
-                  //nodeEdited={this.editModules.bind(this)}
-                  //nodeTemplate={this.nodeTemplate}
                 />
               </div>
             </div>

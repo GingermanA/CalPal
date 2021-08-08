@@ -1,15 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 //import Header from "../components/Header";
-import { Link, useHistory } from "react-router-dom";
-import TaskManager from "./TaskManager";
+import { Link } from "react-router-dom";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -23,7 +19,6 @@ import fire from "../fire";
 
 export default function SideNavScheduler() {
   const drawerWidth = 240;
-  const history = useHistory();
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -53,11 +48,6 @@ export default function SideNavScheduler() {
       display: "inline-block",
       textAlign: "right",
     },
-    //   content: {
-    //     flexGrow: 1,
-    //     backgroundColor: theme.palette.background.default,
-    //     padding: theme.spacing(3),
-    //   },
   }));
 
   const ListItem = withStyles({
@@ -81,14 +71,8 @@ export default function SideNavScheduler() {
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleListItemClickToScheduler = (event, index) => {
+  const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
-    history.push("/scheduler");
-  };
-
-  const handleListItemClickToTasks = (event, index) => {
-    setSelectedIndex(index);
-    history.push("/tasks");
   };
 
   return (
@@ -104,18 +88,15 @@ export default function SideNavScheduler() {
       >
         <div className={classes.toolbar}>
           <h1 style={{ color: "#ffffff" }}>CalPal</h1>
-          {/* <ListItem>
-            <ListItemText primary="CalPal" style={{ color: "#ffffff" }} />
-          </ListItem> */}
         </div>
         <Divider />
         <List>
           <ListItem
             button
-            // component={Link}
-            // to="/scheduler"
+            component={Link}
+            to="/scheduler"
             selected={selectedIndex === 0}
-            onClick={(event) => handleListItemClickToScheduler(event, 0)}
+            onClick={(event) => handleListItemClick(event, 0)}
           >
             <ListItemIcon>
               <EventIcon style={{ color: "#ffffff" }} />
@@ -124,10 +105,10 @@ export default function SideNavScheduler() {
           </ListItem>
           <ListItem
             button
-            // component={Link}
-            // to="/tasks"
+            component={Link}
+            to="/tasks"
             selected={selectedIndex === 1}
-            onClick={(event) => handleListItemClickToTasks(event, 1)}
+            onClick={(event) => handleListItemClick(event, 1)}
           >
             <ListItemIcon>
               <AssignmentTurnedInIcon style={{ color: "#ffffff" }} />

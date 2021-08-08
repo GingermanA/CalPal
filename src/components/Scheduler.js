@@ -24,7 +24,6 @@ import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { SampleBase } from "./sample-base";
 import fire from "../fire";
-import { Link } from "react-router-dom";
 import {
   TreeViewComponent,
   DragAndDropEventArgs,
@@ -140,12 +139,6 @@ export default class Scheduler extends SampleBase {
       .catch((error) => {
         console.log(error);
       });
-
-    // for (let i = 0; i < this.treeViewMod.length; i++) {
-    //   if (this.test.Module === this.treeViewMod[i].Name) {
-    //     args.element.style.backgroundColor = this.treeViewMod[i].Color;
-    //   }
-    // }
   }
 
   onPopupOpen(args) {
@@ -296,11 +289,6 @@ export default class Scheduler extends SampleBase {
         }
       });
     console.log(this.test);
-    // for (let i = 0; i < this.treeViewMod.length; i++) {
-    //   if (this.test.Module === this.treeViewMod[i].Name) {
-    //     args.element.style.backgroundColor = this.treeViewMod[i].Color;
-    //   }
-    // }
   }
 
   onActionBegin(args) {
@@ -395,7 +383,6 @@ export default class Scheduler extends SampleBase {
       };
       //console.log(eventData);
       this.scheduleObj.openEditor(eventData, "Add", true);
-      //this.deleteModules.bind(this, args.draggedNodeData.id);
     } catch (err) {
       //console.log(err);
     }
@@ -554,11 +541,8 @@ export default class Scheduler extends SampleBase {
     return (
       <div className="schedule-control-section">
         <div className="col-lg-9 control-section">
-          {/* <button onClick={() => fire.auth().signOut()}>Sign out</button>
-          <Link to="/tasks">Tasks</Link> */}
           <div className="control-wrapper">
             <SideNavScheduler />
-
             <div className="scheduler">
               <ScheduleComponent
                 height="650px"

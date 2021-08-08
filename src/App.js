@@ -12,17 +12,15 @@ import SignUp from "./components/SignUp";
 import { AuthProvider } from "./Auth";
 import PrivateRoute from "./PrivateRoute";
 import AddToScheduler from "./components/AddToScheduler";
-import PageEditTask from "./components/PageEditTask";
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <Switch>
-          <PrivateRoute path="/scheduler" component={Scheduler} />
+          <PrivateRoute exact path="/scheduler" component={Scheduler} />
           <PrivateRoute exact path="/tasks" component={PageTodolist} />
           <PrivateRoute exact path="/tasks/add" component={AddToScheduler} />
-          <PrivateRoute exaact path="/tasks/edit" component={PageEditTask} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signup" component={SignUp} />
           <Redirect from="/" to="/login" />

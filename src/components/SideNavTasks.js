@@ -1,15 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 //import Header from "../components/Header";
 import { Link } from "react-router-dom";
-import TaskManager from "./TaskManager";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -52,11 +48,6 @@ export default function SideNavTasks() {
       display: "inline-block",
       textAlign: "right",
     },
-    //   content: {
-    //     flexGrow: 1,
-    //     backgroundColor: theme.palette.background.default,
-    //     padding: theme.spacing(3),
-    //   },
   }));
 
   const ListItem = withStyles({
@@ -97,9 +88,6 @@ export default function SideNavTasks() {
       >
         <div className={classes.toolbar}>
           <h1 style={{ color: "#ffffff" }}>CalPal</h1>
-          {/* <ListItem>
-            <ListItemText primary="CalPal" style={{ color: "#ffffff" }} />
-          </ListItem> */}
         </div>
         <Divider />
         <List>

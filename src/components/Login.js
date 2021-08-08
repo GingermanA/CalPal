@@ -136,8 +136,6 @@ const Login = ({ history }) => {
                 Login
               </Button>
             </Box>
-
-            {/* <div justify-content="center">Or sign up using</div> */}
             <Box mt={1}>
               <Grid container justify="flex-end">
                 <Grid item>

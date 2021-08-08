@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, TextField, Checkbox } from "@material-ui/core";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
-import { makeStyles } from "@material-ui/core/styles";
-import DeleteIcon from "@material-ui/icons/Delete";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import "./Scheduler.css";
@@ -36,8 +34,6 @@ function TaskManager(props) {
         if (doc.exists) {
           try {
             var modules = doc.data().modCode;
-            // var help = modules.length;
-            // console.log(help);
           } catch (err) {
             modules = [];
           }
@@ -92,7 +88,6 @@ function TaskManager(props) {
       ).toLowerCase();
     }
     const date = new Date(newDueDate);
-    // console.log(date);
     event.preventDefault();
     const DocumentId = guid();
     const task = {
@@ -104,7 +99,6 @@ function TaskManager(props) {
       Type: "Task",
       isComplete: false,
     };
-    // console.log(task);
     addTask(task, fire);
   }
 
@@ -117,7 +111,7 @@ function TaskManager(props) {
         tasks[i].dueDate = new Date(parseInt(time));
       }
     } catch (err) {
-      console.log("Its okay!");
+      // console.log("Its okay!");
     }
     const newTasks = [
       ...tasks,
@@ -125,9 +119,7 @@ function TaskManager(props) {
         ...task,
       },
     ];
-    // console.log(newTasks);
     const sortedTasks = newTasks.sort((a, b) => a.dueDate - b.dueDate); //sort the tasks by due date
-    // console.log(sortedTasks);
     setTasks(sortedTasks); // This works: tasks will be updated to sortedTasks
 
     const uid = fire.auth().currentUser?.uid;

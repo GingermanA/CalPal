@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+# Motivation
+Coming into university, we as students are placed in a situation where for the first time in our education journey, we have complete freedom and autonomy over our schedules and academic plans. However, this can mean a lot of uncertainty surrounding how we should manage our time. Without proper time management, one may quickly become overwhelmed with the sheer volume and variety of work that one has to complete week on week. Therefore, it is almost essential for us as university students to make use of productivity applications to establish some routine in our daily lives.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Currently, there are a whole range of productivity applications for students to choose from. However, after our experience in using these applications, we find that it is not sufficient to use a single application, and typically 2 or more applications need to be used in conjunction to effectively meet our needs. A common scenario is having a calendar to plan our schedule across the entire week, as well as using a to-do list to keep track of the tasks we hope to achieve during the individual blocks of time. We give the examples of Google Calendar and Google Keep to highlight the limitations of such a situation.
 
-## Available Scripts
+## Aim
+We hope to integrate a web-based calendar and task manager into one single site and make the process of scheduling classes and deadlines (formal and self-set) quick and easy. 
 
-In the project directory, you can run:
 
-### `yarn start`
+## Tech Stack
+Website front-end: React / HTML / CSS
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Database: Google Firebase
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Deployment platform: Heroku
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## User Profile
+Target Audience: University students who would like to manage their time better while keeping track of their tasks all on one platform. 
 
-### `yarn build`
+Biggest Problem: People who are constantly stressed because they lose track of what they need to do, or whether they have to finish a certain task at a particular time of day.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Ideal User Profile: University students who are worried that they will forget the multitude of classes and deadlines that they have. They probably like to organise their Events based on their modules and like to see their deadlines in chronological order.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## User Stories
+- As a student who is already using many applications to plan my time and manage my assignments, I want to be able to plan my schedule and tasks all in one site, and not have to use multiple applications to meet all my scheduling needs.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- As a student who likes to set detailed and specific goals that I want to accomplish every day, I want to be able to link my tasks to topics that I am studying.
 
-### `yarn eject`
+- As a student who hopes to track the progress that I have made for all of my modules on a weekly basis, I want a neat record of the tasks that I have accomplished and have yet to complete during the week, categorized based on which modules they are linked to.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- As a student who has questions and doubts after my revision, I want to create follow-up tasks to remind myself to address these queries in the near future in order to count as progress for my module.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Scope of Project
+The Scheduler page has a default weekly view and students can click anywhere on the calendar to create an Event. An Event can be linked to a certain Module, which allows it to be colour-coded accordingly. Under each Event, Tasks can also be added to it. 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The Tasks page will give an overview of all the Tasks set by the student. Here, students can also create smaller, individual tasks, e.g. finish 1 reading, complete Tutorial 3. 
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## What’s Different about CalPal?
+- Google Calendar & Apple Calendar - While events can be added directly from the calendar, these applications lack proper task management features. For example, tasks cannot be added under events, and be associated with that particular module. Only mere descriptions of the event can be added. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Google Keep - As a task manager, Keep lacks several features like prioritizing tasks and associating tasks with a particular module. CalPal will include such features. 
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- My Study Life - As a scheduling software, this application lacks the ability to add events directly from the calendar. On the other hand, there is a separate page to add events. However, this is not seamless enough for our users. 

@@ -1,5 +1,3 @@
-//import { render } from "react-dom";
-//import "./index.css";
 import * as React from "react";
 import {
   ScheduleComponent,
@@ -14,9 +12,7 @@ import {
   Resize,
   DragAndDrop,
   CellClickEventArgs,
-  RecurrenceEditorComponent,
 } from "@syncfusion/ej2-react-schedule";
-
 import DeleteIcon from "@material-ui/icons/Delete";
 import { TextField } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
@@ -31,7 +27,6 @@ import {
 import "./Scheduler.css";
 import SideNavScheduler from "./SideNavScheduler";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
-import { withStyles } from "@material-ui/core/styles";
 
 export default class Scheduler extends SampleBase {
   color: Array[] = [
@@ -83,7 +78,7 @@ export default class Scheduler extends SampleBase {
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
-          console.log(this.test);
+          // console.log(this.test);
         } catch (err) {
           // console.log(this.test);
         }
@@ -288,7 +283,6 @@ export default class Scheduler extends SampleBase {
           // console.log(this.test);
         }
       });
-    console.log(this.test);
   }
 
   onActionBegin(args) {
@@ -360,7 +354,6 @@ export default class Scheduler extends SampleBase {
 
   onEventRendered(args) {
     for (let i = 0; i < this.treeViewMod.length; i++) {
-      console.log(args);
       if (args.data.Module === this.treeViewMod[i].Name) {
         args.element.style.backgroundColor = this.treeViewMod[i].Color;
       }
@@ -371,7 +364,7 @@ export default class Scheduler extends SampleBase {
 
   onTreeDragStopMod(args: DragAndDropEventArgs): void {
     try {
-      console.log(args.draggedNodeData);
+      // console.log(args.draggedNodeData);
       let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
         args.target
       );
@@ -390,19 +383,8 @@ export default class Scheduler extends SampleBase {
 
   nodeTemplate = (data) => {
     const color = data.Color;
-    const StyledButton = withStyles({
-      root: {
-        backgroundColor: "#f0f0f5",
-        color: "#f0f0f5",
-        "&:hover": {
-          backgroundColor: "#fff",
-          color: "#3c52b2",
-        },
-      },
-    })(Button);
     return (
       <div className="min-width">
-        {/* <div className="blankSpace3" backgroundColor={data.Color}></div> */}
         <div className="mod-color">
           <FiberManualRecordIcon style={{ color: color }} />
         </div>
@@ -416,9 +398,6 @@ export default class Scheduler extends SampleBase {
             color="secondary"
           ></Button>
         </div>
-
-        {/* </div>
-        </div> */}
       </div>
     );
   };
@@ -521,15 +500,6 @@ export default class Scheduler extends SampleBase {
               ></DateTimePickerComponent>
             </td>
           </tr>
-          {/* <tr>
-            <td className="e-textlabel">Recurrence</td>
-            <td>
-              <RecurrenceEditorComponent
-                id="RecurrenceEditor"
-                ref={(recurrObject) => (this.recurrObject = recurrObject)}
-              ></RecurrenceEditorComponent>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     );

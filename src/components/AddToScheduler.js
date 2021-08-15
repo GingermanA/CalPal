@@ -12,7 +12,6 @@ import {
   Resize,
   DragAndDrop,
   CellClickEventArgs,
-  RecurrenceEditorComponent,
 } from "@syncfusion/ej2-react-schedule";
 import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
 import { DateTimePickerComponent } from "@syncfusion/ej2-react-calendars";
@@ -83,7 +82,7 @@ export default class AddToScheduler extends SampleBase {
         }
         try {
           this.scheduleObj.eventSettings.dataSource = this.test;
-          console.log(this.test);
+          // console.log(this.test);
         } catch (err) {
           // console.log(this.test);
         }
@@ -325,7 +324,7 @@ export default class AddToScheduler extends SampleBase {
 
   onTreeDragStopTask(args: DragAndDropEventArgs): void {
     try {
-      console.log(args.draggedNodeData);
+      // console.log(args.draggedNodeData);
       let cellData: CellClickEventArgs = this.scheduleObj.getCellDetails(
         args.target
       );
@@ -337,7 +336,7 @@ export default class AddToScheduler extends SampleBase {
         EndTime: cellData.endTime,
         IsAllDay: cellData.isAllDay,
       };
-      console.log(eventData);
+      // console.log(eventData);
       this.scheduleObj.openEditor(eventData, "Add", true);
     } catch (err) {
       //console.log(err);
@@ -401,7 +400,6 @@ export default class AddToScheduler extends SampleBase {
               <DropDownListComponent
                 id="Module"
                 className="e-field"
-                //dataSource={["CS1010", "IEM", "MA1521"]}
                 dataSource={this.treeViewMod}
                 fields={this.fieldMod}
                 placeholder="Select module"
@@ -458,15 +456,6 @@ export default class AddToScheduler extends SampleBase {
               ></DateTimePickerComponent>
             </td>
           </tr>
-          {/* <tr>
-            <td className="e-textlabel">Recurrence</td>
-            <td>
-              <RecurrenceEditorComponent
-                id="RecurrenceEditor"
-                ref={(recurrObject) => (this.recurrObject = recurrObject)}
-              ></RecurrenceEditorComponent>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     );

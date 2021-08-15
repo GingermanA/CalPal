@@ -8,7 +8,6 @@ form .descTextField {
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* margin: 0 2rem; */
 }
 
 .titleWrap {
@@ -47,9 +46,6 @@ form .descTextField {
   height: 100%;
   width: 60%;
   padding-left: 3rem;
-
-  /* align-items: center; */
-  /* padding-right: 2rem; */
 }
 
 .right {

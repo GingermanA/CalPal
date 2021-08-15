@@ -5,11 +5,6 @@ import SideNavTasks from "./SideNavTasks";
 import fire from "../fire";
 
 function PageTodolist() {
-  // console.log(props.selectedIndex);
-  // Task state has to be lifted to be at the App level
-  // because Header also needs to know the task state to display
-  // no. of undone tasks. It cannot be contained within TaskManager
-  // as child components cannot pass props to their parent components.
   const [tasks, setTasksState] = useState([]);
 
   function setTasks(newTasks) {
